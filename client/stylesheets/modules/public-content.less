@@ -1,0 +1,30 @@
+.public-content {
+  margin: 2em 0;
+  padding: 2em;
+  max-width: 750px;
+  h2, h3, p {
+    margin: 1em 0;
+  }
+}
+
+paper-card {
+  width: 100%;
+  margin-bottom: 16px;
+}
+.item {
+  margin-bottom: 16px;
+  padding: 20px;
+  background-color: var(--paper-lime-500);
+}
+.item.blue {
+  background-color: var(--paper-blue-300);
+}
+/* If you want your things to swipe nicely, you might want to disable
+ * text selection on those elements. */
+.swipe {
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}

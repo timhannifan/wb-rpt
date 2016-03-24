@@ -1,0 +1,64 @@
+@import '../import';
+
+// Nav // -----------------------------------
+
+.nav paper-item {
+  color: @color-black;
+}
+
+.nav paper-item .button-content {
+  padding-left: 5px;
+}
+
+.nav paper-item iron-icon {
+  color: @color-black;
+  margin-right: 32px;
+}
+.nav .is-active,
+.nav .is-active iron-icon {
+  color: @color-accent;
+}
+.nav paper-submenu #icon {
+  color: @color-black;
+  margin-right: 32px;
+}
+.nav paper-submenu #label {
+  .type-subhead();
+}
+.nav paper-submenu #submenu {
+  margin: 0 0 0 20px;
+}
+.nav paper-submenu paper-item,
+.nav paper-submenu paper-item iron-icon {
+  color: @color-black-light;
+}
+
+  // SAFARI & iOS
+
+.nav paper-item iron-icon {
+  color: @color-black-light;
+  margin-right: 32px;
+}
+.nav .is-active,
+.nav .is-active iron-icon {
+  color: @color-accent;
+}
+.nav paper-submenu #icon {
+  color: @color-black;
+  margin-right: 32px;
+}
+.nav paper-submenu #label {
+  .type-subhead();
+}
+.nav paper-submenu #submenu {
+  margin: 0 0 0 20px;
+}
+.nav paper-submenu paper-item,
+.nav paper-submenu paper-item iron-icon {
+  color: @color-black-light;
+}
+
+
+//.nav .menu-content paper-item{
+// margin: 0 0 0 20px; 
+//}

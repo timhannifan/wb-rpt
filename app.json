@@ -1,0 +1,8 @@
+{
+  "name": "wb-rpt",
+  "description": "Data categorization using text parsing/string recognition",
+  "env": {
+  	"NODE_ENV" : "production"
+  }
+}
+

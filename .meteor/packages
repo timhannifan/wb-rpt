@@ -1,0 +1,47 @@
+meteor-platform
+blaze
+tracker
+jquery
+underscore
+check
+reactive-dict
+reactive-var
+session
+http
+coffeescript
+less
+
+# autopublish
+# insecure
+
+iron:router
+reywood:publish-composite
+aldeed:simple-schema
+aldeed:collection2
+aldeed:autoform
+aldeed:template-extension
+dburles:collection-helpers
+matb33:collection-hooks
+anti:fake
+d3js:d3
+percolatestudio:synced-cron@1.1.0
+
+meteorhacks:inject-initial
+differential:vulcanize
+momentjs:moment
+
+aldeed:tabular
+
+# harrison:papa-parse
+# rclai89:cheerio
+anonyfox:scrape
+bobbigmac:scrape-parser
+nefiltari:yaki
+lfergon:exportcsv
+
+app-lib
+app-root
+
+chhib:selectize-bootstrap-3
+comerc:autoform-selectize
+
