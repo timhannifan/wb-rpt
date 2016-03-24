@@ -5,11 +5,9 @@ Package.describe({
 });
 
 Npm.depends({
-  'feedparser': '1.0.0',
-  'to-markdown': '0.0.2',
   'he': '0.5.0',
+  'fs': '0.0.2',
   'striptags': '2.1.1',
-  'iconv-lite': '0.4.7',
   'cheerio': '0.20.0',
   'babyparse': '0.4.5'
 });
@@ -20,7 +18,6 @@ Package.onUse(function (api) {
   var packages = [
     'meteor-platform',  
     'app-lib',
-    'lfergon:exportcsv',
     'nefiltari:yaki',
     'anonyfox:scrape'
   ];
@@ -28,12 +25,17 @@ Package.onUse(function (api) {
   api.imply(packages);
 
   api.addFiles([
-    // 'lib/server/cron.js',
-    // 'lib/server/fetch_sources.js',
-    // 'lib/server/job_street.js',
+    'lib/server/babyparse.js',
+    'lib/server/cheerio.js',
+    'lib/server/data/masco_1digit.csv',
+    'lib/server/data/masco_3digit.csv',
+    'lib/server/data/masco_2digit.csv',  
+    'lib/server/data/masco_4digit.csv',
+    'lib/server/data/masco_all.csv',
+    'lib/server/data/rep_data.csv',
+    'lib/server/data/rpt_data.csv'
   ], ['server']);
 
   api.export('cheerio');
   api.export('Baby');
-
 });

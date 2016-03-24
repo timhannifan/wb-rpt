@@ -1,5 +1,9 @@
 Sources = new Mongo.Collection('Sources');
-
+Uploads = new Mongo.Collection('Uploads');
+Rpt = new Mongo.Collection('Rpt');
+Rep = new Mongo.Collection('Rep');
+Masco = new Mongo.Collection('Masco');
+// Rep = new Mongo.Collection('Rep');
 // // Sources Schema and Permissions
 // Sources.schema = new SimpleSchema({
 //   sourceName: {

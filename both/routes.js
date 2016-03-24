@@ -16,16 +16,26 @@ Meteor.startup(function () {
       path: '/',
       template:'home'
     });
-    
-    // this.route('sources', {
-    //   path: '/sources/monster',
-    //   template:'sources',
-    //   waitOn: function() {
-    //     Meteor.subscribe('Sources');
-    //   },
-    //   data: function () {
-    //     return Sources.find().fetch();
-    //   }
-    // });
+    this.route('uploadRpt', {
+      path: '/uploadRpt',
+      // waitOn: function() {
+      //   // Meteor.subscribe('Uploads');
+      // },
+      template:'uploadRpt'
+    });
+    this.route('uploadRep', {
+      path: '/uploadRep',
+      // waitOn: function() {
+      //   Meteor.subscribe('Uploads');
+      // },
+      template:'uploadRep'
+    });
+    this.route('uploadMasco', {
+      path: '/uploadMasco',
+      // waitOn: function() {
+      //   Meteor.subscribe('Uploads');
+      // },
+      template:'uploadMasco'
+    });
   });
 });

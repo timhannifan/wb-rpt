@@ -1,9 +1,14 @@
 Template.applicationLayout.events({
-	// 'click #js-fetch-rss': function () {
-	//   Meteor.call('fetchSources');
-	//   toast('Refreshing data...');
-	// },
-	// 'click [data-action=home]': function () {
-	//   Router.go('home');
-	// },
+	'click [data-action=home]': function () {
+	  Router.go('home');
+	},
+	'click [data-action=uploadRpt]': function () {
+	  Router.go('uploadRpt');
+	},
+	'click [data-action=uploadRep]': function () {
+	  Router.go('uploadRep');
+	},
+	'click [data-action=uploadMasco]': function () {
+	  Router.go('uploadMasco');
+	}
 });

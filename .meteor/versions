@@ -27,8 +27,10 @@ differential:vulcanize@0.0.5
 digilord:sugarjs@1.4.1
 ejson@1.0.6
 fastclick@1.0.3
+fortawesome:fontawesome@4.5.0
 froatsnook:request@2.53.3
 geojson-utils@1.0.3
+harrison:papa-parse@1.1.1
 html-tools@1.0.4
 htmljs@1.0.4
 http@1.1.0
@@ -74,6 +76,7 @@ session@1.1.0
 spacebars@1.0.6
 spacebars-compiler@1.0.6
 templating@1.1.1
+themeteorchef:bert@1.1.0
 tracker@1.0.7
 ui@1.0.6
 underscore@1.0.3
