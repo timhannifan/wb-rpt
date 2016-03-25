@@ -10,5 +10,8 @@ Template.applicationLayout.events({
 	},
 	'click [data-action=uploadMasco]': function () {
 	  Router.go('uploadMasco');
+	},
+	'click [data-action=export]': function () {
+	  Router.go('export');
 	}
 });

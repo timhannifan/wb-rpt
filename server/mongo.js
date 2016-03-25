@@ -127,26 +127,55 @@ var matchMascoTitleTags = function () {
 		var titleTags = item.tags;
 		console.log(titleTags);
 
-		var grouped = [];		
-		titleTags.each(function(tag){
-			console.log(tag);
-			matchArray = Rpt.find({titleTags:{$regex:tag}}).fetch();
-			console.log('matchArray count', matchArray.count());
-			grouped.push(matchArray);
-		});
+		var grouped = [];	
 
-		var intersect = function(){
+		function findIntersect() {
 			return _.intersection(grouped);
-		};
-		// console.log(intersect.count());
+		};	
 
-		intersect().each(function(it) {
-			it.each(function(me){
-				console.log(me._id);
+		titleTags.each(function(tag){
+			var matchIdArray = [];
+			console.log(tag);
+			var matchArray = Rpt.find({titleTags:{$regex:tag}}).fetch();
+
+			matchArray.each(function(obj){
+				matchIdArray.push(obj._id);
 
 			});
 
-		})
+			console.log('matchArray count', matchArray.count());
+			grouped.push(matchIdArray);
+
+		});
+
+		// findIntersect(grouped);
+		// intersect = _.intersection(grouped);
+		// console.log('grouped', grouped);
+		// console.log('findIntersect(grouped);', findIntersect(grouped));
+
+		// var result = grouped.shift().reduce(function(res, v) {
+		//     if (res.indexOf(v) === -1 && grouped.every(function(a) {
+		//         return a.indexOf(v) !== -1;
+		//     })) res.push(v);
+
+		//    	console.log(res);
+		//     return res;
+		// }, []);
+
+		// intersect.each(function(obj) {
+			// console.log('intersect', obj);
+			// console.log('found an intersection, updating doc')
+			// Rpt.update({_id: id},
+			// 	{
+			// 		$set: { 
+			// 			mascoTagTitleIntersectionMatch: item._id
+			// 		}
+			// 	}
+			// );
+		// });
+	});
+};
+
 		// console.log(grouped);
 		// var titleTags = item.tags;
 		// var arrayToUpdate = [];
@@ -188,11 +217,11 @@ var matchMascoTitleTags = function () {
 		// 		}
 		// 	);
 		// });
-	});
+
 	
-	var secondMatches = Rpt.find({mascoTitleTagsMatch: {$exists: true}}).fetch();
-	console.log('----------------------------second match count: ' + secondMatches.count() + 'items');
-};
+	// var secondMatches = Rpt.find({mascoTitleTagsMatch: {$exists: true}}).fetch();
+	// console.log('----------------------------second match count: ' + secondMatches.count() + 'items');
+
 
 
 

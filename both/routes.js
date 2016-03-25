@@ -37,5 +37,12 @@ Meteor.startup(function () {
       // },
       template:'uploadMasco'
     });
+    this.route('export', {
+      path: '/export',
+      waitOn: function() {
+        Meteor.subscribe('Rpt');
+      },
+      template:'export'
+    });
   });
 });
