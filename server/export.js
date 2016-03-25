@@ -5,8 +5,10 @@ Meteor.methods({
 			"occ_title",
 			"sector",
 			"clean_title",
-			"mascoTitleExactMatch"
-
+			"mascoTitleExactMatch",
+			"matchMascoTitleTagsPartial0",
+			"matchMascoTitleTagsPartial1",
+			"matchMascoTitleTagsPartial2"
 		];
  
 		var data = [];		
@@ -18,6 +20,9 @@ Meteor.methods({
 				c.occ_title,				
 				c.cleanTitle,
 				c.mascoTitleExactMatch,
+				c.matchMascoTitleTagsPartial0,
+				c.matchMascoTitleTagsPartial1,
+				c.matchMascoTitleTagsPartial2
 			]);
 		});
  

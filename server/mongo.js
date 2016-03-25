@@ -116,7 +116,7 @@ var matchMascoTitle = function () {
 	console.log('----------------------------fistmatch count: ' + firstmatches.count() + 'items');
 };
 
-/// -------------------------first match: exact title--------------
+/// -------------------------second match:  title tag match--------------
 /// ------------------------------------------------------------
 
 var matchMascoTitleTags = function () {
@@ -176,52 +176,89 @@ var matchMascoTitleTags = function () {
 	});
 };
 
-		// console.log(grouped);
-		// var titleTags = item.tags;
-		// var arrayToUpdate = [];
-		// var mascoCode = item.masco_code;
-		// var arrayToFindIntersection = [];
+
+/// -------------------------third match:  tag parts--------------
+/// ------------------------------------------------------------
+
+var matchMascoTitleTagsPartial = function () {
+	var mascoArray = Masco.find().fetch();
 
 
+	mascoArray.each(function (item) {
+		var titleTags = item.tags[0];
+		console.log(titleTags);
 
-		// console.log('arrayToFindIntersection.count' + arrayToFindIntersection.count());
+		var matchArray = Rpt.find({titleTags:{$regex:titleTags}}).fetch();
 
-		// titleTags.each(function(tag){
-		// 	console.log('processing tag: '+ tag);
-		// 	var matchArray = Rpt.find({titleTags:{$regex:tag}}).fetch();
+		matchArray.each(function(obj){
+			console.log('upadting document' +obj._id );
+			Rpt.update({_id: obj._id},
+				{
+					$set: { 
+						matchMascoTitleTagsPartial0: item.masco_code
+					}
+				}
+			);
+		});
+
+	});
+};
+
+/// -------------------------third match:  tag parts--------------
+/// ------------------------------------------------------------
+
+var matchMascoTitleTagsPartialOne = function () {
+	var mascoArray = Masco.find().fetch();
 
 
-		// 	console.log('matchArray count', matchArray.count());
+	mascoArray.each(function (item) {
+		var titleTags = item.tags[1];
+		console.log(titleTags);
 
-		// 	arrayToFindIntersection.push(matchArray);
-		// 	console.log('arrayToFindIntersection.count' + arrayToFindIntersection.count());
-		// 	// matchArray.each(function(obj){
-		// 	// 	arrayToUpdate.push(obj._id);
-		// 	// })
+		if(titleTags){
+			var matchArray = Rpt.find({titleTags:{$regex:titleTags}}).fetch();
 
-		// });
-		// console.log('arrayToFindIntersection.count' + arrayToFindIntersection.count());
+			matchArray.each(function(obj){
+				console.log('upadting document' +obj._id );
+				Rpt.update({_id: obj._id},
+					{
+						$set: { 
+							matchMascoTitleTagsPartial1: item.masco_code
+						}
+					}
+				);
+			});
+		}
+	});
+};
+/// -------------------------third match:  tag parts--------------
+/// ------------------------------------------------------------
 
-		// var multipleMatchesArray = _.intersection(arrayToFindIntersection);
-		// // console.log('arrayToFindIntersection', arrayToFindIntersection.count());
-		// // console.log('multipleMatchesArray', multipleMatchesArray.count());
+var matchMascoTitleTagsPartiaTwo = function () {
+	var mascoArray = Masco.find().fetch();
 
-		// // push the matches to a new array
-		// multipleMatchesArray.each(function(id) {
-		// 	// console.log('exact match found');
-		// 	Rpt.update({_id: id},
-		// 		{
-		// 			$push: { 
-		// 				mascoTitleTagsMatch: mascoCode
-		// 			}
-		// 		}
-		// 	);
-		// });
 
-	
-	// var secondMatches = Rpt.find({mascoTitleTagsMatch: {$exists: true}}).fetch();
-	// console.log('----------------------------second match count: ' + secondMatches.count() + 'items');
+	mascoArray.each(function (item) {
+		var titleTags = item.tags[2];
+		console.log(titleTags);
 
+		if(titleTags){
+			var matchArray = Rpt.find({titleTags:{$regex:titleTags}}).fetch();
+
+			matchArray.each(function(obj){
+				console.log('upadting document' +obj._id );
+				Rpt.update({_id: obj._id},
+					{
+						$set: { 
+							matchMascoTitleTagsPartial2: item.masco_code
+						}
+					}
+				);
+			});
+		}
+
+	});
+};
 
 
 
@@ -237,6 +274,15 @@ Meteor.methods({
 	},
 	secondMatch: function() {
 		matchMascoTitleTags();
+	},
+	thirdMatch: function() {
+		matchMascoTitleTagsPartial();
+	},
+	fourthMatch: function() {
+		matchMascoTitleTagsPartialOne();
+	},
+	fifthMatch: function() {
+		matchMascoTitleTagsPartiaTwo();
 	}
 });
 
@@ -326,3 +372,48 @@ Meteor.methods({
 // 		{ titleTags: uniques }
 // 	});
 // });
+		// console.log(grouped);
+		// var titleTags = item.tags;
+		// var arrayToUpdate = [];
+		// var mascoCode = item.masco_code;
+		// var arrayToFindIntersection = [];
+
+
+
+		// console.log('arrayToFindIntersection.count' + arrayToFindIntersection.count());
+
+		// titleTags.each(function(tag){
+		// 	console.log('processing tag: '+ tag);
+		// 	var matchArray = Rpt.find({titleTags:{$regex:tag}}).fetch();
+
+
+		// 	console.log('matchArray count', matchArray.count());
+
+		// 	arrayToFindIntersection.push(matchArray);
+		// 	console.log('arrayToFindIntersection.count' + arrayToFindIntersection.count());
+		// 	// matchArray.each(function(obj){
+		// 	// 	arrayToUpdate.push(obj._id);
+		// 	// })
+
+		// });
+		// console.log('arrayToFindIntersection.count' + arrayToFindIntersection.count());
+
+		// var multipleMatchesArray = _.intersection(arrayToFindIntersection);
+		// // console.log('arrayToFindIntersection', arrayToFindIntersection.count());
+		// // console.log('multipleMatchesArray', multipleMatchesArray.count());
+
+		// // push the matches to a new array
+		// multipleMatchesArray.each(function(id) {
+		// 	// console.log('exact match found');
+		// 	Rpt.update({_id: id},
+		// 		{
+		// 			$push: { 
+		// 				mascoTitleTagsMatch: mascoCode
+		// 			}
+		// 		}
+		// 	);
+		// });
+
+	
+	// var secondMatches = Rpt.find({mascoTitleTagsMatch: {$exists: true}}).fetch();
+	// console.log('----------------------------second match count: ' + secondMatches.count() + 'items');
