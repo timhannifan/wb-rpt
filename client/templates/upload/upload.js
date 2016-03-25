@@ -40,7 +40,7 @@ Template.uploadRep.helpers({
     return Template.instance().uploading.get();
   },
   uploads: function() {
-    return Uploads.find().fetch();
+    return Rep.find().fetch();
   },
 });
 
