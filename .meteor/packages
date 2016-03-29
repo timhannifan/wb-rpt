@@ -32,18 +32,17 @@ momentjs:moment
 
 aldeed:tabular
 
-# harrison:papa-parse
 # rclai89:cheerio
-anonyfox:scrape
-bobbigmac:scrape-parser
-nefiltari:yaki
-lfergon:exportcsv
+# anonyfox:scrape
+# bobbigmac:scrape-parser
+# nefiltari:yaki
+# lfergon:exportcsv
 
 app-lib
-app-root
+# app-root
 
-chhib:selectize-bootstrap-3
-comerc:autoform-selectize
+# chhib:selectize-bootstrap-3
+# comerc:autoform-selectize
 
 themeteorchef:bert
 harrison:papa-parse

@@ -1,57 +1,21 @@
-Template.uploadRpt.onCreated(function() {
+Template.uploadMascoFive.onCreated(function() {
   Template.instance().uploading = new ReactiveVar( false );
 });
 
-Template.uploadRpt.helpers({
+Template.uploadMascoFive.helpers({
   uploading: function() {
     return Template.instance().uploading.get();
-  },
-  uploads: function() {
-    return Uploads.find().fetch();
-  },
+  }
 });
 
-Template.uploadRpt.events({
-  'change [name="uploadCSV"]': function( event, template ) {
-  	template.uploading.set( true );
-
-  	Papa.parse( event.target.files[0], {
-  	  header: true,
-  	  complete: function( results, file ) {
-  	    Meteor.call( 'parseUploadRpt', results.data, function( error, response ) {
-  	      if ( error ) {
-  	        console.log( error.reason );
-  	      } else {
-  	        template.uploading.set( false );
-  	        Bert.alert( 'Upload complete!', 'success', 'growl-top-right' );
-  	      }
-  	    });
-  	  }
-	  });
-	}
-});
-
-Template.uploadRep.onCreated(function() {
-  Template.instance().uploading = new ReactiveVar( false );
-});
-
-Template.uploadRep.helpers({
-  uploading: function() {
-    return Template.instance().uploading.get();
-  },
-  uploads: function() {
-    return Rep.find().fetch();
-  },
-});
-
-Template.uploadRep.events({
+Template.uploadMascoFive.events({
   'change [name="uploadCSV"]': function( event, template ) {
     template.uploading.set( true );
 
     Papa.parse( event.target.files[0], {
       header: true,
       complete: function( results, file ) {
-        Meteor.call( 'parseUploadRep', results.data, function( error, response ) {
+        Meteor.call( 'parseUploadMascoFive', results.data, function( error, response ) {
           if ( error ) {
             console.log( error.reason );
           } else {
@@ -64,27 +28,54 @@ Template.uploadRep.events({
   }
 });
 
-Template.uploadMasco.onCreated(function() {
+Template.uploadMascoFour.onCreated(function() {
   Template.instance().uploading = new ReactiveVar( false );
 });
 
-Template.uploadMasco.helpers({
+Template.uploadMascoFour.helpers({
   uploading: function() {
     return Template.instance().uploading.get();
-  },
-  uploads: function() {
-    return Uploads.find().fetch();
-  },
+  }
 });
 
-Template.uploadMasco.events({
+Template.uploadMascoFour.events({
   'change [name="uploadCSV"]': function( event, template ) {
     template.uploading.set( true );
 
     Papa.parse( event.target.files[0], {
       header: true,
       complete: function( results, file ) {
-        Meteor.call( 'parseUploadMasco', results.data, function( error, response ) {
+        Meteor.call( 'parseUploadMascoFour', results.data, function( error, response ) {
+          if ( error ) {
+            console.log( error.reason );
+          } else {
+            template.uploading.set( false );
+            Bert.alert( 'Upload complete!', 'success', 'growl-top-right' );
+          }
+        });
+      }
+    });
+  }
+});
+
+Template.uploadMascoThree.onCreated(function() {
+  Template.instance().uploading = new ReactiveVar( false );
+});
+
+Template.uploadMascoThree.helpers({
+  uploading: function() {
+    return Template.instance().uploading.get();
+  }
+});
+
+Template.uploadMascoThree.events({
+  'change [name="uploadCSV"]': function( event, template ) {
+    template.uploading.set( true );
+
+    Papa.parse( event.target.files[0], {
+      header: true,
+      complete: function( results, file ) {
+        Meteor.call( 'parseUploadMascoThree', results.data, function( error, response ) {
           if ( error ) {
             console.log( error.reason );
           } else {

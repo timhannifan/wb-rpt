@@ -8,8 +8,14 @@ Template.applicationLayout.events({
 	'click [data-action=uploadRep]': function () {
 	  Router.go('uploadRep');
 	},
-	'click [data-action=uploadMasco]': function () {
-	  Router.go('uploadMasco');
+	'click [data-action=uploadMascoFive]': function () {
+	  Router.go('uploadMascoFive');
+	},
+	'click [data-action=uploadMascoFour]': function () {
+	  Router.go('uploadMascoFour');
+	},
+	'click [data-action=uploadMascoThree]': function () {
+	  Router.go('uploadMascoThree');
 	},
 	'click [data-action=export]': function () {
 	  Router.go('export');

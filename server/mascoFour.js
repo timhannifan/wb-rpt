@@ -1,4 +1,4 @@
-var mascoFourStrings = Masco.find().fetch();
+var mascoFourStrings = MascoFour.find().fetch();
 var strArr = [];
 
 var updateMTags = function () {
@@ -10,7 +10,7 @@ var updateMTags = function () {
 
 		console.log(name + " : " + yakiTags);
 		yakiTags.each(function(item) {
-			Masco.update({_id: obj._id}, 
+			MascoFour.update({_id: obj._id}, 
 				{
 					$push: { 
 						tags: item
@@ -19,7 +19,7 @@ var updateMTags = function () {
 			);
 		});
 
-		Masco.update({_id: obj._id}, 
+		MascoFour.update({_id: obj._id}, 
 			{
 				$set: { 
 					cleanTitle: lowercase
@@ -81,7 +81,7 @@ var cleanNewData = function () {
 /// ------------------------------------------------------------
 
 var matchMascoTitle = function () {
-	var mascoArray = Masco.find().fetch();
+	var mascoArray = MascoFour.find().fetch();
 
 
 	mascoArray.each(function (item) {
@@ -120,7 +120,7 @@ var matchMascoTitle = function () {
 /// ------------------------------------------------------------
 
 var matchMascoTitleTags = function () {
-	var mascoArray = Masco.find().fetch();
+	var mascoArray = MascoFour.find().fetch();
 
 
 	mascoArray.each(function (item) {
@@ -181,7 +181,7 @@ var matchMascoTitleTags = function () {
 /// ------------------------------------------------------------
 
 var matchMascoTitleTagsPartial = function () {
-	var mascoArray = Masco.find().fetch();
+	var mascoArray = MascoFour.find().fetch();
 
 
 	mascoArray.each(function (item) {
@@ -208,7 +208,7 @@ var matchMascoTitleTagsPartial = function () {
 /// ------------------------------------------------------------
 
 var matchMascoTitleTagsPartialOne = function () {
-	var mascoArray = Masco.find().fetch();
+	var mascoArray = MascoFour.find().fetch();
 
 
 	mascoArray.each(function (item) {
@@ -235,7 +235,7 @@ var matchMascoTitleTagsPartialOne = function () {
 /// ------------------------------------------------------------
 
 var matchMascoTitleTagsPartiaTwo = function () {
-	var mascoArray = Masco.find().fetch();
+	var mascoArray = MascoFour.find().fetch();
 
 
 	mascoArray.each(function (item) {
@@ -314,7 +314,7 @@ Meteor.methods({
 
 
 
-// var mascoArray = Masco.findOne({});
+// var mascoArray = MascoFour.findOne({});
 // var tags = mascoEx.tags;
 // var similarItems = [];
 

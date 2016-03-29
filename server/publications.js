@@ -4,6 +4,14 @@ Meteor.publish('Rpt', function() {
 Meteor.publish('Rep', function() {
 	return Rep.find({});
 });
-Meteor.publish('Masco', function() {
-	return Masco.find({});
+Meteor.publish('MascoFive', function() {
+	return MascoFive.find({});
+});
+
+Meteor.publish('MascoFour', function() {
+	return MascoFour.find({});
+});
+
+Meteor.publish('MascoThree', function() {
+	return MascoThree.find({});
 });

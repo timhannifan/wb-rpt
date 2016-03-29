@@ -30,12 +30,26 @@ Meteor.startup(function () {
       // },
       template:'uploadRep'
     });
-    this.route('uploadMasco', {
-      path: '/uploadMasco',
+    this.route('uploadMascoFive', {
+      path: '/uploadMascoFive',
       // waitOn: function() {
       //   Meteor.subscribe('Uploads');
       // },
-      template:'uploadMasco'
+      template:'uploadMascoFive'
+    });
+    this.route('uploadMascoFour', {
+      path: '/uploadMascoFour',
+      // waitOn: function() {
+      //   Meteor.subscribe('Uploads');
+      // },
+      template:'uploadMascoFour'
+    });
+    this.route('uploadMascoThree', {
+      path: '/uploadMascoThree',
+      // waitOn: function() {
+      //   Meteor.subscribe('Uploads');
+      // },
+      template:'uploadMascoThree'
     });
     this.route('export', {
       path: '/export',

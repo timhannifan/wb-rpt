@@ -2,7 +2,9 @@ Sources = new Mongo.Collection('Sources');
 Uploads = new Mongo.Collection('Uploads');
 Rpt = new Mongo.Collection('Rpt');
 Rep = new Mongo.Collection('Rep');
-Masco = new Mongo.Collection('Masco');
+MascoFive = new Mongo.Collection('MascoFive');
+MascoFour = new Mongo.Collection('MascoFour');
+MascoThree = new Mongo.Collection('MascoThree');
 // Rep = new Mongo.Collection('Rep');
 // // Sources Schema and Permissions
 // Sources.schema = new SimpleSchema({
