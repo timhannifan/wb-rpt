@@ -1,70 +1,140 @@
-var mascoFourStrings = MascoFour.find().fetch();
-var strArr = [];
+var mascoFourFetch = MascoFour.find().fetch();
 
-var updateMTags = function () {
-	mascoFourStrings.each(function(obj){
+var cleanMascoThree = function () {	
+	var mascoFetch = MascoThree.find({}).fetch();
 
-		name = obj.Name;
-		yakiTags = Yaki(name).extract();
-		lowercase = obj.Name.toLowerCase();
+	// console.log(mascoFetch);
 
-		console.log(name + " : " + yakiTags);
-		yakiTags.each(function(item) {
-			MascoFour.update({_id: obj._id}, 
+	for (var i = mascoFetch.length - 1; i >= 0; i--) {
+		console.log(mascoFetch[i]);
+		var self = mascoFetch[i],
+		name = self.description_3_digit,
+		_id = self._id,
+		yakiTags = Yaki(name).extract(),
+		lowercase = name.toLowerCase();
+
+		for (var j = yakiTags.length - 1; j >= 0; j--) {
+			
+			MascoThree.update({_id: _id}, 
 				{
 					$push: { 
-						tags: item
+						tags: yakiTags[j]
 					}
 				}
 			);
-		});
+		}
 
-		MascoFour.update({_id: obj._id}, 
+		MascoThree.update({_id: _id}, 
 			{
 				$set: { 
 					cleanTitle: lowercase
 				}
 			}
 		);
-	});	
+	}
 };
+var cleanMascoFour = function () {	
+	var mascoFetch = MascoFour.find({}).fetch();
 
+	// console.log(mascoFetch);
 
+	for (var i = mascoFetch.length - 1; i >= 0; i--) {
+		console.log(mascoFetch[i]);
+		var self = mascoFetch[i],
+		name = self.description_4_digit,
+		_id = self._id,
+		yakiTags = Yaki(name).extract(),
+		lowercase = name.toLowerCase();
 
-var cleanNewData = function () {
-	console.log('called cleanRpData');
-	var dataArray = Rpt.find().fetch();
-	dataArray.each(function(obj){
-		// var title = obj.occ_title;
-		// var desc = obj.occ_desc;
-		var title = obj.occ_title;
-		yakiTitleTags = Yaki(title).extract();
-		// yakiDescTags = Yaki(desc).extract();
-
-		lowercase = obj.occ_title.toLowerCase();
-
-		// console.log(title);
-		// console.log(yakiTags);
-
-		yakiTitleTags.each(function(item) {
-			Rpt.update({_id: obj._id}, 
+		for (var j = yakiTags.length - 1; j >= 0; j--) {
+			
+			MascoFour.update({_id: _id}, 
 				{
 					$push: { 
-						titleTags: item 
+						tags: yakiTags[j]
 					}
 				}
 			);
-		});
-		// yakiDescTags.each(function(item) {
-		// 	Rpt.update({_id: obj._id}, 
-		// 		{
-		// 			$push: { 
-		// 				descTags: item 
-		// 			}
-		// 		}
-		// 	);
-		// });
-		Rpt.update({_id: obj._id}, 
+		}
+
+		MascoFour.update({_id: _id}, 
+			{
+				$set: { 
+					cleanTitle: lowercase
+				}
+			}
+		);
+	}
+};
+var cleanMascoFive = function () {	
+	var mascoFetch = MascoFive.find({}).fetch();
+
+	// console.log(mascoFetch);
+
+	for (var i = mascoFetch.length - 1; i >= 0; i--) {
+		console.log(mascoFetch[i]);
+		var self = mascoFetch[i],
+		name = self.description_5_digit,
+		_id = self._id,
+		yakiTags = Yaki(name).extract(),
+		lowercase = name.toLowerCase();
+
+		for (var j = yakiTags.length - 1; j >= 0; j--) {
+			
+			MascoFive.update({_id: _id}, 
+				{
+					$push: { 
+						tags: yakiTags[j]
+					}
+				}
+			);
+		}
+
+		MascoFive.update({_id: _id}, 
+			{
+				$set: { 
+					cleanTitle: lowercase
+				}
+			}
+		);
+	}
+};
+
+var cleanRpt = function () {
+	var rptArray = Rpt.find({}).fetch();
+
+	for (var i = rptArray.length - 1; i >= 0; i--) {
+		var self = rptArray[i],
+		title = self.occ_title,
+		desc = self.occ_desc,
+		id = self._id,
+		yakiTitleTags = Yaki(self.occ_title).extract(),
+		yakiDescTags = Yaki(self.occ_desc).extract(),
+		lowercase = self.occ_title.toLowerCase();
+
+		console.log("Cleaning: " + title);
+
+		for (var j = yakiTitleTags.length - 1; j >= 0; j--) {
+			Rpt.update({_id: id}, 
+				{
+					$push: { 
+						titleTags: yakiTitleTags[j] 
+					}
+				}
+			);
+		}
+
+		for (var k = yakiDescTags.length - 1; k >= 0; k--) {
+			Rpt.update({_id: id}, 
+				{
+					$push: { 
+						descriptionTags: yakiDescTags[k] 
+					}
+				}
+			);
+		}
+
+		Rpt.update({_id: id}, 
 			{
 				$set: {
 					cleanTitle: lowercase
@@ -72,58 +142,49 @@ var cleanNewData = function () {
 
 			}
 		);
-
-		console.log(lowercase);
-	});	
+	}
 };
 
-/// -------------------------first match: exact title--------------
-/// ------------------------------------------------------------
+/// -------------------------first match: exact title-------------- ////
 
 var matchMascoTitle = function () {
-	var mascoArray = MascoFour.find().fetch();
-
-
-	mascoArray.each(function (item) {
-		var cleanMT = item.cleanTitle;
-		var arrayToUpdate = [];
-		var mascoCode = item.masco_code;
-		console.log('searching for exact match of: ' + cleanMT);
-		var matchArray = Rpt.find({cleanTitle: {$regex: cleanMT}}).fetch();
-		console.log('found this many items ', matchArray);
+	mascoFourFetch.each(function (item) {
+		var arrayToUpdate = [],
+		cleanMT = item.cleanTitle,
+		mascoCode = item.masco_code,
+		matchArray = Rpt.find({cleanTitle:  cleanMT}).fetch();
+				// var matchArray = Rpt.find({cleanTitle: {$regex: cleanMT}}).fetch();
+		console.log('searching for exact match of: ' + cleanMT + 'resulted in ' + matchArray.count() + 'matches');
 
 		// push the matches to a new array
-
 		matchArray.each(function(obj) {
 			arrayToUpdate.push(obj._id);
 		});
 
 		arrayToUpdate.each(function(id) {
-			console.log('exact match found');
+
 			Rpt.update({_id: id},
 				{
 					$set: { 
-						mascoTitleExactMatch: mascoCode
+						matchMascoTitle: mascoCode
 					}
 				}
 			);
 		})
-
-
 	});
 	
-	var firstmatches = Rpt.find({mascoTitleExactMatch: {$exists: true}}).fetch();
-	console.log('----------------------------fistmatch count: ' + firstmatches.count() + 'items');
+	// var firstmatches = Rpt.find({mascoTitleExactMatch: {$exists: true}}).fetch();
+	// console.log('----------------------------exact title match found: ' + firstmatches.count() + 'items');
 };
 
 /// -------------------------second match:  title tag match--------------
 /// ------------------------------------------------------------
 
 var matchMascoTitleTags = function () {
-	var mascoArray = MascoFour.find().fetch();
+	var mascoFourFetch = MascoFour.find().fetch();
 
 
-	mascoArray.each(function (item) {
+	mascoFourFetch.each(function (item) {
 		var titleTags = item.tags;
 		console.log(titleTags);
 
@@ -181,10 +242,10 @@ var matchMascoTitleTags = function () {
 /// ------------------------------------------------------------
 
 var matchMascoTitleTagsPartial = function () {
-	var mascoArray = MascoFour.find().fetch();
+	var mascoFourFetch = MascoFour.find().fetch();
 
 
-	mascoArray.each(function (item) {
+	mascoFourFetch.each(function (item) {
 		var titleTags = item.tags[0];
 		console.log(titleTags);
 
@@ -208,10 +269,10 @@ var matchMascoTitleTagsPartial = function () {
 /// ------------------------------------------------------------
 
 var matchMascoTitleTagsPartialOne = function () {
-	var mascoArray = MascoFour.find().fetch();
+	var mascoFourFetch = MascoFour.find().fetch();
 
 
-	mascoArray.each(function (item) {
+	mascoFourFetch.each(function (item) {
 		var titleTags = item.tags[1];
 		console.log(titleTags);
 
@@ -235,10 +296,10 @@ var matchMascoTitleTagsPartialOne = function () {
 /// ------------------------------------------------------------
 
 var matchMascoTitleTagsPartiaTwo = function () {
-	var mascoArray = MascoFour.find().fetch();
+	var mascoFourFetch = MascoFour.find().fetch();
 
 
-	mascoArray.each(function (item) {
+	mascoFourFetch.each(function (item) {
 		var titleTags = item.tags[2];
 		console.log(titleTags);
 
@@ -263,11 +324,17 @@ var matchMascoTitleTagsPartiaTwo = function () {
 
 
 Meteor.methods({
-	updateMascoTags: function() {
-		updateMTags();
+	cleanMascoThree: function() {
+		cleanMascoThree();
 	},
-	cleanData: function() {
-		cleanNewData();
+	cleanMascoFour: function() {
+		cleanMascoFour();
+	},
+	cleanMascoFive: function() {
+		cleanMascoFive();
+	},
+	cleanRpt: function() {
+		cleanRpt();
 	},
 	firstMatch: function() {
 		matchMascoTitle();
@@ -314,7 +381,7 @@ Meteor.methods({
 
 
 
-// var mascoArray = MascoFour.findOne({});
+// var mascoFourFetch = MascoFour.findOne({});
 // var tags = mascoEx.tags;
 // var similarItems = [];
 

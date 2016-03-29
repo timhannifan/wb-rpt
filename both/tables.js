@@ -11,8 +11,9 @@ responsive: true,
 autoWidth: false,
 pageLength: 50,
 columns: [
-  {data: "id", title: "masco_5_id", class: "flex-1"},
-  {data: "description_5_digit", title: "description_5_digits", class: "flex-10"}
+  {data: "id", title: "id", class: "flex-1"},
+  {data: "description_5_digit", title: "description", class: "flex-10"},
+  {data: "tags", title: "tags", class: "flex-10"}
 ],
 
 });
@@ -24,8 +25,9 @@ responsive: true,
 autoWidth: false,
 pageLength: 50,
 columns: [
-  {data: "id", title: "masco_4_id", class: "flex-2"},
-  {data: "description_4_digit", title: "description_4_digits", class: "flex-10"}
+  {data: "id", title: "id", class: "flex-2"},
+  {data: "description_4_digit", title: "description", class: "flex-10"},
+  {data: "tags", title: "tags", class: "flex-10"}
 ],
 
 });
@@ -39,7 +41,8 @@ autoWidth: false,
 pageLength: 50,
 columns: [
   {data: "id", title: "masco_3_id", class: "flex-1"},
-  {data: "description_3_digit", title: "description_3_digits", class: "flex-10"}
+  {data: "description_3_digit", title: "description_3_digits", class: "flex-10"},
+  {data: "tags", title: "tags", class: "flex-10"}
 ],
 
 });

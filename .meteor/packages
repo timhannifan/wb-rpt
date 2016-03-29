@@ -35,7 +35,6 @@ aldeed:tabular
 # rclai89:cheerio
 # anonyfox:scrape
 # bobbigmac:scrape-parser
-# nefiltari:yaki
 # lfergon:exportcsv
 
 app-lib
@@ -47,3 +46,4 @@ app-lib
 themeteorchef:bert
 harrison:papa-parse
 fortawesome:fontawesome
+nefiltari:yaki
