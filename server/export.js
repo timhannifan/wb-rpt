@@ -5,10 +5,13 @@ Meteor.methods({
 			"occ_title",
 			"sector",
 			"clean_title",
-			"mascoTitleExactMatch",
-			"matchMascoTitleTagsPartial0",
-			"matchMascoTitleTagsPartial1",
-			"matchMascoTitleTagsPartial2"
+			"mascoTitleMatchThree",
+			"mascoTitleMatchFour",
+			"mascoTitleMatchFive",
+			"repTitleMatch",
+			"fullTagMatch",
+			"partialTagMatchWeakest",
+
 		];
  
 		var data = [];		
@@ -19,10 +22,12 @@ Meteor.methods({
 				c.id,
 				c.occ_title,				
 				c.cleanTitle,
-				c.mascoTitleExactMatch,
-				c.matchMascoTitleTagsPartial0,
-				c.matchMascoTitleTagsPartial1,
-				c.matchMascoTitleTagsPartial2
+				c.mascoTitleMatchThree,
+				c.mascoTitleMatchFour,
+				c.mascoTitleMatchFive,
+				c.repTitleMatch,
+				c.fullTagMatch,
+				c.partialTagMatchWeakest
 			]);
 		});
  

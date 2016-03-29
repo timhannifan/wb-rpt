@@ -1,9 +1,8 @@
-var mascoFourFetch = MascoFour.find().fetch();
+// var mascoFourFetch = MascoFour.find().fetch();
 
+//// ------ clean masco classificaiton codes, add cleanTitle and tag attributes ---- ////
 var cleanMascoThree = function () {	
 	var mascoFetch = MascoThree.find({}).fetch();
-
-	// console.log(mascoFetch);
 
 	for (var i = mascoFetch.length - 1; i >= 0; i--) {
 		console.log(mascoFetch[i]);
@@ -35,9 +34,7 @@ var cleanMascoThree = function () {
 };
 var cleanMascoFour = function () {	
 	var mascoFetch = MascoFour.find({}).fetch();
-
-	// console.log(mascoFetch);
-
+	
 	for (var i = mascoFetch.length - 1; i >= 0; i--) {
 		console.log(mascoFetch[i]);
 		var self = mascoFetch[i],
@@ -69,8 +66,6 @@ var cleanMascoFour = function () {
 var cleanMascoFive = function () {	
 	var mascoFetch = MascoFive.find({}).fetch();
 
-	// console.log(mascoFetch);
-
 	for (var i = mascoFetch.length - 1; i >= 0; i--) {
 		console.log(mascoFetch[i]);
 		var self = mascoFetch[i],
@@ -100,6 +95,7 @@ var cleanMascoFive = function () {
 	}
 };
 
+//// ------ clean rpt data, add cleanTitle and tag attributes ---- ////
 var cleanRpt = function () {
 	var rptArray = Rpt.find({}).fetch();
 
@@ -109,7 +105,7 @@ var cleanRpt = function () {
 		desc = self.occ_desc,
 		id = self._id,
 		yakiTitleTags = Yaki(self.occ_title).extract(),
-		yakiDescTags = Yaki(self.occ_desc).extract(),
+		// yakiDescTags = Yaki(self.occ_desc).extract(),
 		lowercase = self.occ_title.toLowerCase();
 
 		console.log("Cleaning: " + title);
@@ -124,15 +120,15 @@ var cleanRpt = function () {
 			);
 		}
 
-		for (var k = yakiDescTags.length - 1; k >= 0; k--) {
-			Rpt.update({_id: id}, 
-				{
-					$push: { 
-						descriptionTags: yakiDescTags[k] 
-					}
-				}
-			);
-		}
+		// for (var k = yakiDescTags.length - 1; k >= 0; k--) {
+		// 	Rpt.update({_id: id}, 
+		// 		{
+		// 			$push: { 
+		// 				descriptionTags: yakiDescTags[k] 
+		// 			}
+		// 		}
+		// 	);
+		// }
 
 		Rpt.update({_id: id}, 
 			{
@@ -145,183 +141,298 @@ var cleanRpt = function () {
 	}
 };
 
-/// -------------------------first match: exact title-------------- ////
+//// ------ clean rep data, add cleanTitle and tag attributes ---- ////
+var cleanRep = function () {
+	var repArray = Rep.find({}).fetch();
 
-var matchMascoTitle = function () {
-	mascoFourFetch.each(function (item) {
-		var arrayToUpdate = [],
-		cleanMT = item.cleanTitle,
-		mascoCode = item.masco_code,
-		matchArray = Rpt.find({cleanTitle:  cleanMT}).fetch();
-				// var matchArray = Rpt.find({cleanTitle: {$regex: cleanMT}}).fetch();
-		console.log('searching for exact match of: ' + cleanMT + 'resulted in ' + matchArray.count() + 'matches');
+	for (var i = repArray.length - 1; i >= 0; i--) {
+		var self = repArray[i],
+		title = self.job1_position,
+		id = self._id,
+		yakiTitleTags = Yaki(title).extract(),
+		lowercase = title.toLowerCase();
 
-		// push the matches to a new array
-		matchArray.each(function(obj) {
-			arrayToUpdate.push(obj._id);
-		});
+		console.log("Cleaning REP data: " + title);
 
-		arrayToUpdate.each(function(id) {
-
-			Rpt.update({_id: id},
+		for (var j = yakiTitleTags.length - 1; j >= 0; j--) {
+			Rep.update({_id: id}, 
 				{
-					$set: { 
-						matchMascoTitle: mascoCode
+					$push: { 
+						titleTags: yakiTitleTags[j] 
 					}
 				}
 			);
-		})
-	});
+		}
+
+		Rep.update({_id: id}, 
+			{
+				$set: {
+					cleanTitle: lowercase
+				}
+
+			}
+		);
+	}
+};
+
+/// -------------------------Exact matches for masco 3, 4, and 5 i.e. "chief executive officer"-------------- ////
+var mascoTitleMatchThree = function () {
+	var mascoFetch = MascoThree.find({}).fetch();
 	
-	// var firstmatches = Rpt.find({mascoTitleExactMatch: {$exists: true}}).fetch();
-	// console.log('----------------------------exact title match found: ' + firstmatches.count() + 'items');
-};
+	for (var i = mascoFetch.length - 1; i >= 0; i--) {
+		var self = mascoFetch[i],
+		cleanMascoTitle = self.cleanTitle,
+		_id = self._id,
+		id = self.id,
+		matchArray = Rpt.find({cleanTitle: cleanMascoTitle }).fetch();
 
-/// -------------------------second match:  title tag match--------------
-/// ------------------------------------------------------------
+		console.log('found ' + matchArray.length + ' RPT items matching '+ cleanMascoTitle);
 
-var matchMascoTitleTags = function () {
-	var mascoFourFetch = MascoFour.find().fetch();
-
-
-	mascoFourFetch.each(function (item) {
-		var titleTags = item.tags;
-		console.log(titleTags);
-
-		var grouped = [];	
-
-		function findIntersect() {
-			return _.intersection(grouped);
-		};	
-
-		titleTags.each(function(tag){
-			var matchIdArray = [];
-			console.log(tag);
-			var matchArray = Rpt.find({titleTags:{$regex:tag}}).fetch();
-
-			matchArray.each(function(obj){
-				matchIdArray.push(obj._id);
-
-			});
-
-			console.log('matchArray count', matchArray.count());
-			grouped.push(matchIdArray);
-
-		});
-
-		// findIntersect(grouped);
-		// intersect = _.intersection(grouped);
-		// console.log('grouped', grouped);
-		// console.log('findIntersect(grouped);', findIntersect(grouped));
-
-		// var result = grouped.shift().reduce(function(res, v) {
-		//     if (res.indexOf(v) === -1 && grouped.every(function(a) {
-		//         return a.indexOf(v) !== -1;
-		//     })) res.push(v);
-
-		//    	console.log(res);
-		//     return res;
-		// }, []);
-
-		// intersect.each(function(obj) {
-			// console.log('intersect', obj);
-			// console.log('found an intersection, updating doc')
-			// Rpt.update({_id: id},
-			// 	{
-			// 		$set: { 
-			// 			mascoTagTitleIntersectionMatch: item._id
-			// 		}
-			// 	}
-			// );
-		// });
-	});
-};
-
-
-/// -------------------------third match:  tag parts--------------
-/// ------------------------------------------------------------
-
-var matchMascoTitleTagsPartial = function () {
-	var mascoFourFetch = MascoFour.find().fetch();
-
-
-	mascoFourFetch.each(function (item) {
-		var titleTags = item.tags[0];
-		console.log(titleTags);
-
-		var matchArray = Rpt.find({titleTags:{$regex:titleTags}}).fetch();
-
-		matchArray.each(function(obj){
-			console.log('upadting document' +obj._id );
-			Rpt.update({_id: obj._id},
+		for (var j = matchArray.length - 1; j >= 0; j--) {
+			Rpt.update({_id: matchArray[j]._id }, 
 				{
-					$set: { 
-						matchMascoTitleTagsPartial0: item.masco_code
+					$push: { 
+						mascoTitleMatchThree: id 
 					}
 				}
 			);
-		});
 
-	});
+			console.log('Found an exact match: '+ matchArray[j]._id);
+		}
+	}
+};
+var mascoTitleMatchFour = function () {
+	var mascoFetch = MascoFour.find({}).fetch();
+	
+	for (var i = mascoFetch.length - 1; i >= 0; i--) {
+		var self = mascoFetch[i],
+		cleanMascoTitle = self.cleanTitle,
+		id = self.id,
+		_id = self._id,
+		matchArray = Rpt.find({cleanTitle: cleanMascoTitle }).fetch();
+
+		console.log('found ' + matchArray.length + ' RPT items matching '+ cleanMascoTitle);
+
+		for (var j = matchArray.length - 1; j >= 0; j--) {
+			Rpt.update({_id: matchArray[j]._id }, 
+				{
+					$push: { 
+						mascoTitleMatchFour: id 
+					}
+				}
+			);
+
+			console.log('Found an exact match: '+ matchArray[j]._id);
+		}
+	}
+};
+var mascoTitleMatchFive = function () {
+	var mascoFetch = MascoFive.find({}).fetch();
+	
+	for (var i = mascoFetch.length - 1; i >= 0; i--) {
+		var self = mascoFetch[i],
+		cleanMascoTitle = self.cleanTitle,
+		id = self.id,
+		_id = self._id,
+		matchArray = Rpt.find({cleanTitle: cleanMascoTitle }).fetch();
+
+		console.log('found ' + matchArray.length + ' RPT items matching '+ cleanMascoTitle);
+
+		for (var j = matchArray.length - 1; j >= 0; j--) {
+			Rpt.update({_id: matchArray[j]._id }, 
+				{
+					$push: { 
+						mascoTitleMatchFive: id 
+					}
+				}
+			);
+
+			console.log('Found an exact match: '+ matchArray[j]._id);
+		}
+	}
+};
+var resetAllTitleMatches = function () {
+
+	Rpt.update({}, 
+		{
+			mascoTitleMatchThree: null
+		}
+	);
+	Rpt.update({}, 
+		{
+			mascoTitleMatchFour: null
+		}
+	);
+	Rpt.update({}, 
+		{
+			mascoTitleMatchFive: null
+		}
+	);
 };
 
-/// -------------------------third match:  tag parts--------------
-/// ------------------------------------------------------------
+/// -------------------------Exact matches for REP Crosswalk data "chief executive officer"-------------- ////
+var repTitleMatch = function () {
+	var repFetch = Rep.find({}).fetch();
+	
+	for (var i = repFetch.length - 1; i >= 0; i--) {
+		var self = repFetch[i],
+		cleanTitle = self.cleanTitle,
+		_id = self._id,
+		id = self.masco_4,
+		matchArray = Rpt.find({cleanTitle: cleanTitle }).fetch();
 
-var matchMascoTitleTagsPartialOne = function () {
-	var mascoFourFetch = MascoFour.find().fetch();
+		console.log('found ' + matchArray.length + ' REP items matching '+ cleanTitle);
+
+		for (var j = matchArray.length - 1; j >= 0; j--) {
+			Rpt.update({_id: matchArray[j]._id }, 
+				{
+					$push: { 
+						repTitleMatch: id 
+					}
+				}
+			);
+
+			console.log('Found an exact match: '+ matchArray[j]._id);
+		}
+	}
+};
+
+/// -------------------------overlapping tag match: n = 2-------------- ////
+var fullTagMatch = function () {
+	var rptData = Rpt.find({}).fetch();
+	
+	for (var i = rptData.length - 1; i >= 0; i--) {
+		var self = rptData[i],
+		tags = self.titleTags,
+		_id = self._id,
+		testArray = [];
+
+		for (var j = tags.length - 1; j >= 0; j--) {
+			var thisTag = tags[j];
+
+			testArray.push(tags[j]);
+		}
+		console.log('testArray', testArray);
+
+		var matchArray = MascoFour.find({ tags: { $in: testArray } } ).fetch();
+
+		for (var k = matchArray.length - 1; k >= 0; k--) {
+			Rpt.update({_id: _id }, 
+				{
+					$push: { 
+						fullTagMatch: matchArray[k].id
+					}
+				}
+			);
+		}
+
+		console.log('matchArray', matchArray);
+	}
+};
+
+/// -------------------------partialTagMatchStrong-------------- ////
+var partialTagMatchStrong = function () {
+	var rptData = Rpt.find({}).fetch();
+	
+	for (var i = rptData.length - 1; i >= 0; i--) {
+		var self = rptData[i],
+		tags = self.titleTags,
+		_id = self._id,
+		testArray = [];
+
+		for (var j = tags.length - 1; j >= 0; j--) {
+			var thisTag = tags[j];
+
+			testArray.push(tags[j]);
+		}
+		console.log('testArray', testArray);
+
+		var matchArray = MascoFour.find({ tags: { $in: testArray } } ).fetch();
+
+		for (var k = matchArray.length - 1; k >= 0; k--) {
+			Rpt.update({_id: _id }, 
+				{
+					$push: { 
+						partialTagMatchStrong: matchArray[k].id
+					}
+				}
+			);
+			console.log('strongMatchFound', _id);
+		}
+
+	}
+};
+// /// -------------------------partialTagMatchWeak------------- ////
+// var partialTagMatchWeak = function () {
+// 	var rptData = Rpt.find({}).fetch();
+	
+// 	for (var i = rptData.length - 1; i >= 0; i--) {
+// 		var self = rptData[i],
+// 		tags = self.titleTags,
+// 		_id = self._id,
+// 		testArray = [];
+
+// 		// removing one elment from the
+// 		for (var j = tags.length - 1; j >= 0; j--) {
+// 				var thisTag = tags[j];
+
+// 				testArray.push(tags[j]);
+// 				for (var k = tags.length - 2; k >= 0; k--) {
+// 					testArray.push(tags[k]);
+// 				}
+// 		}
+// 		console.log('testArray from matchWeak', testArray);
+
+// 		var matchArray = MascoFour.find({ tags: { $in: testArray } } ).fetch();
+
+// 		for (var k = matchArray.length - 1; k >= 0; k--) {
+// 			Rpt.update({_id: _id }, 
+// 				{
+// 					$push: { 
+// 						partialTagMatchweak: matchArray[k].id
+// 					}
+// 				}
+// 			);
+
+// 		}
 
 
-	mascoFourFetch.each(function (item) {
-		var titleTags = item.tags[1];
-		console.log(titleTags);
 
-		if(titleTags){
-			var matchArray = Rpt.find({titleTags:{$regex:titleTags}}).fetch();
+// 	}
+// };
+/// -------------------------partialTagMatchWeakest-------------- ////
+var partialTagMatchWeakest = function () {
+	var rptData = Rpt.find({}).fetch();
+	
+	for (var i = rptData.length - 1; i >= 0; i--) {
+		var self = rptData[i],
+		tags = self.titleTags,
+		_id = self._id,
+		testArray = [];
 
-			matchArray.each(function(obj){
-				console.log('upadting document' +obj._id );
-				Rpt.update({_id: obj._id},
+		for (var j = tags.length - 1; j >= 0; j--) {
+			var test = [];
+			var thisTag = tags[j];
+			console.log('thisTag' + thisTag);
+			test.push(thisTag);
+			
+			var matchArray = MascoFour.find({ tags: { $in: test } } ).fetch();
+
+			for (var k = matchArray.length - 1; k >= 0; k--) {
+				Rpt.update({_id: _id }, 
 					{
-						$set: { 
-							matchMascoTitleTagsPartial1: item.masco_code
+						$push: { 
+							partialTagMatchWeakest: matchArray[k].id
 						}
 					}
 				);
-			});
+
+				console.log('partialTagMatchWeakest', _id);
+
+			}
 		}
-	});
+	}
 };
-/// -------------------------third match:  tag parts--------------
-/// ------------------------------------------------------------
-
-var matchMascoTitleTagsPartiaTwo = function () {
-	var mascoFourFetch = MascoFour.find().fetch();
-
-
-	mascoFourFetch.each(function (item) {
-		var titleTags = item.tags[2];
-		console.log(titleTags);
-
-		if(titleTags){
-			var matchArray = Rpt.find({titleTags:{$regex:titleTags}}).fetch();
-
-			matchArray.each(function(obj){
-				console.log('upadting document' +obj._id );
-				Rpt.update({_id: obj._id},
-					{
-						$set: { 
-							matchMascoTitleTagsPartial2: item.masco_code
-						}
-					}
-				);
-			});
-		}
-
-	});
-};
-
-
 
 Meteor.methods({
 	cleanMascoThree: function() {
@@ -336,151 +447,45 @@ Meteor.methods({
 	cleanRpt: function() {
 		cleanRpt();
 	},
-	firstMatch: function() {
-		matchMascoTitle();
+	cleanRep: function() {
+		cleanRep();
 	},
-	secondMatch: function() {
-		matchMascoTitleTags();
+	mascoTitleMatchThree: function() {
+		mascoTitleMatchThree();
 	},
-	thirdMatch: function() {
-		matchMascoTitleTagsPartial();
+	mascoTitleMatchFour: function() {
+		mascoTitleMatchFour();
 	},
-	fourthMatch: function() {
-		matchMascoTitleTagsPartialOne();
+	mascoTitleMatchFive: function() {
+		mascoTitleMatchFive();
 	},
-	fifthMatch: function() {
-		matchMascoTitleTagsPartiaTwo();
+	// rpt post-analysis step 1
+	runMascoTitleMatches: function() {
+		mascoTitleMatchThree();
+		mascoTitleMatchFour();		
+		mascoTitleMatchFive();
+	},
+	// rpt post-analysis step 1
+	repTitleMatch: function() {
+		repTitleMatch();
+	},
+	resetAllTitleMatches: function() {
+		resetAllTitleMatches();
+	},
+	// rpt post-analysis step 1
+	fullTagMatch: function() {
+		fullTagMatch();
+	},
+	// rpt post-analysis step 1
+	partialTagMatchStrong: function() {
+		partialTagMatchStrong();
+	},
+	// rpt post-analysis step 1
+	partialTagMatchWeak: function() {
+		partialTagMatchWeak();
+	},
+	// rpt post-analysis step 1
+	partialTagMatchWeakest: function() {
+		partialTagMatchWeakest();
 	}
 });
-
-
-// rptDataArray.each(function(obj){
-// 	title = obj.occ_title;
-// 	desc = obj.occ_desc;
-// 	yakiDescTags = Yaki(desc).extract();
-
-// 	console.log(title);
-// 	console.log(yakiDescTags);
-	
-// 	yakiDescTags.each(function(item) {
-// 		Rpt.update({_id: obj._id}, {$push: 
-// 			{ descTags: item }
-// 		});
-// 	});
-// });
-
-// /// -------------------------find manager example--------------
-// /// ------------------------------------------------------------
-// var data = Rpt.find({titleTags:{$regex:"manager"}}).fetch();
-
-// console.log('datacount dentist:' + data);
-// data.each(function(item){
-// 	console.log(item.occ_title);
-// })
-
-
-
-
-// var mascoFourFetch = MascoFour.findOne({});
-// var tags = mascoEx.tags;
-// var similarItems = [];
-
-// var intersect = _.intersection(similarItems);
-
-// tags.each(function (tag) {
-// 	var itemArray = Rpt.find({titleTags:{$regex:tag}}).fetch();
-
-// 	console.log('datacount '+tag+' :' + itemArray.count());
-
-// 	similarItems.push(itemArray);
-
-// 	// itemArray.each(function(item){
-// 	// 	// similarItems.push(item._id);
-// 	// 	// console.log(item._id);
-// 	// 	// Rpt.update()
-// 	// });
-
-// 	// console.log(i)
-// });
-
-// console.log(intersect);
-
-
-
-
-// function checkForSingle(argument) {
-// 	// body...
-// }
-
-
-// rptDataArray.each(function(obj){
-// 	// var title = obj.occ_title;
-// 	// var desc = obj.occ_desc;
-// 	title = obj.occ_title;
-// 	yakiTags = Yaki(title).extract();
-
-// 	function titleTags (title){
-// 		return Yaki(title).extract();
-// 	};
-// 	function descTags (desc){
-// 		return Yaki(desc).extract();
-// 	};
-// 	function uniques (arg1, arg2){
-// 		return _.union(arg1,arg2);
-// 	}
-
-
-// 	uniques = uniques(titleTags(obj.occ_title),descTags(obj.occ_desc));
-
-// 	console.log(title);
-// 	console.log(uniques);
-	
-// 	Rpt.update({_id: obj._id}, {$push: 
-// 		{ titleTags: uniques }
-// 	});
-// });
-		// console.log(grouped);
-		// var titleTags = item.tags;
-		// var arrayToUpdate = [];
-		// var mascoCode = item.masco_code;
-		// var arrayToFindIntersection = [];
-
-
-
-		// console.log('arrayToFindIntersection.count' + arrayToFindIntersection.count());
-
-		// titleTags.each(function(tag){
-		// 	console.log('processing tag: '+ tag);
-		// 	var matchArray = Rpt.find({titleTags:{$regex:tag}}).fetch();
-
-
-		// 	console.log('matchArray count', matchArray.count());
-
-		// 	arrayToFindIntersection.push(matchArray);
-		// 	console.log('arrayToFindIntersection.count' + arrayToFindIntersection.count());
-		// 	// matchArray.each(function(obj){
-		// 	// 	arrayToUpdate.push(obj._id);
-		// 	// })
-
-		// });
-		// console.log('arrayToFindIntersection.count' + arrayToFindIntersection.count());
-
-		// var multipleMatchesArray = _.intersection(arrayToFindIntersection);
-		// // console.log('arrayToFindIntersection', arrayToFindIntersection.count());
-		// // console.log('multipleMatchesArray', multipleMatchesArray.count());
-
-		// // push the matches to a new array
-		// multipleMatchesArray.each(function(id) {
-		// 	// console.log('exact match found');
-		// 	Rpt.update({_id: id},
-		// 		{
-		// 			$push: { 
-		// 				mascoTitleTagsMatch: mascoCode
-		// 			}
-		// 		}
-		// 	);
-		// });
-
-	
-	// var secondMatches = Rpt.find({mascoTitleTagsMatch: {$exists: true}}).fetch();
-	// console.log('----------------------------second match count: ' + secondMatches.count() + 'items');
