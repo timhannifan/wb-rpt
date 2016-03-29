@@ -3,27 +3,30 @@
 	  
 		<paper-header-panel drawer>
 			<paper-toolbar>
-			  <span class="type-title">wb-rpt</span>
+			  <span class="type-title">REP/RPT Classification</span>
 			</paper-toolbar>
 			<paper-menu class="nav">
 				<paper-item data-action="home" class="menu-trigger">
 				    <iron-icon icon="icons:home" item-icon></iron-icon>Home
 				</paper-item>
+				<paper-submenu class="">
+					<paper-item class="menu-trigger">
+						<iron-icon icon="icons:dns" item-icon></iron-icon>Masco Codes
+					</paper-item>
+					<paper-menu class="menu-content" id="submenu">
+						<paper-item data-action="uploadMascoThree">3-digit</paper-item>
+						<paper-item data-action="uploadMascoFour">4-digit</paper-item>
+						<paper-item data-action="uploadMascoFive">5-digit</paper-item>
+					</paper-menu>
+				</paper-submenu>
+
 				<paper-item  data-action="uploadRpt" class="menu-trigger">
-				    <iron-icon icon="icons:view-list" item-icon></iron-icon>RPT
+				    <iron-icon icon="icons:view-list" item-icon></iron-icon>RPT Data
 				</paper-item>
 				<paper-item  data-action="uploadRep" class="menu-trigger">
-				    <iron-icon icon="icons:view-list" item-icon></iron-icon>REP
+				    <iron-icon icon="icons:view-list" item-icon></iron-icon>REP Data
 				</paper-item>
-				<paper-item  data-action="uploadMascoFive" class="menu-trigger">
-				    <iron-icon icon="icons:view-list" item-icon></iron-icon>Masco-5
-				</paper-item>
-				<paper-item  data-action="uploadMascoFour" class="menu-trigger">
-				    <iron-icon icon="icons:view-list" item-icon></iron-icon>Masco-4
-				</paper-item>
-				<paper-item  data-action="uploadMascoThree" class="menu-trigger">
-				    <iron-icon icon="icons:view-list" item-icon></iron-icon>Masco-3
-				</paper-item>								
+						
 				<paper-item  data-action="export" class="menu-trigger">
 				    <iron-icon icon="icons:cloud-download" item-icon></iron-icon>Export
 				</paper-item>

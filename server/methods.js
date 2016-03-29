@@ -20,7 +20,7 @@ Meteor.methods({
 
     for ( i = 0; i < data.length; i++ ) {
       item   = data[ i ],
-      exists = Rep.findOne( { masco: item.masco } );
+      exists = Rep.findOne( { id: item.id } );
 
       if ( !exists ) {
         Rep.insert( item );
