@@ -1,6 +1,16 @@
-<template name="uploadMascoFive">
+<template name="mascoKey">
   <div class="vertical-section">
-    <paper-card heading="Masco 5-Digit" class="card">
+    <paper-card heading="Masco Key" class="card">
+      <div class="card-content flex">
+        {{> tabular table=TabularTables.MascoKey class="table table-striped table-bordered table-condensed"}}
+      </div>
+    </paper-card>
+  </div>
+</template>
+
+<template name="mascoFive">
+  <div class="vertical-section">
+    <paper-card heading="Masco 5" class="card">
       <div class="card-content flex">
         {{> tabular table=TabularTables.MascoFive class="table table-striped table-bordered table-condensed"}}
       </div>
@@ -14,9 +24,9 @@
   </div>
 </template>
 
-<template name="uploadMascoFour">
+<template name="mascoFour">
   <div class="vertical-section">
-    <paper-card heading="Masco 4-Digit" class="card">
+    <paper-card heading="Masco 4" class="card">
       <div class="card-content flex">
       {{> tabular table=TabularTables.MascoFour class="table table-striped table-bordered table-condensed"}}
 
@@ -31,9 +41,9 @@
   {{/unless}}
 </template>
 
-<template name="uploadMascoThree">
+<template name="mascoThree">
   <div class="vertical-section">
-    <paper-card heading="Masco 3-Digit" class="card">
+    <paper-card heading="Masco 3" class="card">
       <div class="card-content flex">
       {{> tabular table=TabularTables.MascoThree class="table table-striped table-bordered table-condensed"}}
 

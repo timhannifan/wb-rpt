@@ -11,27 +11,22 @@
 				</paper-item>
 				<paper-submenu class="">
 					<paper-item class="menu-trigger">
-						<iron-icon icon="icons:dns" item-icon></iron-icon>Masco Classifications
+						<iron-icon icon="icons:dns" item-icon></iron-icon>Classification Keys
 					</paper-item>
 					<paper-menu class="menu-content" id="submenu">
-						<!-- <paper-item data-action="uploadMascoThree">Masco 3-digit</paper-item> -->
-						<paper-item data-action="uploadMascoFour">Masco 4-digit</paper-item>
-						<paper-item data-action="uploadMascoFive">Masco 5-digit</paper-item>
+						<a href="{{pathFor 'mascoKey'}}"><paper-item data-action="mascoKey">Masco Key</paper-item></a>
+						<paper-item data-action="mascoFour">Masco 4</paper-item>
+						<paper-item data-action="mascoFive">Masco 5</paper-item>
+						<paper-item data-action="rep">REP</paper-item>
 					</paper-menu>
 				</paper-submenu>
 
-				<paper-item  data-action="uploadRep" class="menu-trigger">
-				    <iron-icon icon="icons:dns" item-icon></iron-icon>REP Crosswalk
+				<paper-item  data-action="rpt" class="menu-trigger">
+				    <iron-icon icon="icons:view-list" item-icon></iron-icon>RPT Classification
 				</paper-item>
-
-				<paper-item  data-action="uploadRpt" class="menu-trigger">
-				    <iron-icon icon="icons:view-list" item-icon></iron-icon>RPT Data
-				</paper-item>
-						
 				<paper-item  data-action="export" class="menu-trigger">
-				    <iron-icon icon="icons:cloud-download" item-icon></iron-icon>Export Results
+				    <iron-icon icon="icons:cloud-download" item-icon></iron-icon>Exports
 				</paper-item>
-
 			</paper-menu>
 		</paper-header-panel>
 		<paper-header-panel main>

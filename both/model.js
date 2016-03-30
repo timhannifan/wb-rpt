@@ -1,13 +1,14 @@
-Sources = new Mongo.Collection('Sources');
-Uploads = new Mongo.Collection('Uploads');
 Rpt = new Mongo.Collection('Rpt');
 Rep = new Mongo.Collection('Rep');
 MascoFive = new Mongo.Collection('MascoFive');
 MascoFour = new Mongo.Collection('MascoFour');
 MascoThree = new Mongo.Collection('MascoThree');
-// Rep = new Mongo.Collection('Rep');
-// // Sources Schema and Permissions
-// Sources.schema = new SimpleSchema({
+MascoKey = new Mongo.Collection('MascoKey');
+
+
+// Collection = new Mongo.Collection('Collection');
+// // Collection Schema and Permissions
+// Collection.schema = new SimpleSchema({
 //   sourceName: {
 //     type: String,
 //     optional: true,
@@ -28,8 +29,8 @@ MascoThree = new Mongo.Collection('MascoThree');
 //     defaultValue: null
 //   }
 // });
-// Sources.attachSchema(Sources.schema);
-// Sources.allow({
+// Collection.attachSchema(Collection.schema);
+// Collection.allow({
 // 	insert: function (userId, doc) {
 // 		return true;
 // 	},
@@ -38,8 +39,8 @@ MascoThree = new Mongo.Collection('MascoThree');
 // 	}
 // });
 
-// // JobStreetSources Schema and Permissions
-// JobStreetSources.schema = new SimpleSchema({
+// // OtherCollection Schema and Permissions
+// OtherCollection.schema = new SimpleSchema({
 //   sourceName: {
 //     type: String,
 //     optional: true,
@@ -67,8 +68,8 @@ MascoThree = new Mongo.Collection('MascoThree');
 //     optional: true
 //   }
 // });
-// JobStreetSources.attachSchema(JobStreetSources.schema);
-// JobStreetSources.allow({
+// OtherCollection.attachSchema(OtherCollection.schema);
+// OtherCollection.allow({
 //   insert: function (userId, doc) {
 //     return true;
 //   },

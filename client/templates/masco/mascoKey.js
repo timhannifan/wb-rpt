@@ -1,14 +1,27 @@
-Template.uploadMascoFive.onCreated(function() {
+Template.mascoKey.onCreated(function() {
+  // Template.instance().uploading = new ReactiveVar( false );
+});
+
+Template.mascoKey.helpers({
+  // uploading: function() {
+  //   return Template.instance().uploading.get();
+  // }
+});
+
+Template.mascoKey.events({
+});
+
+Template.mascoFive.onCreated(function() {
   Template.instance().uploading = new ReactiveVar( false );
 });
 
-Template.uploadMascoFive.helpers({
+Template.mascoFive.helpers({
   uploading: function() {
     return Template.instance().uploading.get();
   }
 });
 
-Template.uploadMascoFive.events({
+Template.mascoFive.events({
   'change [name="uploadCSV"]': function( event, template ) {
     template.uploading.set( true );
 
@@ -28,17 +41,17 @@ Template.uploadMascoFive.events({
   }
 });
 
-Template.uploadMascoFour.onCreated(function() {
+Template.mascoFour.onCreated(function() {
   Template.instance().uploading = new ReactiveVar( false );
 });
 
-Template.uploadMascoFour.helpers({
+Template.mascoFour.helpers({
   uploading: function() {
     return Template.instance().uploading.get();
   }
 });
 
-Template.uploadMascoFour.events({
+Template.mascoFour.events({
   'change [name="uploadCSV"]': function( event, template ) {
     template.uploading.set( true );
 
@@ -58,17 +71,17 @@ Template.uploadMascoFour.events({
   }
 });
 
-Template.uploadMascoThree.onCreated(function() {
+Template.mascoThree.onCreated(function() {
   Template.instance().uploading = new ReactiveVar( false );
 });
 
-Template.uploadMascoThree.helpers({
+Template.mascoThree.helpers({
   uploading: function() {
     return Template.instance().uploading.get();
   }
 });
 
-Template.uploadMascoThree.events({
+Template.mascoThree.events({
   'change [name="uploadCSV"]': function( event, template ) {
     template.uploading.set( true );
 

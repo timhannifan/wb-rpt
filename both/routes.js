@@ -16,40 +16,29 @@ Meteor.startup(function () {
       path: '/',
       template:'home'
     });
-    this.route('uploadRpt', {
-      path: '/uploadRpt',
-      // waitOn: function() {
-      //   // Meteor.subscribe('Uploads');
-      // },
-      template:'uploadRpt'
+    this.route('rpt', {
+      path: '/rpt',
+      template:'rpt'
     });
-    this.route('uploadRep', {
-      path: '/uploadRep',
-      // waitOn: function() {
-      //   Meteor.subscribe('Uploads');
-      // },
-      template:'uploadRep'
+    this.route('rep', {
+      path: '/rep',
+      template:'rep'
     });
-    this.route('uploadMascoFive', {
-      path: '/uploadMascoFive',
-      // waitOn: function() {
-      //   Meteor.subscribe('Uploads');
-      // },
-      template:'uploadMascoFive'
+    this.route('mascoFive', {
+      path: 'masco-5',
+      template:'mascoFive'
     });
-    this.route('uploadMascoFour', {
-      path: '/uploadMascoFour',
-      // waitOn: function() {
-      //   Meteor.subscribe('Uploads');
-      // },
-      template:'uploadMascoFour'
+    this.route('mascoFour', {
+      path: '/masco-4',
+      template:'mascoFour'
     });
-    this.route('uploadMascoThree', {
-      path: '/uploadMascoThree',
-      // waitOn: function() {
-      //   Meteor.subscribe('Uploads');
-      // },
-      template:'uploadMascoThree'
+    this.route('mascoThree', {
+      path: '/masco-3',
+      template:'mascoThree'
+    });
+    this.route('mascoKey', {
+      path: '/masco-key',
+      template:'mascoKey'
     });
     this.route('export', {
       path: '/export',
