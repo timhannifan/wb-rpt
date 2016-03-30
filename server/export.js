@@ -3,15 +3,17 @@ Meteor.methods({
 		var fields = [
 			"id",
 			"occ_title",
-			"sector",
 			"clean_title",
-			"mascoTitleMatchThree",
+			"titleTags",
 			"mascoTitleMatchFour",
 			"mascoTitleMatchFive",
-			"repTitleMatch",
-			"fullTagMatch",
-			"partialTagMatchWeakest",
-
+			"repTitleMatchFour",
+			"mascoTitleTagFourWeak",
+			"mascoTitleTagFourStrong",
+			"mascoTitleTagFiveWeak",
+			"mascoTitleTagFiveStrong",
+			"repTitleTagFourWeak",
+			"repTitleTagFourStrong"
 		];
  
 		var data = [];		
@@ -20,14 +22,18 @@ Meteor.methods({
 		_.each(rows, function(c) {
 			data.push([
 				c.id,
-				c.occ_title,				
+				c.occ_title,
 				c.cleanTitle,
-				c.mascoTitleMatchThree,
+				c.titleTags,
 				c.mascoTitleMatchFour,
 				c.mascoTitleMatchFive,
-				c.repTitleMatch,
-				c.fullTagMatch,
-				c.partialTagMatchWeakest
+				c.repTitleMatchFour,
+				c.mascoTitleTagFourWeak,
+				c.mascoTitleTagFourStrong,
+				c.mascoTitleTagFiveWeak,
+				c.mascoTitleTagFiveStrong,
+				c.repTitleTagFourWeak,
+				c.repTitleTagFourStrong			
 			]);
 		});
  

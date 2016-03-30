@@ -76,9 +76,9 @@ columns: [
   {data: "firm_name", title: "firm_name"},
   // {data: "titleTags", title: "title_keywords" }.
   // {data: "mascoTitleMatchThree", title: "title_m3_exact"},  
-  {data: "mascoTitleMatchFour", title: "title_m4_exact"},  
+  // {data: "mascoTitleMatchFour", title: "title_m4_exact"},  
   // {data: "mascoTitleMatchFive", title: "title_m5_exact"},  
-  {data: "repTitleMatch", title: "title_REP_exact"},  
+  // {data: "repTitleMatch", title: "title_REP_exact"},  
 ],
 
 });

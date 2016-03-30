@@ -104,7 +104,7 @@ var cleanRpt = function () {
 		title = self.occ_title,
 		desc = self.occ_desc,
 		id = self._id,
-		yakiTitleTags = Yaki(self.occ_title).extract(),
+		yakiTitleTags = Yaki((self.occ_title).toLowerCase()).extract(),
 		// yakiDescTags = Yaki(self.occ_desc).extract(),
 		lowercase = self.occ_title.toLowerCase();
 
@@ -147,9 +147,9 @@ var cleanRep = function () {
 
 	for (var i = repArray.length - 1; i >= 0; i--) {
 		var self = repArray[i],
-		title = self.job1_position,
-		id = self._id,
-		yakiTitleTags = Yaki(title).extract(),
+		title = repArray[i].job1_position,
+		id = repArray[i]._id,
+		yakiTitleTags = Yaki(title.toLowerCase()).extract(),
 		lowercase = title.toLowerCase();
 
 		console.log("Cleaning REP data: " + title);
@@ -182,10 +182,10 @@ var mascoTitleMatchFour = function () {
 	
 	for (var i = mascoFetch.length - 1; i >= 0; i--) {
 		var self = mascoFetch[i],
-		cleanMascoTitle = self.cleanTitle,
-		id = self.id,
-		_id = self._id,
-		matchArray = Rpt.find({cleanTitle: cleanMascoTitle }).fetch();
+		cleanMascoTitle = mascoFetch[i].cleanTitle,
+		id = mascoFetch[i].id,
+		_id = mascoFetch[i]._id,
+		matchArray = Rpt.find({cleanTitle: mascoFetch[i].cleanTitle }).fetch();
 
 		console.log('found ' + matchArray.length + ' RPT items matching '+ cleanMascoTitle);
 
@@ -209,9 +209,9 @@ var mascoTitleMatchFive = function () {
 	
 	for (var i = mascoFetch.length - 1; i >= 0; i--) {
 		var self = mascoFetch[i],
-		cleanMascoTitle = self.cleanTitle,
-		id = self.id,
-		_id = self._id,
+		cleanMascoTitle = mascoFetch[i].cleanTitle,
+		id = mascoFetch[i].id,
+		_id = mascoFetch[i]._id,
 		matchArray = Rpt.find({cleanTitle: cleanMascoTitle }).fetch();
 
 		console.log('found ' + matchArray.length + ' RPT items matching '+ cleanMascoTitle);
@@ -230,7 +230,8 @@ var mascoTitleMatchFive = function () {
 	}
 };
 
-/// rep/masco4 crosswalk vs mascofive
+/// rep/masco4 crosswalk vs mascofour: runs through all rep cleanTitle fields, finds exact matches in RPT, then inserts all corresponding
+/// masco 4 digit to RPT column repTitleMatchFour
 var repTitleMatchFour = function () {
 	var repFetch = Rep.find({}).fetch();
 
@@ -264,155 +265,233 @@ var repTitleMatchFour = function () {
 		id = repFetch[i].masco_4,
 		matchArray = Rpt.find({cleanTitle: repFetch[i].cleanTitle }).fetch();
 
-		
-
-		updateMatches(matchArray, id);// console.log('self', self);
-		// console.log('cleanTitle', cleanTitle);
-
-		// console.log('matcharray count', matchArray.length);
-
-		// console.log('found ' + matchArray.length + ' items matching REP title: '+ repFetch[i].cleanTitle);
-
-		// for (var j = matchArray.length - 1; j >= 0; j--) {
-
-		// }
+		updateMatches(matchArray, id);
 	}
 };
 
-/// -------------------------overlapping tag match: n = 2-------------- ////
-var fullTagMatch = function () {
-	var rptData = Rpt.find({}).fetch();
-	
-	for (var i = rptData.length - 1; i >= 0; i--) {
-		var self = rptData[i],
-		tags = self.titleTags,
-		_id = self._id,
-		testArray = [];
+/// loop through all mascoFour, find tags, then find Rpt Data with at least one overlap, then update Rpt with mascoFour code
+var mascoTitleTagFourWeak = function () {
+	var mascoFetch = MascoFour.find({}).fetch();
 
-		for (var j = tags.length - 1; j >= 0; j--) {
-			var thisTag = tags[j];
+	function updateMatches(array, mascoCode) {
+		var data = array;
 
-			testArray.push(tags[j]);
-		}
-		console.log('testArray', testArray);
-
-		var matchArray = MascoFour.find({ tags: { $in: testArray } } ).fetch();
-
-		for (var k = matchArray.length - 1; k >= 0; k--) {
-			Rpt.update({_id: _id }, 
-				{
-					$push: { 
-						fullTagMatch: matchArray[k].id
-					}
-				}
-			);
-		}
-
-		console.log('matchArray', matchArray);
-	}
-};
-
-/// -------------------------partialTagMatchStrong-------------- ////
-var partialTagMatchStrong = function () {
-	var rptData = Rpt.find({}).fetch();
-	
-	for (var i = rptData.length - 1; i >= 0; i--) {
-		var self = rptData[i],
-		tags = self.titleTags,
-		_id = self._id,
-		testArray = [];
-
-		for (var j = tags.length - 1; j >= 0; j--) {
-			var thisTag = tags[j];
-
-			testArray.push(tags[j]);
-		}
-		console.log('testArray', testArray);
-
-		var matchArray = MascoFour.find({ tags: { $in: testArray } } ).fetch();
-
-		for (var k = matchArray.length - 1; k >= 0; k--) {
-			Rpt.update({_id: _id }, 
-				{
-					$push: { 
-						partialTagMatchStrong: matchArray[k].id
-					}
-				}
-			);
-			console.log('strongMatchFound', _id);
-		}
-
-	}
-};
-// /// -------------------------partialTagMatchWeak------------- ////
-// var partialTagMatchWeak = function () {
-// 	var rptData = Rpt.find({}).fetch();
-	
-// 	for (var i = rptData.length - 1; i >= 0; i--) {
-// 		var self = rptData[i],
-// 		tags = self.titleTags,
-// 		_id = self._id,
-// 		testArray = [];
-
-// 		// removing one elment from the
-// 		for (var j = tags.length - 1; j >= 0; j--) {
-// 				var thisTag = tags[j];
-
-// 				testArray.push(tags[j]);
-// 				for (var k = tags.length - 2; k >= 0; k--) {
-// 					testArray.push(tags[k]);
-// 				}
-// 		}
-// 		console.log('testArray from matchWeak', testArray);
-
-// 		var matchArray = MascoFour.find({ tags: { $in: testArray } } ).fetch();
-
-// 		for (var k = matchArray.length - 1; k >= 0; k--) {
-// 			Rpt.update({_id: _id }, 
-// 				{
-// 					$push: { 
-// 						partialTagMatchweak: matchArray[k].id
-// 					}
-// 				}
-// 			);
-
-// 		}
-
-
-
-// 	}
-// };
-/// -------------------------partialTagMatchWeakest-------------- ////
-var partialTagMatchWeakest = function () {
-	var rptData = Rpt.find({}).fetch();
-	
-	for (var i = rptData.length - 1; i >= 0; i--) {
-		var self = rptData[i],
-		tags = self.titleTags,
-		_id = self._id,
-		testArray = [];
-
-		for (var j = tags.length - 1; j >= 0; j--) {
-			var test = [];
-			var thisTag = tags[j];
-			console.log('thisTag' + thisTag);
-			test.push(thisTag);
+		for (var i = data.length - 1; i >= 0; i--) {
+			console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + 'for mascoTitleTagFourWeak');
 			
-			var matchArray = MascoFour.find({ tags: { $in: test } } ).fetch();
-
-			for (var k = matchArray.length - 1; k >= 0; k--) {
-				Rpt.update({_id: _id }, 
-					{
-						$push: { 
-							partialTagMatchWeakest: matchArray[k].id
-						}
+			Rpt.update({_id: data[i]._id }, 
+				{
+					$push: { 
+						mascoTitleTagFourWeak: mascoCode 
 					}
-				);
-
-				console.log('partialTagMatchWeakest', _id);
-
-			}
+				}
+			);
 		}
+	}
+
+	function findMatches(tagArray) {
+		return Rpt.find({ titleTags: { $in: tagArray } }).fetch();
+	}
+	
+	for (var i = mascoFetch.length - 1; i >= 0; i--) {
+		
+		var self = mascoFetch[i],
+		tags = mascoFetch[i].tags,
+		_id = mascoFetch[i]._id,
+		id = mascoFetch[i].id;
+
+		var found = findMatches(mascoFetch[i].tags);
+		updateMatches(found, mascoFetch[i].id);
+
+	}
+};
+
+/// loop through all mascoFour, find tags, then find Rpt Data with at least one overlap, then update Rpt with mascoFour code
+var mascoTitleTagFourStrong = function () {
+	var mascoFetch = MascoFour.find({}).fetch();
+
+	function updateMatches(array, mascoCode) {
+		var data = array;
+
+		for (var i = data.length - 1; i >= 0; i--) {
+			console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + ' for mascoTitleTagFourStrong');
+			
+			Rpt.update({_id: data[i]._id }, 
+				{
+					$push: { 
+						mascoTitleTagFourStrong: mascoCode 
+					}
+				}
+			);
+		}
+	}
+
+	// using mongo $eq to select for strong equality on array match
+	function findMatches(tagArray) {
+		return Rpt.find({ titleTags: { $eq: tagArray } }).fetch();
+	}
+	
+
+	for (var i = mascoFetch.length - 1; i >= 0; i--) {
+		
+		var self = mascoFetch[i],
+		tags = mascoFetch[i].tags,
+		_id = mascoFetch[i]._id,
+		id = mascoFetch[i].id;
+
+		var found = findMatches(mascoFetch[i].tags);
+		updateMatches(found, mascoFetch[i].id);
+
+	}
+};
+
+/// loop through all mascoFour, find tags, then find Rpt Data with at least one overlap, then update Rpt with mascoFour code
+var mascoTitleTagFiveWeak = function () {
+	var mascoFetch = MascoFive.find({}).fetch();
+
+	function updateMatches(array, mascoCode) {
+		var data = array;
+
+		for (var i = data.length - 1; i >= 0; i--) {
+			console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + 'for mascoTitleTagFiveWeak');
+			
+			Rpt.update({_id: data[i]._id }, 
+				{
+					$push: { 
+						mascoTitleTagFiveWeak: mascoCode 
+					}
+				}
+			);
+		}
+	}
+
+	function findMatches(tagArray) {
+		return Rpt.find({ titleTags: { $in: tagArray } }).fetch();
+	}
+	
+	for (var i = mascoFetch.length - 1; i >= 0; i--) {
+		
+		var self = mascoFetch[i],
+		tags = mascoFetch[i].tags,
+		_id = mascoFetch[i]._id,
+		id = mascoFetch[i].id;
+
+		var found = findMatches(mascoFetch[i].tags);
+		updateMatches(found, mascoFetch[i].id);
+
+	}
+};
+
+/// loop through all mascoFour, find tags, then find Rpt Data with at least one overlap, then update Rpt with mascoFour code
+var mascoTitleTagFiveStrong = function () {
+	var mascoFetch = MascoFive.find({}).fetch();
+
+	function updateMatches(array, mascoCode) {
+		var data = array;
+
+		for (var i = data.length - 1; i >= 0; i--) {
+			console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + ' for mascoTitleTagFiveStrong');
+			
+			Rpt.update({_id: data[i]._id }, 
+				{
+					$push: { 
+						mascoTitleTagFiveStrong: mascoCode 
+					}
+				}
+			);
+		}
+	}
+
+	// using mongo $eq to select for strong equality on array match
+	function findMatches(tagArray) {
+		return Rpt.find({ titleTags: { $eq: tagArray } }).fetch();
+	}
+	
+
+	for (var i = mascoFetch.length - 1; i >= 0; i--) {
+		
+		var self = mascoFetch[i],
+		tags = mascoFetch[i].tags,
+		_id = mascoFetch[i]._id,
+		id = mascoFetch[i].id;
+
+		var found = findMatches(mascoFetch[i].tags);
+		updateMatches(found, mascoFetch[i].id);
+
+	}
+};
+
+/// loop through all mascoFour, find tags, then find Rpt Data with at least one overlap, then update Rpt with mascoFour code
+var repTitleTagFourWeak = function () {
+	var keyFetch = Rep.find({}).fetch();
+
+	function updateMatches(array, mascoCode) {
+		var data = array;
+
+		for (var i = data.length - 1; i >= 0; i--) {
+			console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + 'for repTitleTagFourWeak');
+			
+			Rpt.update({_id: data[i]._id }, 
+				{
+					$push: { 
+						repTitleTagFourWeak: mascoCode 
+					}
+				}
+			);
+		}
+	}
+
+	function findMatches(tagArray) {
+		return Rpt.find({ titleTags: { $in: tagArray } }).fetch();
+	}
+	
+	for (var i = keyFetch.length - 1; i >= 0; i--) {
+		
+		var self = keyFetch[i],
+		tags = keyFetch[i].titleTags,
+		_id = keyFetch[i]._id,
+		id = keyFetch[i].masco_4;
+
+		var found = findMatches(keyFetch[i].titleTags);
+		updateMatches(found, keyFetch[i].masco_4);
+
+	}
+};
+
+/// loop through all mascoFour, find tags, then find Rpt Data with at strict equality on titleTags
+var repTitleTagFourStrong = function () {
+	var keyFetch = Rep.find({}).fetch();
+
+	function updateMatches(array, mascoCode) {
+		var data = array;
+
+		for (var i = data.length - 1; i >= 0; i--) {
+			console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + 'for repTitleTagFourStrong');
+			
+			Rpt.update({_id: data[i]._id }, 
+				{
+					$push: { 
+						repTitleTagFourStrong: mascoCode 
+					}
+				}
+			);
+		}
+	}
+
+	function findMatches(tagArray) {
+		return Rpt.find({ titleTags: { $eq: tagArray } }).fetch();
+	}
+	
+	for (var i = keyFetch.length - 1; i >= 0; i--) {
+		
+		var self = keyFetch[i],
+		tags = keyFetch[i].titleTags,
+		_id = keyFetch[i]._id,
+		id = keyFetch[i].masco_4;
+
+		var found = findMatches(keyFetch[i].titleTags);
+		updateMatches(found, keyFetch[i].masco_4);
+
 	}
 };
 
@@ -445,24 +524,45 @@ Meteor.methods({
 	repTitleMatchFour: function() {
 		repTitleMatchFour();
 	},
-
-	fullTagMatchFour: function() {
-		fullTagMatch();
+	// done
+	mascoTitleTagFiveWeak: function() {
+		mascoTitleTagFiveWeak();
 	},
-	// rpt post-analysis step 1
-	partialTagMatchStrong: function() {
-		partialTagMatchStrong();
+	// done
+	mascoTitleTagFiveStrong: function() {
+		mascoTitleTagFiveStrong();
 	},
-	// rpt post-analysis step 1
-	partialTagMatchWeak: function() {
-		partialTagMatchWeak();
+	// done
+	mascoTitleTagFourWeak: function() {
+		mascoTitleTagFourWeak();
 	},
-	// rpt post-analysis step 1
-	partialTagMatchWeakest: function() {
-		partialTagMatchWeakest();
+	// done
+	mascoTitleTagFourStrong: function() {
+		mascoTitleTagFourStrong();
+	},
+	// done
+	repTitleTagFourWeak: function() {
+		repTitleTagFourWeak();
+	},
+	// done
+	repTitleTagFourStrong: function() {
+		repTitleTagFourStrong();
 	}
 });
 
+
+// // rpt post-analysis step 1
+// partialTagMatchStrong: function() {
+// 	partialTagMatchStrong();
+// },
+// // rpt post-analysis step 1
+// partialTagMatchWeak: function() {
+// 	partialTagMatchWeak();
+// },
+// // rpt post-analysis step 1
+// partialTagMatchWeakest: function() {
+// 	partialTagMatchWeakest();
+// }
 // var resetAllTitleMatches = function () {
 
 // 	Rpt.update({}, 
@@ -509,3 +609,99 @@ Meteor.methods({
 // 		}
 // 	}
 // };
+// var rptData = Rpt.find({}).fetch();
+
+// for (var i = rptData.length - 1; i >= 0; i--) {
+// 	var self = rptData[i],
+// 	tags = self.titleTags,
+// 	_id = self._id,
+// 	testArray = [];
+
+// 	for (var j = tags.length - 1; j >= 0; j--) {
+// 		var thisTag = tags[j];
+
+// 		testArray.push(tags[j]);
+// 	}
+// 	console.log('testArray', testArray);
+
+// 	var matchArray = MascoFour.find({ tags: { $in: testArray } } ).fetch();
+
+// 	for (var k = matchArray.length - 1; k >= 0; k--) {
+// 		Rpt.update({_id: _id }, 
+// 			{
+// 				$push: { 
+// 					fullTagMatch: matchArray[k].id
+// 				}
+// 			}
+// 		);
+// 	}
+
+// 	console.log('matchArray', matchArray);
+// }
+
+/// -------------------------partialTagMatchStrong-------------- ////
+// var partialTagMatchStrong = function () {
+// 	var rptData = Rpt.find({}).fetch();
+	
+// 	for (var i = rptData.length - 1; i >= 0; i--) {
+// 		var self = rptData[i],
+// 		tags = self.titleTags,
+// 		_id = self._id,
+// 		testArray = [];
+
+// 		for (var j = tags.length - 1; j >= 0; j--) {
+// 			var thisTag = tags[j];
+
+// 			testArray.push(tags[j]);
+// 		}
+// 		console.log('testArray', testArray);
+
+// 		var matchArray = MascoFour.find({ tags: { $in: testArray } } ).fetch();
+
+// 		for (var k = matchArray.length - 1; k >= 0; k--) {
+// 			Rpt.update({_id: _id }, 
+// 				{
+// 					$push: { 
+// 						partialTagMatchStrong: matchArray[k].id
+// 					}
+// 				}
+// 			);
+// 			console.log('strongMatchFound', _id);
+// 		}
+
+// 	}
+// };
+
+// /// -------------------------partialTagMatchWeakest-------------- ////
+// // var partialTagMatchWeakest = function () {
+// // 	var rptData = Rpt.find({}).fetch();
+	
+// // 	for (var i = rptData.length - 1; i >= 0; i--) {
+// // 		var self = rptData[i],
+// // 		tags = self.titleTags,
+// // 		_id = self._id,
+// // 		testArray = [];
+
+// // 		for (var j = tags.length - 1; j >= 0; j--) {
+// // 			var test = [];
+// // 			var thisTag = tags[j];
+// // 			console.log('thisTag' + thisTag);
+// // 			test.push(thisTag);
+			
+// // 			var matchArray = MascoFour.find({ tags: { $in: test } } ).fetch();
+
+// // 			for (var k = matchArray.length - 1; k >= 0; k--) {
+// // 				Rpt.update({_id: _id }, 
+// // 					{
+// // 						$push: { 
+// // 							partialTagMatchWeakest: matchArray[k].id
+// // 						}
+// // 					}
+// // 				);
+
+// // 				console.log('partialTagMatchWeakest', _id);
+
+// // 			}
+// // 		}
+// // 	}
+// // };
