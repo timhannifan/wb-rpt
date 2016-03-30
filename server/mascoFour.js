@@ -167,7 +167,8 @@ var cleanRep = function () {
 		Rep.update({_id: id}, 
 			{
 				$set: {
-					cleanTitle: lowercase
+					cleanTitle: lowercase,
+
 				}
 
 			}
@@ -175,32 +176,7 @@ var cleanRep = function () {
 	}
 };
 
-/// -------------------------Exact matches for masco 3, 4, and 5 i.e. "chief executive officer"-------------- ////
-var mascoTitleMatchThree = function () {
-	var mascoFetch = MascoThree.find({}).fetch();
-	
-	for (var i = mascoFetch.length - 1; i >= 0; i--) {
-		var self = mascoFetch[i],
-		cleanMascoTitle = self.cleanTitle,
-		_id = self._id,
-		id = self.id,
-		matchArray = Rpt.find({cleanTitle: cleanMascoTitle }).fetch();
-
-		console.log('found ' + matchArray.length + ' RPT items matching '+ cleanMascoTitle);
-
-		for (var j = matchArray.length - 1; j >= 0; j--) {
-			Rpt.update({_id: matchArray[j]._id }, 
-				{
-					$push: { 
-						mascoTitleMatchThree: id 
-					}
-				}
-			);
-
-			console.log('Found an exact match: '+ matchArray[j]._id);
-		}
-	}
-};
+/// rpt vs mascofour
 var mascoTitleMatchFour = function () {
 	var mascoFetch = MascoFour.find({}).fetch();
 	
@@ -226,6 +202,8 @@ var mascoTitleMatchFour = function () {
 		}
 	}
 };
+
+/// rpt vs mascofive
 var mascoTitleMatchFive = function () {
 	var mascoFetch = MascoFive.find({}).fetch();
 	
@@ -251,49 +229,53 @@ var mascoTitleMatchFive = function () {
 		}
 	}
 };
-var resetAllTitleMatches = function () {
 
-	Rpt.update({}, 
-		{
-			mascoTitleMatchThree: null
-		}
-	);
-	Rpt.update({}, 
-		{
-			mascoTitleMatchFour: null
-		}
-	);
-	Rpt.update({}, 
-		{
-			mascoTitleMatchFive: null
-		}
-	);
-};
-
-/// -------------------------Exact matches for REP Crosswalk data "chief executive officer"-------------- ////
-var repTitleMatch = function () {
+/// rep/masco4 crosswalk vs mascofive
+var repTitleMatchFour = function () {
 	var repFetch = Rep.find({}).fetch();
-	
-	for (var i = repFetch.length - 1; i >= 0; i--) {
-		var self = repFetch[i],
-		cleanTitle = self.cleanTitle,
-		_id = self._id,
-		id = self.masco_4,
-		matchArray = Rpt.find({cleanTitle: cleanTitle }).fetch();
 
-		console.log('found ' + matchArray.length + ' REP items matching '+ cleanTitle);
+	// accepts an array of matching Rpt items and mascoCode (4-digit). Updates
+	// each item in Rpt with the corresponding mascoCode
 
-		for (var j = matchArray.length - 1; j >= 0; j--) {
-			Rpt.update({_id: matchArray[j]._id }, 
+	function updateMatches(array, mascoCode) {
+		var data = array;
+
+		console.log('inside update matches');
+		console.log('mascocode ' +mascoCode);
+
+		for (var i = data.length - 1; i >= 0; i--) {
+
+			Rpt.update({_id: data[i]._id }, 
 				{
 					$push: { 
-						repTitleMatch: id 
+						repTitleMatchFour: mascoCode 
 					}
 				}
 			);
-
-			console.log('Found an exact match: '+ matchArray[j]._id);
 		}
+		console.log('completed updating matches');
+	}
+	
+	for (var i = repFetch.length - 1; i >= 0; i--) {
+		
+		var self = repFetch[i],
+		cleanTitle = repFetch[i].cleanTitle,
+		_id = repFetch[i]._id,
+		id = repFetch[i].masco_4,
+		matchArray = Rpt.find({cleanTitle: repFetch[i].cleanTitle }).fetch();
+
+		
+
+		updateMatches(matchArray, id);// console.log('self', self);
+		// console.log('cleanTitle', cleanTitle);
+
+		// console.log('matcharray count', matchArray.length);
+
+		// console.log('found ' + matchArray.length + ' items matching REP title: '+ repFetch[i].cleanTitle);
+
+		// for (var j = matchArray.length - 1; j >= 0; j--) {
+
+		// }
 	}
 };
 
@@ -435,45 +417,36 @@ var partialTagMatchWeakest = function () {
 };
 
 Meteor.methods({
-	cleanMascoThree: function() {
-		cleanMascoThree();
-	},
+	// done
 	cleanMascoFour: function() {
 		cleanMascoFour();
 	},
+	// done
 	cleanMascoFive: function() {
 		cleanMascoFive();
 	},
+	// done
 	cleanRpt: function() {
 		cleanRpt();
 	},
+	// done
 	cleanRep: function() {
 		cleanRep();
 	},
-	mascoTitleMatchThree: function() {
-		mascoTitleMatchThree();
-	},
+	// done
 	mascoTitleMatchFour: function() {
 		mascoTitleMatchFour();
 	},
+	// done
 	mascoTitleMatchFive: function() {
 		mascoTitleMatchFive();
 	},
-	// rpt post-analysis step 1
-	runMascoTitleMatches: function() {
-		mascoTitleMatchThree();
-		mascoTitleMatchFour();		
-		mascoTitleMatchFive();
+	// done
+	repTitleMatchFour: function() {
+		repTitleMatchFour();
 	},
-	// rpt post-analysis step 1
-	repTitleMatch: function() {
-		repTitleMatch();
-	},
-	resetAllTitleMatches: function() {
-		resetAllTitleMatches();
-	},
-	// rpt post-analysis step 1
-	fullTagMatch: function() {
+
+	fullTagMatchFour: function() {
 		fullTagMatch();
 	},
 	// rpt post-analysis step 1
@@ -489,3 +462,50 @@ Meteor.methods({
 		partialTagMatchWeakest();
 	}
 });
+
+// var resetAllTitleMatches = function () {
+
+// 	Rpt.update({}, 
+// 		{
+// 			mascoTitleMatchThree: null
+// 		}
+// 	);
+// 	Rpt.update({}, 
+// 		{
+// 			mascoTitleMatchFour: null
+// 		}
+// 	);
+// 	Rpt.update({}, 
+// 		{
+// 			mascoTitleMatchFive: null
+// 		}
+// 	);
+// };
+
+
+// /// -------------------------Exact matches for masco 3, 4, and 5 i.e. "chief executive officer"-------------- ////
+// var mascoTitleMatchThree = function () {
+// 	var mascoFetch = MascoThree.find({}).fetch();
+	
+// 	for (var i = mascoFetch.length - 1; i >= 0; i--) {
+// 		var self = mascoFetch[i],
+// 		cleanMascoTitle = self.cleanTitle,
+// 		_id = self._id,
+// 		id = self.id,
+// 		matchArray = Rpt.find({cleanTitle: cleanMascoTitle }).fetch();
+
+// 		console.log('found ' + matchArray.length + ' RPT items matching '+ cleanMascoTitle);
+
+// 		for (var j = matchArray.length - 1; j >= 0; j--) {
+// 			Rpt.update({_id: matchArray[j]._id }, 
+// 				{
+// 					$push: { 
+// 						mascoTitleMatchThree: id 
+// 					}
+// 				}
+// 			);
+
+// 			console.log('Found an exact match: '+ matchArray[j]._id);
+// 		}
+// 	}
+// };
