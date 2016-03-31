@@ -2,7 +2,7 @@ var stopwords = [];
 stopwords.push('and','or','of');
 
 function cleanUpTitle(string) {
-  return string.trim().toLowerCase().replace(',','').replace('/',' ').replace('&','and').replace('-','');
+  return string.toLowerCase().replace(',','').replace('/',' ').replace('&','and').replace('+','and').replace('-',' ').replace('(','').replace(')','').replace(' / ',' ').replace(' /',' ').replace('/ ',' ').trim();
 }
 
 function insertMascoFour(data) {
@@ -12,13 +12,13 @@ function insertMascoFour(data) {
   var title = data.description_4_digit,
   officialCode = data.id,
   cleanTitle = cleanUpTitle(data.description_4_digit),
-  titleTags = Yaki(cleanTitle).split();
+  titleTags = Yaki(cleanTitle).split().clean();
 
   titleTags.push(cleanTitle);
   
-  var cleanTags = _.reject(titleTags, function(el){
-   return (el == 'and' || el == 'or' || el == 'of');
-  });
+  var cleanTags = _.uniq(_.reject(titleTags, function(el){
+   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == '');
+  }));
 
   console.log('cleanTags', cleanTags);
 
@@ -40,14 +40,14 @@ function insertMascoFive(data) {
   officialCode = data.id,
   cleanTitle = cleanUpTitle(data.description_5_digit),
   mapToFour = officialCode.substr(0, 4),
-  titleTags = Yaki(cleanTitle).split();
+  titleTags = Yaki(cleanTitle).split().clean();
   console.log('insertMasco5 cleanTitle ' + cleanTitle);
 
 
   titleTags.push(cleanTitle);
-  var cleanTags = _.reject(titleTags, function(el){
-     return (el == 'and' || el == 'or' || el == 'of');
-  });
+  var cleanTags = _.uniq(_.reject(titleTags, function(el){
+   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == '');
+  }));
   console.log('insertMasco5 cleantags ' + cleanTags);
   
   function insertMascoFive (id, mapToFour, title, tags) {
@@ -79,13 +79,13 @@ function insertRep(data) {
 
   if (item.title) {
     item.cleanTitle = cleanUpTitle(item.title);
-    item.titleTags = Yaki(item.cleanTitle).split();
+    item.titleTags = Yaki(item.cleanTitle).split().clean();
   }
   if(item.titleTags && item.cleanTitle) {
     item.titleTags.push(item.cleanTitle);
-    item.cleanTags = _.reject(item.titleTags, function(el){
-     return (el == 'and' || el == 'or' || el == 'of');
-    });    
+    item.cleanTags = _.uniq(_.reject(item.titleTags, function(el){
+     return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == '');
+    }));    
   }
 
   function insertCallback (item) {
@@ -101,13 +101,13 @@ function insertMasterFour(data) {
   var title = data.description_4_digit,
   officialCode = data.id,
   cleanTitle = cleanUpTitle(data.description_4_digit),
-  titleTags = Yaki(cleanTitle).split();
+  titleTags = Yaki(cleanTitle).split().clean();
 
   titleTags.push(cleanTitle);
 
-  var cleanTags = _.reject(titleTags, function(el){
-   return (el == 'and' || el == 'or' || el == 'of');
-  });
+  var cleanTags = _.uniq(_.reject(titleTags, function(el){
+   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == '');
+  }));
 
   var insert = {
     officialCode: data.id,
@@ -125,13 +125,13 @@ function insertMasterFive(data) {
   officialCode = data.id,
   cleanTitle = cleanUpTitle(data.description_5_digit),
   mapToFour = officialCode.substr(0, 4),
-  titleTags = Yaki(cleanTitle).split();
+  titleTags = Yaki(cleanTitle).split().clean();
 
   titleTags.push(cleanTitle);
 
-  var cleanTags = _.reject(titleTags, function(el){
-   return (el == 'and' || el == 'or' || el == 'of');
-  });
+  var cleanTags = _.uniq(_.reject(titleTags, function(el){
+   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == '');
+  }));
 
   var lookupFourDigitKey = MascoKey.findOne({officialCode: mapToFour});
 
@@ -164,13 +164,12 @@ function insertMasterRep(data) {
     var lookupFourDigitKey = MascoKey.findOne({officialCode: mapToFour});
 
     cleanTitle = cleanUpTitle(title);
-    titleTags = Yaki(cleanTitle).split();
+    titleTags = Yaki(cleanTitle).split().clean();
     titleTags.push(cleanTitle);
 
-
-    var cleanTags = _.reject(titleTags, function(el){
-     return (el == 'and' || el == 'or' || el == 'of');
-    });
+    var cleanTags = _.uniq(_.reject(titleTags, function(el){
+      return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == '');
+    }));
 
     for (var i = cleanTags.length - 1; i >= 0; i--) {
       console.log('mapToFour REP ' + mapToFour );

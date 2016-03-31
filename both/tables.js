@@ -12,11 +12,10 @@ TabularTables.MascoFive = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "id", title: "id", class: "flex-1"},
-    {data: "cleanTitle", title: "description", class: "flex-10"},
-    {data: "titleTags", title: "tags", class: "flex-10"}
-  ],
-
+    {data: "id", title: "Official Id", class: "flex-2"},
+    {data: "cleanTitle", title: "Position", class: "flex-4"},
+    {data: "titleTags", title: "Keywords", class: "flex-6"}
+  ]
 });
 
 TabularTables.MascoFour = new Tabular.Table({
@@ -26,25 +25,10 @@ TabularTables.MascoFour = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "id", title: "id", class: "flex-1"},
-    {data: "cleanTitle", title: "description", class: "flex-10"},
-    {data: "titleTags", title: "tags", class: "flex-10"}
-  ],
-
-});
-
-TabularTables.MascoThree = new Tabular.Table({
-  name: "MascoThree",
-  collection: MascoThree,
-  responsive: true,
-  autoWidth: false,
-  pageLength: 50,
-  columns: [
-    {data: "id", title: "id", class: "flex-1"},
-    {data: "description_3_digit", title: "description", class: "flex-10"},
-    {data: "tags", title: "tags", class: "flex-10"}
-  ],
-
+    {data: "id", title: "Official Id", class: "flex-2"},
+    {data: "cleanTitle", title: "Position", class: "flex-4"},
+    {data: "titleTags", title: "Keywords", class: "flex-6"}
+  ]
 });
 
 TabularTables.MascoKey = new Tabular.Table({
@@ -54,13 +38,11 @@ TabularTables.MascoKey = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "officialCode", title: "Official Code", class: "flex-1"},
-    {data: "officialTitle", title: "Official Title", class: "flex-10"},
-    {data: "keywords", title: "Related Keywords", class: "flex-10"}
-  ],
-
+    {data: "officialCode", title: "Official Code", class: "flex-2"},
+    {data: "officialTitle", title: "Position", class: "flex-4"},
+    {data: "keywords", title: "Keywords", class: "flex-6"}
+  ]
 });
-
 
 TabularTables.Rep = new Tabular.Table({
   name: "Rep",
@@ -69,11 +51,13 @@ TabularTables.Rep = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "job1_position", title: "job1_position", class: "flex-3"},
-    {data: "job1_employer", title: "job1_employer", class: "flex-3"},
-    {data: "masco_4", title: "masco_4", class: "flex-3"}
-  ],
-
+    {data: "mapToFour", title: "Masco4", class: "flex-1"},
+    {data: "cleanTitle", title: "Position", class: "flex-2"},
+    // {data: "job1_employer", title: "Employer", class: "flex-2"},
+    // {data: "acad1_fos", title: "FOS", class: "flex-4"},
+    // {data: "acad1_qual", title: "Qual", class: "flex-1"},
+    {data: "cleanTags", title: "Keywords", class: "flex-4"}
+  ]
 });
 
 TabularTables.Rpt = new Tabular.Table({
@@ -83,9 +67,8 @@ TabularTables.Rpt = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "id", title: "id", class: "flex-1"},
-    {data: "occ_title", title: "occ_title"},
-    {data: "firm_name", title: "firm_name"}
-  ],
-
+    {data: "occ_title", title: "Postion", class: "flex-3"},
+    {data: "firm_name", title: "Employer", class: "flex-3"},
+    {data: "cleanTags", title: "Keywords", class: "flex-6"}
+  ]
 });
