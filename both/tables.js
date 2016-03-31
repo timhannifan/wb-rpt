@@ -13,8 +13,8 @@ TabularTables.MascoFive = new Tabular.Table({
   pageLength: 50,
   columns: [
     {data: "id", title: "id", class: "flex-1"},
-    {data: "description_5_digit", title: "description", class: "flex-10"},
-    {data: "tags", title: "tags", class: "flex-10"}
+    {data: "cleanTitle", title: "description", class: "flex-10"},
+    {data: "titleTags", title: "tags", class: "flex-10"}
   ],
 
 });
@@ -27,8 +27,8 @@ TabularTables.MascoFour = new Tabular.Table({
   pageLength: 50,
   columns: [
     {data: "id", title: "id", class: "flex-1"},
-    {data: "description_4_digit", title: "description", class: "flex-10"},
-    {data: "tags", title: "tags", class: "flex-10"}
+    {data: "cleanTitle", title: "description", class: "flex-10"},
+    {data: "titleTags", title: "tags", class: "flex-10"}
   ],
 
 });
@@ -54,9 +54,9 @@ TabularTables.MascoKey = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "id", title: "Official ID", class: "flex-1"},
-    {data: "cleanTitle", title: "Title", class: "flex-10"},
-    {data: "tags", title: "Keywords", class: "flex-10"}
+    {data: "officialCode", title: "Official Code", class: "flex-1"},
+    {data: "officialTitle", title: "Official Title", class: "flex-10"},
+    {data: "keywords", title: "Related Keywords", class: "flex-10"}
   ],
 
 });

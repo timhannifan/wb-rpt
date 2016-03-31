@@ -9,11 +9,6 @@ Package.onUse(function (api) {
   api.versionsFrom(['METEOR@1.0']);
 
   var packages = [
-      // 'meteor-base',
-      // 'mongo',
-      // 'blaze-html-templates',
-      // 'es5-shim',
-      // 'ecmascript',
       'meteor-platform',  
       'blaze',
       'tracker',
@@ -46,7 +41,8 @@ Package.onUse(function (api) {
   ], ['client', 'server']);
 
   api.export([
-    '_'
+    '_',
+    '$'
   ]);
 
 });

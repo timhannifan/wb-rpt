@@ -9,7 +9,7 @@ var cleanMascoThree = function () {
 		var self = mascoFetch[i],
 		name = self.description_3_digit,
 		_id = self._id,
-		yakiTags = Yaki(name).extract(),
+		yakiTags = Yaki(name).split(),
 		lowercase = name.toLowerCase();
 
 		for (var j = yakiTags.length - 1; j >= 0; j--) {
