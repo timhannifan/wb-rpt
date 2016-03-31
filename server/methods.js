@@ -4,7 +4,6 @@ stopwords.push('and','or','of');
 function cleanUpTitle(string) {
   return string.toLowerCase().replace(',','').replace('/',' ').replace('&','and').replace('+','and').replace('-',' ').replace('(','').replace(')','').replace(' / ',' ').replace(' /',' ').replace('/ ',' ').trim();
 }
-
 function insertMascoFour(data) {
 
   check( data, Object );
@@ -182,6 +181,36 @@ function insertMasterRep(data) {
       );
     }
   }
+}
+function findUniqueMascoKeywords(argument) {
+  var data = MascoKey.find({});
+
+  function updateUniques (array, _id) {
+    MascoKey.update({_id: _id}, { $unset: { keywords: ""}}, function(err,res) {
+        if( err) {
+          console.log(err);
+        } else {
+          console.log(res + ' items remove by updateUniques...adding new unique array');
+          MascoKey.update({_id: _id}, {$set: {keywords: array}}, function (error, res2){
+            if(error) {
+              console.log(error);
+            } else {
+              console.log('successfully completed updateUniques ' + res2);
+            }
+          });
+        }
+      }
+    );
+  }
+
+  data.forEach(function (el) {
+    var id = el._id,
+    tags = el.keywords;
+
+    if ( tags && id ) {
+      updateUniques(_.uniq(tags), id);
+    }
+  });
 
 }
 
@@ -249,5 +278,8 @@ Meteor.methods({
         console.warn( 'Rejected. This item already exists in MascoFour.' );  
       }
     }
+  },
+  findUniqueMascoKeywords: function () {
+    findUniqueMascoKeywords();
   }
 });
