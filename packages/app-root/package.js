@@ -25,17 +25,13 @@ Package.onUse(function (api) {
   api.imply(packages);
 
   api.addFiles([
-    // 'lib/server/babyparse.js',
-    // 'lib/server/cheerio.js',
-    // 'lib/server/data/masco_1digit.csv',
-    // 'lib/server/data/masco_3digit.csv',
-    // 'lib/server/data/masco_2digit.csv',  
-    // 'lib/server/data/masco_4digit.csv',
-    // 'lib/server/data/masco_all.csv',
-    // 'lib/server/data/rep_data.csv',
-    // 'lib/server/data/rpt_data.csv'
+    'lib/server/npm_load.js',
+    'lib/server/striptags.js'
   ], ['server']);
 
   api.export('cheerio');
   api.export('Baby');
+  api.export('striptags');
+
+
 });

@@ -1,8 +1,10 @@
 var Baby = Npm.require('babyparse');
 var fs = Npm.require('fs');
+var fs = Npm.require('striptags');
 
 if (Baby){console.log('Baby loaded');}
 if (fs){console.log('fs loaded');}
+if (striptags){console.log('fs loaded');}
 
 // console.log(process.env);
 
