@@ -211,9 +211,242 @@ function findUniqueMascoKeywords(argument) {
       updateUniques(_.uniq(tags), id);
     }
   });
-
 }
+var runExactTitleMatch = function () {
+  var data = MascoKey.find({}).fetch();
 
+  function updateMatches(array, mascoCode) {
+    var matches = array;
+
+    for (var i = matches.length - 1; i >= 0; i--) {
+      console.log('updating ' +matches[i]._id+ ' with masco code: '+ mascoCode + ' for exactTitleMatch');
+      
+      Rpt.update({_id: matches[i]._id }, 
+        {
+          $push: { 
+            exactTitleMatch: mascoCode 
+          }
+        }
+      );
+    }
+  }
+
+  // using mongo $in to select for strong equality on array match
+  function findMatches(array) {
+    return Rpt.find({ titleTags: { $in: array } }).fetch();
+  }
+  
+
+  for (var i = data.length - 1; i >= 0; i--) {
+    
+    var self = data[i],
+    _id = data[i]._id,
+    keywords = data[i].keywords,
+    officialTitle = data[i].officialTitle;
+    officialCode = data[i].officialCode;
+
+    if (officialTitle && officialCode){
+      var found = findMatches([officialTitle]);
+      updateMatches(found, data[i].officialCode);
+      console.log('found an exactTitleMatch on masco ' + officialCode + ': ' + officialTitle);
+    }
+      
+  }
+};
+
+var runRoughTest = function () {
+  var data = MascoKey.find({}).fetch();
+
+  function updateMatches(array, mascoCode) {
+    var matches = array;
+
+    for (var i = matches.length - 1; i >= 0; i--) {
+      console.log('updating ' +matches[i]._id+ ' with masco code: '+ mascoCode + ' for runRoughTest');
+      
+      Rpt.update({_id: matches[i]._id }, 
+        {
+          $push: { 
+            roughTestMatch: mascoCode 
+          }
+        }
+      );
+    }
+  }
+
+  // using mongo $in to select for strong equality on array match
+  function findMatches(array) {
+    return Rpt.find({ titleTags: { $in: array } }).fetch();
+  }
+  
+
+  for (var i = data.length - 1; i >= 0; i--) {
+    
+    var self = data[i],
+    _id = data[i]._id,
+    keywords = data[i].keywords,
+    officialTitle = data[i].officialTitle;
+    officialCode = data[i].officialCode;
+
+    if (officialTitle && officialCode && keywords){
+      var found = findMatches(keywords);
+      updateMatches(found, data[i].officialCode);
+      console.log('found an exactTitleMatch on masco ' + officialCode + ': ' + officialTitle);
+    }
+      
+  }
+};
+var percentMatch = function () {
+  var mascoData = MascoKey.find({}).fetch();
+  var rptData = Rpt.find({}).fetch();
+
+  function findMatches(array) {
+    return Rpt.find({ titleTags: { $in: array } }).fetch();
+  }
+  function findSimilarMascoKeys(keywordArray) {
+    return MascoKey.find({ keywords: { $in: keywordArray } }).fetch();
+  }
+  function findTitleIntersections(idArray, rptKeywordArray, rptId) {
+    check(idArray, Array);
+    check(rptKeywordArray, Array);
+
+    var data = idArray;
+
+    for (var i = data.length - 1; i >= 0; i--) {
+      var mascoItem =  MascoKey.findOne({ _id: data[i]._id });
+      var mascoKeys = mascoItem.keywords;
+      var mascoCode = mascoItem.officialCode;
+
+      // console.log('inside intersection keywords', mascoItem._id);
+      // console.log('inside intersection keywords', mascoItem.keywords);
+
+      if (rptKeywordArray && mascoKeys && mascoCode) {
+        var intersect = _.intersection(rptKeywordArray,mascoKeys);
+        if(intersect) {
+          if (intersect.length = 10){
+            console.log('10 match on Rpt._id'+ rptId);
+            Rpt.update({_id: rptId }, 
+              {
+                $push: { 
+                  nGTE10: mascoCode
+                  // intersect: intersect
+                }
+              }
+            );
+          }
+          if (intersect.length = 9){
+            console.log('9 match on Rpt._id'+ rptId);
+            Rpt.update({_id: rptId }, 
+              {
+                $push: { 
+                  nE9: mascoCode 
+                }
+              }
+            );
+          } 
+          if (intersect.length = 8){
+            console.log('8 match on Rpt._id'+ rptId);
+            Rpt.update({_id: rptId }, 
+              {
+                $push: { 
+                  nE8: mascoCode 
+                }
+              }
+            );
+          } 
+          if (intersect.length = 7){
+            console.log('7 match on Rpt._id'+ rptId);
+            Rpt.update({_id: rptId }, 
+              {
+                $push: { 
+                  nE7: mascoCode 
+                }
+              }
+            );
+          } 
+          if (intersect.length = 6){
+            console.log('6 match on Rpt._id'+ rptId);
+            Rpt.update({_id: rptId }, 
+              {
+                $push: { 
+                  nE6: mascoCode 
+                }
+              }
+            );
+          } 
+          if (intersect.length = 5){
+            console.log('5 match on Rpt._id'+ rptId);
+            Rpt.update({_id: rptId }, 
+              {
+                $push: { 
+                  nE5: mascoCode 
+                }
+              }
+            );
+          }  
+          if (intersect.length = 4){
+            console.log('4 match on Rpt._id'+ rptId);
+            Rpt.update({_id: rptId }, 
+              {
+                $push: { 
+                  nE4: mascoCode 
+                }
+              }
+            );
+          }
+          if (intersect.length = 3){
+            console.log('3 match on Rpt._id'+ rptId);
+            Rpt.update({_id: rptId }, 
+              {
+                $push: { 
+                  nE3: mascoCode 
+                }
+              }
+            );
+          }
+          if (intersect.length = 2){
+            console.log('2 match on Rpt._id'+ rptId);
+            Rpt.update({_id: rptId }, 
+              {
+                $push: { 
+                  nE2: mascoCode 
+                }
+              }
+            );
+          }
+          // if (intersect.length = 2){
+          //   console.log('2 match on Rpt._id'+ rptId);
+          //   Rpt.update({_id: rptId }, 
+          //     {
+          //       $push: { 
+          //         nE2: mascoCode 
+          //       }
+          //     }
+          //   );
+          // }                              
+        // console.log('rptKeywordArray', rptKeywordArray.length);
+        // console.log('mascoKeysArray', mascoKeys.length);
+        // console.log('intersection', _.intersection(rptKeywordArray,mascoKeys));
+        }
+      }
+    }
+  } 
+
+  for (var i = rptData.length - 1; i >= 0; i--) {
+    var self = rptData[i],
+        titleTags = self.cleanTitleTags,
+        descTags = self.cleanDescTags,
+        _id = self._id;
+
+    if( titleTags && descTags && _id) {
+
+      var simTitleTagArray = findSimilarMascoKeys(titleTags);
+
+      findTitleIntersections(simTitleTagArray, titleTags, _id);
+      // var simDescTagArray = findSimilarMascoKeys(descTags);
+    }
+    
+  }
+};
 Meteor.methods({
   parseUploadRpt: function( data) {
     check( data, Array );
@@ -281,5 +514,14 @@ Meteor.methods({
   },
   findUniqueMascoKeywords: function () {
     findUniqueMascoKeywords();
+  },
+  runExactTitleMatch: function() {
+    runExactTitleMatch();
+  },
+  runRoughTest: function() {
+    runRoughTest();
+  },
+  percentMatch: function() {
+    percentMatch();
   }
 });

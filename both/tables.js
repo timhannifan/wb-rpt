@@ -67,8 +67,8 @@ TabularTables.Rpt = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "occ_title", title: "Postion", class: "flex-3"},
-    {data: "firm_name", title: "Employer", class: "flex-3"},
-    {data: "cleanTags", title: "Keywords", class: "flex-6"}
+    {data: "cleanTitle", title: "Postion"},
+    {data: "cleanTitleTags", title: "titleTags"},
+    {data: "cleanDescTags", title: "descTags"}
   ]
 });

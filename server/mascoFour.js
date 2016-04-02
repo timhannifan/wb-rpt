@@ -1,37 +1,7 @@
 // var mascoFourFetch = MascoFour.find().fetch();
 
 //// ------ clean masco classificaiton codes, add cleanTitle and tag attributes ---- ////
-var cleanMascoThree = function () {	
-	var mascoFetch = MascoThree.find({}).fetch();
 
-	for (var i = mascoFetch.length - 1; i >= 0; i--) {
-		console.log(mascoFetch[i]);
-		var self = mascoFetch[i],
-		name = self.description_3_digit,
-		_id = self._id,
-		yakiTags = Yaki(name).split(),
-		lowercase = name.toLowerCase();
-
-		for (var j = yakiTags.length - 1; j >= 0; j--) {
-			
-			MascoThree.update({_id: _id}, 
-				{
-					$push: { 
-						tags: yakiTags[j]
-					}
-				}
-			);
-		}
-
-		MascoThree.update({_id: _id}, 
-			{
-				$set: { 
-					cleanTitle: lowercase
-				}
-			}
-		);
-	}
-};
 var cleanMascoFour = function () {	
 	var mascoFetch = MascoFour.find({}).fetch();
 	
