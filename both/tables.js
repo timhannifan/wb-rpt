@@ -12,7 +12,7 @@ TabularTables.MascoFive = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "id", title: "Official Id", class: "flex-2"},
+    {data: "id", title: "OfficialId", class: "flex-2"},
     {data: "cleanTitle", title: "Position", class: "flex-4"},
     {data: "titleTags", title: "Keywords", class: "flex-6"}
   ]
@@ -25,7 +25,7 @@ TabularTables.MascoFour = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "id", title: "Official Id", class: "flex-2"},
+    {data: "id", title: "OfficialId", class: "flex-2"},
     {data: "cleanTitle", title: "Position", class: "flex-4"},
     {data: "titleTags", title: "Keywords", class: "flex-6"}
   ]
@@ -53,9 +53,6 @@ TabularTables.Rep = new Tabular.Table({
   columns: [
     {data: "mapToFour", title: "Masco4", class: "flex-1"},
     {data: "cleanTitle", title: "Position", class: "flex-2"},
-    // {data: "job1_employer", title: "Employer", class: "flex-2"},
-    // {data: "acad1_fos", title: "FOS", class: "flex-4"},
-    // {data: "acad1_qual", title: "Qual", class: "flex-1"},
     {data: "cleanTags", title: "Keywords", class: "flex-4"}
   ]
 });
@@ -67,8 +64,8 @@ TabularTables.Rpt = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "cleanTitle", title: "Postion"},
-    {data: "cleanTitleTags", title: "titleTags"},
-    {data: "cleanDescTags", title: "descTags"}
+    {data: "cleanTitle", title: "Postion", class: "flex-3"},
+    {data: "cleanTitleTags", title: "TitleTags", class: "flex-4"},
+    {data: "cleanDescTags", title: "DescriptionTags", class: "flex-4 overflow-x-scroll"}
   ]
 });

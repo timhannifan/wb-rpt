@@ -1,8 +1,23 @@
-var stopwords = [];
-stopwords.push('and','or','of');
+// var stopwords = [];
+// stopwords.push('and','or','of');
 
-function cleanUpTitle(string) {
-  return string.toLowerCase().replace(',','').replace('/',' ').replace('&','and').replace('+','and').replace('-',' ').replace('(','').replace(')','').replace(' / ',' ').replace(' /',' ').replace('/ ',' ').trim();
+function cleanUp(string) {
+  return string.replace(/\0/g,' ')
+                .replace(/\W/g,' ')
+                .toLowerCase()
+                .trim();
+}
+function yakiSplitClean(string) {
+  return Yaki(string).split().clean();
+}
+function insertRptCallback (item) {
+  Rpt.insert(item, function(err,res) {
+    if (err) {
+      console.log(err);
+    } else{
+      console.log('successfully inserted new Rpt item');
+    }
+  });
 }
 function insertMascoFour(data) {
 
@@ -10,13 +25,13 @@ function insertMascoFour(data) {
 
   var title = data.description_4_digit,
   officialCode = data.id,
-  cleanTitle = cleanUpTitle(data.description_4_digit),
-  titleTags = Yaki(cleanTitle).split().clean();
+  cleanTitle = cleanUp(data.description_4_digit),
+  titleTags = yakiSplitClean(cleanTitle);
 
   titleTags.push(cleanTitle);
   
   var cleanTags = _.uniq(_.reject(titleTags, function(el){
-   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == '');
+   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
   }));
 
   console.log('cleanTags', cleanTags);
@@ -37,15 +52,13 @@ function insertMascoFive(data) {
 
   var title = data.description_5_digit,
   officialCode = data.id,
-  cleanTitle = cleanUpTitle(data.description_5_digit),
+  cleanTitle = cleanUp(data.description_5_digit),
   mapToFour = officialCode.substr(0, 4),
-  titleTags = Yaki(cleanTitle).split().clean();
-  console.log('insertMasco5 cleanTitle ' + cleanTitle);
-
+  titleTags = yakiSplitClean(cleanTitle);
 
   titleTags.push(cleanTitle);
   var cleanTags = _.uniq(_.reject(titleTags, function(el){
-   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == '');
+   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
   }));
   console.log('insertMasco5 cleantags ' + cleanTags);
   
@@ -63,6 +76,29 @@ function insertMascoFive(data) {
 
   console.log('completed mascoFive insert');
 }
+function insertMasterFour(data) {
+  // check( data, Object );
+  console.log('called insertMasterFour');
+  var title = data.description_4_digit,
+  officialCode = data.id,
+  cleanTitle = cleanUp(data.description_4_digit),
+  titleTags = yakiSplitClean(cleanTitle);
+
+  titleTags.push(cleanTitle);
+
+  var cleanTags = _.uniq(_.reject(titleTags, function(el){
+   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
+  }));
+
+  var insert = {
+    officialCode: data.id,
+    officialTitle: cleanTitle,
+    keywords: cleanTags
+  };
+  MascoKey.insert(insert);
+
+  console.log('inserted new mascoKey item');
+}
 function insertRep(data) {
   check( data, Object );
 
@@ -77,13 +113,14 @@ function insertRep(data) {
   item.mapToFour = data.masco_4;
 
   if (item.title) {
-    item.cleanTitle = cleanUpTitle(item.title);
-    item.titleTags = Yaki(item.cleanTitle).split().clean();
+    item.cleanTitle = cleanUp(item.title);
+    item.titleTags = yakiSplitClean(item.cleanTitle);
   }
-  if(item.titleTags && item.cleanTitle) {
+
+  if(item.titleTags) {
     item.titleTags.push(item.cleanTitle);
     item.cleanTags = _.uniq(_.reject(item.titleTags, function(el){
-     return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == '');
+     return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
     }));    
   }
 
@@ -94,42 +131,59 @@ function insertRep(data) {
 
   insertCallback( item );
 }
-function insertMasterFour(data) {
-  // check( data, Object );
-  console.log('called insertMasterFour');
-  var title = data.description_4_digit,
-  officialCode = data.id,
-  cleanTitle = cleanUpTitle(data.description_4_digit),
-  titleTags = Yaki(cleanTitle).split().clean();
+function insertRpt(data) {
+  check( data, Object );
 
-  titleTags.push(cleanTitle);
+  var item= {};
+  item.id = data.id;
+  item.occ_title = data.occ_title;
+  item.occ_desc = data.occ_desc;
+  item.firm_name = data.firm_name;
+  item.sector = data.sector;
+  // item.educ_fos = data.educ_fos;
 
-  var cleanTags = _.uniq(_.reject(titleTags, function(el){
-   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == '');
-  }));
+  if (item.occ_title) {
+    item.cleanTitle = cleanUp(item.occ_title);
+  }
+  if (item.cleanTitle) {
+    item.titleTags = yakiSplitClean(item.cleanTitle);
+  }
+  if (item.occ_desc) {
+    item.cleanDesc = cleanUp(item.occ_desc);
+  }  
+  if (item.cleanDesc) {
+    item.descTags = yakiSplitClean(item.cleanDesc);
+  }
 
-  var insert = {
-    officialCode: data.id,
-    officialTitle: cleanTitle,
-    keywords: cleanTags
-  };
-  MascoKey.insert(insert);
+  if(item.titleTags) {
+    item.titleTags.push(item.cleanTitle);
+    item.cleanTitleTags = _.uniq(_.reject(item.titleTags, function(el){
+     return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
+    }));    
+  }
 
-  console.log('inserted new mascoKey item');
+  if(item.descTags) {
+    item.descTags.push(item.cleanDesc);
+    item.cleanDescTags = _.uniq(_.reject(item.descTags, function(el){
+     return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
+    }));    
+  }
+
+  insertRptCallback( item );
 }
 function insertMasterFive(data) {
   check( data, Object );
 
   var title = data.description_5_digit,
   officialCode = data.id,
-  cleanTitle = cleanUpTitle(data.description_5_digit),
+  cleanTitle = cleanUp(data.description_5_digit),
   mapToFour = officialCode.substr(0, 4),
-  titleTags = Yaki(cleanTitle).split().clean();
+  titleTags = yakiSplitClean(item.cleanTitle);
 
   titleTags.push(cleanTitle);
 
   var cleanTags = _.uniq(_.reject(titleTags, function(el){
-   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == '');
+   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
   }));
 
   var lookupFourDigitKey = MascoKey.findOne({officialCode: mapToFour});
@@ -162,12 +216,12 @@ function insertMasterRep(data) {
   if (title && mapToFour){
     var lookupFourDigitKey = MascoKey.findOne({officialCode: mapToFour});
 
-    cleanTitle = cleanUpTitle(title);
-    titleTags = Yaki(cleanTitle).split().clean();
+    cleanTitle = cleanUp(title);
+    titleTags = yakiSplitClean(cleanTitle);
     titleTags.push(cleanTitle);
 
     var cleanTags = _.uniq(_.reject(titleTags, function(el){
-      return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == '');
+      return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
     }));
 
     for (var i = cleanTags.length - 1; i >= 0; i--) {
@@ -456,10 +510,9 @@ Meteor.methods({
       exists = Rpt.findOne( { id: item.id } );
 
       if ( !exists ) {
-        Rpt.insert( item );
+        insertRpt( item );
       } else {
-        console.warn( 'Rejected. This item already exists in Rpt.' );
-        console.log(item);      
+        console.warn( 'Rejected. This item already exists in Rpt: ' + item.id );
       }
     }
   },
