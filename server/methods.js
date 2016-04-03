@@ -1,9 +1,7 @@
-// var stopwords = [];
-// stopwords.push('and','or','of');
-
 function cleanUp(string) {
   return string.replace(/\0/g,' ')
                 .replace(/\W/g,' ')
+                .replace(/\s\s/g,' ')
                 .toLowerCase()
                 .trim();
 }
@@ -266,48 +264,87 @@ function findUniqueMascoKeywords(argument) {
     }
   });
 }
-var runExactTitleMatch = function () {
+var runTitleEqTitle = function () {
   var data = MascoKey.find({}).fetch();
-
-  function updateMatches(array, mascoCode) {
+  updateRptMatches = function(array, mascoCode) {
     var matches = array;
 
     for (var i = matches.length - 1; i >= 0; i--) {
-      console.log('updating ' +matches[i]._id+ ' with masco code: '+ mascoCode + ' for exactTitleMatch');
+      console.log('updating ' +matches[i]._id+ ' with masco code: '+ mascoCode + ' for titleEqTitle');
       
       Rpt.update({_id: matches[i]._id }, 
         {
           $push: { 
-            exactTitleMatch: mascoCode 
+            titleEqTitle: mascoCode 
           }
         }
       );
     }
-  }
+  },
+  // we pass in an array containing the MascoKey's title.
+  // we return an array containing all rpt item _ids where their cleanTitle is equal to the mascoKey's title.
+  findMatches =function (array) {
+   return Rpt.find({ cleanTitle: { $in: array } }).fetch();
+  };
 
-  // using mongo $in to select for strong equality on array match
-  function findMatches(array) {
-    return Rpt.find({ titleTags: { $in: array } }).fetch();
-  }
-  
-
+  // for each mascoKey _id, get the keywords, official title, and offical code
   for (var i = data.length - 1; i >= 0; i--) {
-    
     var self = data[i],
     _id = data[i]._id,
     keywords = data[i].keywords,
+    officialCode = data[i].officialCode,
     officialTitle = data[i].officialTitle;
-    officialCode = data[i].officialCode;
 
+    // with the keywords from each mascoKey
     if (officialTitle && officialCode){
+      // find and return an array of _ids with exact tile matches against these keywords
       var found = findMatches([officialTitle]);
-      updateMatches(found, data[i].officialCode);
-      console.log('found an exactTitleMatch on masco ' + officialCode + ': ' + officialTitle);
+      // update each one of these matches, pushing the official code into titleEqTitle
+      updateRptMatches(found, officialCode);
     }
       
   }
 };
+var runTitleInKeywords = function () {
+  var data = MascoKey.find({}).fetch();
+  updateRptMatches = function(array, mascoCode) {
+    var matches = array;
 
+    for (var i = matches.length - 1; i >= 0; i--) {
+      console.log('updating ' +matches[i]._id+ ' with masco code: '+ mascoCode + ' for runTitleInKeywords');
+      
+      Rpt.update({_id: matches[i]._id }, 
+        {
+          $push: { 
+            titleInKeywords: mascoCode 
+          }
+        }
+      );
+    }
+  },
+  // we pass in an array containing all of the MascoKey's keywords, which contains the corresponding masco titles.
+  // we return an array containing all rpt item _ids where their cleanTitle is contained in the masco keyword array.
+  findMatches =function (array) {
+   return Rpt.find({ cleanTitle: { $in: array } }).fetch();
+  };
+
+  // for each mascoKey _id, get the keywords, official title, and offical code
+  for (var i = data.length - 1; i >= 0; i--) {
+    var self = data[i],
+    _id = data[i]._id,
+    keywords = data[i].keywords,
+    officialCode = data[i].officialCode;
+
+    // with the keywords from each mascoKey
+    if (keywords && officialCode){
+      // find and return an array of _ids with exact tile matches against these keywords
+      var found = findMatches(keywords);
+      // update each one of these matches, pushing the official code into runTitleInKeywords
+      updateRptMatches(found, data[i].officialCode);
+    }
+      
+  }
+};
 var runRoughTest = function () {
   var data = MascoKey.find({}).fetch();
 
@@ -344,163 +381,233 @@ var runRoughTest = function () {
     if (officialTitle && officialCode && keywords){
       var found = findMatches(keywords);
       updateMatches(found, data[i].officialCode);
-      console.log('found an exactTitleMatch on masco ' + officialCode + ': ' + officialTitle);
+      console.log('found an titleEqTitle on masco ' + officialCode + ': ' + officialTitle);
     }
       
   }
 };
-var percentMatch = function () {
-  var mascoData = MascoKey.find({}).fetch();
+var runTitleIntersection = function () {
+  var mascoData = MascoKey.findOne({});//.fetch();
   var rptData = Rpt.find({}).fetch();
 
-  function findMatches(array) {
+  var findMatches = function (array) {
     return Rpt.find({ titleTags: { $in: array } }).fetch();
-  }
-  function findSimilarMascoKeys(keywordArray) {
+  };
+  // accepts an array of keywords from each rpt item
+  // return an array of MK items with keywords matching anything in the passed in array
+  var findKeywordOverlap = function (keywordArray) {
     return MascoKey.find({ keywords: { $in: keywordArray } }).fetch();
-  }
-  function findTitleIntersections(idArray, rptKeywordArray, rptId) {
-    check(idArray, Array);
+  };
+  // 
+  var findTitleIntersections = function (similarMascItems, rptKeywordArray, rptId) {
+    check(similarMascItems, Array);
     check(rptKeywordArray, Array);
 
-    var data = idArray;
+    var data = similarMascItems;
 
     for (var i = data.length - 1; i >= 0; i--) {
       var mascoItem =  MascoKey.findOne({ _id: data[i]._id });
       var mascoKeys = mascoItem.keywords;
       var mascoCode = mascoItem.officialCode;
 
-      // console.log('inside intersection keywords', mascoItem._id);
-      // console.log('inside intersection keywords', mascoItem.keywords);
-
       if (rptKeywordArray && mascoKeys && mascoCode) {
-        var intersect = _.intersection(rptKeywordArray,mascoKeys);
-        if(intersect) {
-          if (intersect.length = 10){
-            console.log('10 match on Rpt._id'+ rptId);
-            Rpt.update({_id: rptId }, 
-              {
-                $push: { 
-                  nGTE10: mascoCode
-                  // intersect: intersect
-                }
-              }
-            );
-          }
-          if (intersect.length = 9){
-            console.log('9 match on Rpt._id'+ rptId);
-            Rpt.update({_id: rptId }, 
-              {
-                $push: { 
-                  nE9: mascoCode 
-                }
-              }
-            );
-          } 
-          if (intersect.length = 8){
-            console.log('8 match on Rpt._id'+ rptId);
-            Rpt.update({_id: rptId }, 
-              {
-                $push: { 
-                  nE8: mascoCode 
-                }
-              }
-            );
-          } 
-          if (intersect.length = 7){
-            console.log('7 match on Rpt._id'+ rptId);
-            Rpt.update({_id: rptId }, 
-              {
-                $push: { 
-                  nE7: mascoCode 
-                }
-              }
-            );
-          } 
-          if (intersect.length = 6){
-            console.log('6 match on Rpt._id'+ rptId);
-            Rpt.update({_id: rptId }, 
-              {
-                $push: { 
-                  nE6: mascoCode 
-                }
-              }
-            );
-          } 
-          if (intersect.length = 5){
-            console.log('5 match on Rpt._id'+ rptId);
-            Rpt.update({_id: rptId }, 
-              {
-                $push: { 
-                  nE5: mascoCode 
-                }
-              }
-            );
-          }  
-          if (intersect.length = 4){
-            console.log('4 match on Rpt._id'+ rptId);
-            Rpt.update({_id: rptId }, 
-              {
-                $push: { 
-                  nE4: mascoCode 
-                }
-              }
-            );
-          }
-          if (intersect.length = 3){
-            console.log('3 match on Rpt._id'+ rptId);
-            Rpt.update({_id: rptId }, 
-              {
-                $push: { 
-                  nE3: mascoCode 
-                }
-              }
-            );
-          }
-          if (intersect.length = 2){
-            console.log('2 match on Rpt._id'+ rptId);
-            Rpt.update({_id: rptId }, 
-              {
-                $push: { 
-                  nE2: mascoCode 
-                }
-              }
-            );
-          }
-          // if (intersect.length = 2){
-          //   console.log('2 match on Rpt._id'+ rptId);
-          //   Rpt.update({_id: rptId }, 
-          //     {
-          //       $push: { 
-          //         nE2: mascoCode 
-          //       }
-          //     }
-          //   );
-          // }                              
-        // console.log('rptKeywordArray', rptKeywordArray.length);
-        // console.log('mascoKeysArray', mascoKeys.length);
-        // console.log('intersection', _.intersection(rptKeywordArray,mascoKeys));
-        }
+        var intersect = function(arg1,arg2) {
+          return _.intersection(arg1,arg2);
+          // return _.intersection(rptKeywordArray,mascoKeys);
+        };
+
+        var info = intersect(rptKeywordArray,mascoKeys);
+
+        console.log('masco:' + mascoCode);
+        console.log('rptId:' + rptId);
+        console.log('number of intersecting items: ' + info.length);
+        console.log('number of mascoKeywords: ' + mascoKeys.length);
+        console.log('percent Match with masco: ' + (info.length/rptKeywordArray.length)*100);
+        console.log('intersecting keyword:' + info);
+
       }
     }
-  } 
+  }; 
 
   for (var i = rptData.length - 1; i >= 0; i--) {
     var self = rptData[i],
         titleTags = self.cleanTitleTags,
-        descTags = self.cleanDescTags,
         _id = self._id;
 
-    if( titleTags && descTags && _id) {
+    if( titleTags) {
 
-      var simTitleTagArray = findSimilarMascoKeys(titleTags);
+      var similarMascoItems = findKeywordOverlap(titleTags);
 
-      findTitleIntersections(simTitleTagArray, titleTags, _id);
-      // var simDescTagArray = findSimilarMascoKeys(descTags);
+      findTitleIntersections(similarMascoItems, titleTags, _id);
     }
     
   }
 };
+var runDescIntersection = function () {
+  var mascoData = MascoKey.find({}).fetch();
+  var rptData = Rpt.find({}).fetch();
+
+  var findMatches = function (array) {
+    return Rpt.find({ titleTags: { $in: array } }).fetch();
+  };
+  // accepts an array of keywords from each rpt item
+  // return an array of MK items with keywords matching anything in the passed in array
+  var findKeywordOverlap = function (keywordArray) {
+    return MascoKey.find({ keywords: { $in: keywordArray } }).fetch();
+  };
+  // 
+  var findTitleIntersections = function (similarMascItems, rptKeywordArray, rptId) {
+    check(similarMascItems, Array);
+    check(rptKeywordArray, Array);
+
+    var data = similarMascItems;
+
+    for (var i = data.length - 1; i >= 0; i--) {
+      var mascoItem =  MascoKey.findOne({ _id: data[i]._id });
+      var mascoKeys = mascoItem.keywords;
+      var mascoCode = mascoItem.officialCode;
+
+      if (rptKeywordArray && mascoKeys && mascoCode) {
+        var intersect = function(arg1,arg2) {
+          return _.intersection(arg1,arg2);
+          // return _.intersection(rptKeywordArray,mascoKeys);
+        };
+
+        var info = intersect(rptKeywordArray,mascoKeys);
+
+        console.log('masco:' + mascoCode);
+        console.log('rptId:' + rptId);
+        console.log('number of intersecting DESCRIPTION items: ' + info.length);
+        console.log('number of mascoKeywords: ' + mascoKeys.length);
+        console.log('percent Match with masco: ' + (info.length/mascoKeys.length)*100);
+        console.log('intersecting keyword:' + info);
+
+      }
+    }
+  }; 
+
+  for (var i = rptData.length - 1; i >= 0; i--) {
+    var self = rptData[i],
+        titleTags = self.cleanDescTags,
+        _id = self._id;
+
+    if( titleTags) {
+
+      var similarMascoItems = findKeywordOverlap(titleTags);
+
+      findTitleIntersections(similarMascoItems, titleTags, _id);
+    }
+    
+  }
+};
+function resetRptTitleEqTitle (col) {
+  var data = Rpt.find();
+  var removeData = function(_id) {
+    Rpt.update(
+      {_id: _id}, 
+      { 
+        $unset: { 
+          titleEqTitle: ""
+        }
+      }, function(err,res) {
+          if( err) {
+            console.log(err);
+          }
+      }
+    );  
+  }
+
+  data.forEach(function (el) {
+    var id = el._id;
+
+    if ( id ) {
+      removeData(id);
+    }
+  });
+};
+function resetRptTitleInKeywords (col) {
+  var data = Rpt.find();
+  var removeData = function(_id) {
+    Rpt.update(
+      {_id: _id}, 
+      { 
+        $unset: { 
+          titleInKeywords: ""
+        }
+      }, function(err,res) {
+          if( err) {
+            console.log(err);
+          } else {
+            console.log('successfully completed resetting titleInKeywords. ' + res + 'items removed');
+          }
+      }
+    );  
+  }
+
+  data.forEach(function (el) {
+    var id = el._id;
+
+    if ( id ) {
+      removeData(id);
+    }
+  });
+};
+function resetRptTitleIntersection (col) {
+  var data = Rpt.find();
+  var removeData = function(_id) {
+    Rpt.update(
+      {_id: _id}, 
+      { 
+        $unset: { 
+          titleInKeywords: ""
+        }
+      }, function(err,res) {
+          if( err) {
+            console.log(err);
+          } else {
+            console.log('successfully completed resetting titleInKeywords. ' + res + 'items removed');
+          }
+      }
+    );  
+  }
+
+  data.forEach(function (el) {
+    var id = el._id;
+
+    if ( id ) {
+      removeData(id);
+    }
+  });
+};
+function resetRptDesIntersection (col) {
+  var data = Rpt.find();
+  var removeData = function(_id) {
+    Rpt.update(
+      {_id: _id}, 
+      { 
+        $unset: { 
+          titleInKeywords: "",
+        }
+      }, function(err,res) {
+          if( err) {
+            console.log(err);
+          } else {
+            console.log('successfully completed resetting titleInKeywords. ' + res + 'items removed');
+          }
+      }
+    );  
+  }
+
+  data.forEach(function (el) {
+    var id = el._id;
+
+    if ( id ) {
+      removeData(id);
+    }
+  });
+};
+
+
 Meteor.methods({
   parseUploadRpt: function( data) {
     check( data, Array );
@@ -568,13 +675,115 @@ Meteor.methods({
   findUniqueMascoKeywords: function () {
     findUniqueMascoKeywords();
   },
-  runExactTitleMatch: function() {
-    runExactTitleMatch();
+  runTitleEqTitle: function() {
+    runTitleEqTitle();
   },
-  runRoughTest: function() {
-    runRoughTest();
+  runTitleInKeywords: function() {
+    runTitleInKeywords();
   },
-  percentMatch: function() {
-    percentMatch();
+  runTitleIntersection: function() {
+    runTitleIntersection();
+  },
+  runDescIntersection: function() {
+    runDescIntersection();
+  },
+  resetRptTitleEqTitle: function () {
+    resetRptTitleEqTitle();
+  },
+  resetRptTitleInKeywords: function () {
+    resetRptTitleInKeywords();
   }
 });
+
+
+
+// if (intersect.length = 10){
+//   console.log('10 match on Rpt._id'+ rptId);
+//   Rpt.update({_id: rptId }, 
+//     {
+//       $push: { 
+//         nGTE10: mascoCode
+//       }
+//     }
+//   );
+// }
+// if (intersect.length = 9){
+//   console.log('9 match on Rpt._id'+ rptId);
+//   Rpt.update({_id: rptId }, 
+//     {
+//       $push: { 
+//         nE9: mascoCode 
+//       }
+//     }
+//   );
+// } 
+// if (intersect.length = 8){
+//   console.log('8 match on Rpt._id'+ rptId);
+//   Rpt.update({_id: rptId }, 
+//     {
+//       $push: { 
+//         nE8: mascoCode 
+//       }
+//     }
+//   );
+// } 
+// if (intersect.length = 7){
+//   console.log('7 match on Rpt._id'+ rptId);
+//   Rpt.update({_id: rptId }, 
+//     {
+//       $push: { 
+//         nE7: mascoCode 
+//       }
+//     }
+//   );
+// } 
+// if (intersect.length = 6){
+//   console.log('6 match on Rpt._id'+ rptId);
+//   Rpt.update({_id: rptId }, 
+//     {
+//       $push: { 
+//         nE6: mascoCode 
+//       }
+//     }
+//   );
+// } 
+// if (intersect.length = 5){
+//   console.log('5 match on Rpt._id'+ rptId);
+//   Rpt.update({_id: rptId }, 
+//     {
+//       $push: { 
+//         nE5: mascoCode 
+//       }
+//     }
+//   );
+// }  
+// if (intersect.length = 4){
+//   console.log('4 match on Rpt._id'+ rptId);
+//   Rpt.update({_id: rptId }, 
+//     {
+//       $push: { 
+//         nE4: mascoCode 
+//       }
+//     }
+//   );
+// }
+// if (intersect.length = 3){
+//   console.log('3 match on Rpt._id'+ rptId);
+//   Rpt.update({_id: rptId }, 
+//     {
+//       $push: { 
+//         nE3: mascoCode 
+//       }
+//     }
+//   );
+// }
+// if (intersect.length = 2){
+//   console.log('2 match on Rpt._id'+ rptId);
+//   Rpt.update({_id: rptId }, 
+//     {
+//       $push: { 
+//         nE2: mascoCode 
+//       }
+//     }
+//   );
+// }

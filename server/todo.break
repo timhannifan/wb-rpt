@@ -1,0 +1,17 @@
+1. put back in mascoTitleTagFiveStrong (find rpt where masco contains all of rptTitleTags less cleanTitle)
+
+2. percentage for each masco vs titleTags
+	a. denominator (mascoKeywords)
+	b. count of mascoKeywords
+
+3. percentage for each masco vs titleTags
+	a. denominator (rptKeywords)
+	b. count of mascoKeywords
+
+4. percentage for each masco vs titleTags
+	a. denominator (mascoKeywords)
+	b. count of mascoKeywords
+
+5. percentage for each masco vs titleTags
+	a. denominator (rptKeywords)
+	b. count of mascoKeywords
