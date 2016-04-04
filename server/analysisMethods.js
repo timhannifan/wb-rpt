@@ -210,7 +210,7 @@ var runDescIntersection = function () {
               if( err) {
                 console.log(err);
               } else {
-                console.log('title intersection complete on rpt _id ' + rptId + ' vs mascoKey' + mascoCode);
+                console.log('description intersection complete on rpt _id ' + rptId + ' vs mascoKey' + mascoCode);
               }
 
             }

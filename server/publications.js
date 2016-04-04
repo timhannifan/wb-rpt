@@ -11,7 +11,3 @@ Meteor.publish('MascoFive', function() {
 Meteor.publish('MascoFour', function() {
 	return MascoFour.find({});
 });
-
-Meteor.publish('MascoThree', function() {
-	return MascoThree.find({});
-});

@@ -5,10 +5,17 @@ Meteor.startup(function () {
   Router.configure({
     layoutTemplate: 'applicationLayout',
     loadingTemplate: 'loading',
-    not_foundTemplate: 'notFound'
+    not_foundTemplate: 'notFound',
     // autoRender: true,
-    // autoStart: false
-    // waitOn: function () {this.next();},
+    // autoStart: false,
+    waitOn: function() {
+      Meteor.subscribe('Rpt');
+      Meteor.subscribe('Rep');
+      Meteor.subscribe('MascoKey');
+      Meteor.subscribe('MascoFive');
+      Meteor.subscribe('MascoFour');
+      // this.next();
+    },
   });
 
   Router.map(function(){
@@ -42,9 +49,6 @@ Meteor.startup(function () {
     });
     this.route('export', {
       path: '/export',
-      waitOn: function() {
-        Meteor.subscribe('Rpt');
-      },
       template:'export'
     });
   });
