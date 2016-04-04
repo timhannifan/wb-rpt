@@ -81,11 +81,11 @@ var runTitleInKeywords = function () {
   }
 };
 var runTitleIntersection = function () {
-  var mascoData = MascoKey.findOne({});//.fetch();
+  var mascoData = MascoKey.find({}).fetch();
   var rptData = Rpt.find({}).fetch();
 
   var findMatches = function (array) {
-    return Rpt.find({ titleTags: { $in: array } }).fetch();
+    return Rpt.find({ cleanTitleTags: { $in: array } }).fetch();
   };
   // accepts an array of keywords from each rpt item
   // return an array of MK items with keywords matching anything in the passed in array
@@ -93,7 +93,7 @@ var runTitleIntersection = function () {
     return MascoKey.find({ keywords: { $in: keywordArray } }).fetch();
   };
   // 
-  var findTitleIntersections = function (similarMascItems, rptKeywordArray, rptId) {
+  var findIntersections = function (similarMascItems, rptKeywordArray, rptId) {
     check(similarMascItems, Array);
     check(rptKeywordArray, Array);
 
@@ -101,48 +101,70 @@ var runTitleIntersection = function () {
 
     for (var i = data.length - 1; i >= 0; i--) {
       var mascoItem =  MascoKey.findOne({ _id: data[i]._id });
+      var mascoItemId = mascoItem._id;
       var mascoKeys = mascoItem.keywords;
       var mascoCode = mascoItem.officialCode;
 
-      if (rptKeywordArray && mascoKeys && mascoCode) {
+      if (rptKeywordArray && mascoKeys && mascoCode && mascoItemId) {
         var intersect = function(arg1,arg2) {
           return _.intersection(arg1,arg2);
-          // return _.intersection(rptKeywordArray,mascoKeys);
-        };
+        },
+        insertData = function(info, mascoCode, rptId, rptArrayL, mascoArrayL, intersectionL){
+          Rpt.update({_id: rptId},
+          {
+            $push: { 
+              percentMatchTitleKeywords: {
+                mascoCode: mascoCode,
+                rptArrayL: rptArrayL,
+                intersection: info,
+                intersectionL: intersectionL,
+                mascoArrayL: mascoArrayL,
+                percentVsMascoRptSize: intersectionL/mascoArrayL,
+                percentVsRptSize: intersectionL/rptArrayL
+              }
+             }
+           },
+            function(err, res) {
+              if( err) {
+                console.log(err);
+              } else {
+                console.log('title intersection complete on rpt _id ' + rptId + ' vs mascoKey' + mascoCode);
+              }
 
-        var info = intersect(rptKeywordArray,mascoKeys);
+            }
+          );
+        },
+        info = intersect(rptKeywordArray,mascoKeys),
+        interesectL = info.length,
+        rptArrayL = rptKeywordArray.length,
+        intersectionL = info.length,
+        mascoArrayL = mascoKeys.length;
 
-        console.log('masco:' + mascoCode);
-        console.log('rptId:' + rptId);
-        console.log('number of intersecting items: ' + info.length);
-        console.log('number of mascoKeywords: ' + mascoKeys.length);
-        console.log('percent Match with masco: ' + (info.length/rptKeywordArray.length)*100);
-        console.log('intersecting keyword:' + info);
-
+        insertData(info, mascoCode, rptId, rptArrayL, mascoArrayL, intersectionL);
       }
     }
   }; 
 
   for (var i = rptData.length - 1; i >= 0; i--) {
     var self = rptData[i],
-        titleTags = self.cleanTitleTags,
+        tags = self.cleanTitleTags,
         _id = self._id;
 
-    if( titleTags) {
+    if( tags) {
 
-      var similarMascoItems = findKeywordOverlap(titleTags);
+      var similarMascoItems = findKeywordOverlap(tags);
 
-      findTitleIntersections(similarMascoItems, titleTags, _id);
+      findIntersections(similarMascoItems, tags, _id);
     }
     
   }
 };
 var runDescIntersection = function () {
-  var mascoData = MascoKey.find({}).fetch();
+  var mascoData = MascoKey.findOne({});//.fetch();
   var rptData = Rpt.find({}).fetch();
 
   var findMatches = function (array) {
-    return Rpt.find({ titleTags: { $in: array } }).fetch();
+    return Rpt.find({ cleanDescTags: { $in: array } }).fetch();
   };
   // accepts an array of keywords from each rpt item
   // return an array of MK items with keywords matching anything in the passed in array
@@ -150,7 +172,7 @@ var runDescIntersection = function () {
     return MascoKey.find({ keywords: { $in: keywordArray } }).fetch();
   };
   // 
-  var findTitleIntersections = function (similarMascItems, rptKeywordArray, rptId) {
+  var findIntersections = function (similarMascItems, rptKeywordArray, rptId) {
     check(similarMascItems, Array);
     check(rptKeywordArray, Array);
 
@@ -158,38 +180,60 @@ var runDescIntersection = function () {
 
     for (var i = data.length - 1; i >= 0; i--) {
       var mascoItem =  MascoKey.findOne({ _id: data[i]._id });
+      var mascoItemId = mascoItem._id;
       var mascoKeys = mascoItem.keywords;
       var mascoCode = mascoItem.officialCode;
 
-      if (rptKeywordArray && mascoKeys && mascoCode) {
+      if (rptKeywordArray && mascoKeys && mascoCode && mascoItemId) {
         var intersect = function(arg1,arg2) {
           return _.intersection(arg1,arg2);
-          // return _.intersection(rptKeywordArray,mascoKeys);
-        };
+        },
+        insertData = function(info, mascoCode, rptId, rptArrayL, mascoArrayL, intersectionL){
+          Rpt.update({_id: rptId},
+          {
+            $push: { 
+              percentMatchDescKeywords: {
+                mascoCode: mascoCode,
+                rptArrayL: rptArrayL,
+                intersection: info,
+                intersectionL: intersectionL,
+                mascoArrayL: mascoArrayL,
+                percentVsMascoRptSize: intersectionL/mascoArrayL,
+                percentVsRptSize: intersectionL/rptArrayL
+              }
+             }
+           },
+            function(err, res) {
+              if( err) {
+                console.log(err);
+              } else {
+                console.log('title intersection complete on rpt _id ' + rptId + ' vs mascoKey' + mascoCode);
+              }
 
-        var info = intersect(rptKeywordArray,mascoKeys);
+            }
+          );
+        },
+        info = intersect(rptKeywordArray,mascoKeys),
+        interesectL = info.length,
+        rptArrayL = rptKeywordArray.length,
+        intersectionL = info.length,
+        mascoArrayL = mascoKeys.length;
 
-        console.log('masco:' + mascoCode);
-        console.log('rptId:' + rptId);
-        console.log('number of intersecting DESCRIPTION items: ' + info.length);
-        console.log('number of mascoKeywords: ' + mascoKeys.length);
-        console.log('percent Match with masco: ' + (info.length/mascoKeys.length)*100);
-        console.log('intersecting keyword:' + info);
-
+        insertData(info, mascoCode, rptId, rptArrayL, mascoArrayL, intersectionL);
       }
     }
   }; 
 
   for (var i = rptData.length - 1; i >= 0; i--) {
     var self = rptData[i],
-        titleTags = self.cleanDescTags,
+        tags = self.cleanDescTags,
         _id = self._id;
 
-    if( titleTags) {
+    if( tags) {
 
-      var similarMascoItems = findKeywordOverlap(titleTags);
+      var similarMascoItems = findKeywordOverlap(tags);
 
-      findTitleIntersections(similarMascoItems, titleTags, _id);
+      findIntersections(similarMascoItems, tags, _id);
     }
     
   }
@@ -253,40 +297,13 @@ function resetRptTitleIntersection (col) {
       {_id: _id}, 
       { 
         $unset: { 
-          titleInKeywords: ""
+          percentMatchTitleDenomMasco: ""
         }
       }, function(err,res) {
           if( err) {
             console.log(err);
           } else {
-            console.log('successfully completed resetting titleInKeywords. ' + res + 'items removed');
-          }
-      }
-    );  
-  }
-
-  data.forEach(function (el) {
-    var id = el._id;
-
-    if ( id ) {
-      removeData(id);
-    }
-  });
-};
-function resetRptDesIntersection (col) {
-  var data = Rpt.find();
-  var removeData = function(_id) {
-    Rpt.update(
-      {_id: _id}, 
-      { 
-        $unset: { 
-          titleInKeywords: "",
-        }
-      }, function(err,res) {
-          if( err) {
-            console.log(err);
-          } else {
-            console.log('successfully completed resetting titleInKeywords. ' + res + 'items removed');
+            console.log('successfully completed resetting percentMatchTitleDenomMasco. ' + res + 'items removed');
           }
       }
     );  
@@ -319,5 +336,23 @@ Meteor.methods({
   },
   resetRptTitleInKeywords: function () {
     resetRptTitleInKeywords();
+  },
+  resetRptTitleIntersection: function () {
+    resetRptTitleIntersection();
+  },
+  resetRpt: function () {
+    Rpt.remove({});
+  },
+  resetRep: function () {
+    Rep.remove({});
+  },
+  resetMascoKey: function () {
+    MascoKey.remove({});
+  },
+  resetMascoFour: function () {
+    MascoFour.remove({});
+  },
+  resetMascoFive: function () {
+    MascoFive.remove({});
   }
 });

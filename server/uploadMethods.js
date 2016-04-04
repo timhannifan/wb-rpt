@@ -24,6 +24,7 @@ function insertMascoFour(data) {
   var title = data.description_4_digit,
   officialCode = data.id,
   cleanTitle = cleanUp(data.description_4_digit),
+  tagsOnly = yakiSplitClean(cleanTitle),
   titleTags = yakiSplitClean(cleanTitle);
 
   titleTags.push(cleanTitle);
@@ -32,16 +33,19 @@ function insertMascoFour(data) {
    return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
   }));
 
-  console.log('cleanTags', cleanTags);
+  var cleanTagsOnly = _.uniq(_.reject(tagsOnly, function(el){
+   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
+  }));
 
-  function insertNewFour (id, title, tags) {
+  function insertNewFour (id, title, tags, tagsOnly) {
     MascoFour.insert({
       id: id,
       cleanTitle: title,
+      tagsOnly: tagsOnly,
       titleTags: tags
     });
   }
-  insertNewFour( officialCode, cleanTitle, cleanTags);
+  insertNewFour( officialCode, cleanTitle, cleanTags, cleanTagsOnly);
 
   console.log('completed mascoFour insert');
 }
@@ -52,25 +56,30 @@ function insertMascoFive(data) {
   officialCode = data.id,
   cleanTitle = cleanUp(data.description_5_digit),
   mapToFour = officialCode.substr(0, 4),
+  tagsOnly = yakiSplitClean(cleanTitle),
   titleTags = yakiSplitClean(cleanTitle);
 
   titleTags.push(cleanTitle);
+
   var cleanTags = _.uniq(_.reject(titleTags, function(el){
    return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
   }));
-  console.log('insertMasco5 cleantags ' + cleanTags);
+
+  var cleanTagsOnly = _.uniq(_.reject(tagsOnly, function(el){
+   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
+  }));
   
-  function insertMascoFive (id, mapToFour, title, tags) {
+  function insertMascoFive (id, mapToFour, title, tags, cleanTags) {
     MascoFive.insert({
       id: id,
       mapToFour: mapToFour,
       cleanTitle: title,
-      titleTags: tags
-
+      titleTags: tags,
+      tagsOnly: cleanTags
     });
   }
 
-  insertMascoFive( officialCode, mapToFour, cleanTitle, cleanTags);
+  insertMascoFive( officialCode, mapToFour, cleanTitle, cleanTags, cleanTagsOnly);
 
   console.log('completed mascoFive insert');
 }
@@ -113,13 +122,17 @@ function insertRep(data) {
   if (item.title) {
     item.cleanTitle = cleanUp(item.title);
     item.titleTags = yakiSplitClean(item.cleanTitle);
+    item.tagsOnly = yakiSplitClean(item.cleanTitle);
   }
 
-  if(item.titleTags) {
+  if(item.titleTags && item.tagsOnly) {
     item.titleTags.push(item.cleanTitle);
     item.cleanTags = _.uniq(_.reject(item.titleTags, function(el){
      return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
-    }));    
+    })); 
+    item.cleanTagsOnly = _.uniq(_.reject(item.tagsOnly, function(el){
+     return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
+    }));        
   }
 
   function insertCallback (item) {
@@ -145,6 +158,7 @@ function insertRpt(data) {
   }
   if (item.cleanTitle) {
     item.titleTags = yakiSplitClean(item.cleanTitle);
+    item.tagsOnly = yakiSplitClean(item.cleanTitle);
   }
   if (item.occ_desc) {
     item.cleanDesc = cleanUp(item.occ_desc);
@@ -153,11 +167,14 @@ function insertRpt(data) {
     item.descTags = yakiSplitClean(item.cleanDesc);
   }
 
-  if(item.titleTags) {
+  if(item.titleTags && item.tagsOnly) {
     item.titleTags.push(item.cleanTitle);
     item.cleanTitleTags = _.uniq(_.reject(item.titleTags, function(el){
      return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
-    }));    
+    }));
+    item.cleanTagsOnly = _.uniq(_.reject(item.tagsOnly, function(el){
+     return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
+    }));        
   }
 
   if(item.descTags) {
@@ -265,6 +282,22 @@ function findUniqueMascoKeywords(argument) {
   });
 }
 Meteor.methods({
+  parseUploadRep: function( data) {
+    check( data, Array );
+
+    for ( i = 0; i < data.length; i++ ) {
+      item   = data[ i ],
+      exists = Rep.findOne( { id: item.id } );
+
+      if ( !exists ) {
+      
+        insertRep(item);
+        insertMasterRep(item);
+      } else {
+        console.warn( 'Rejected. This item already exists in MascoFour.' );  
+      }
+    }
+  },
   parseUploadRpt: function( data) {
     check( data, Array );
 
@@ -279,7 +312,6 @@ Meteor.methods({
       }
     }
   },
-
   parseUploadMascoFive: function( data) {
     check( data, Array );
 
@@ -307,22 +339,6 @@ Meteor.methods({
       
         insertMascoFour(item);
         insertMasterFour(item);
-      } else {
-        console.warn( 'Rejected. This item already exists in MascoFour.' );  
-      }
-    }
-  },
-  parseUploadRep: function( data) {
-    check( data, Array );
-
-    for ( i = 0; i < data.length; i++ ) {
-      item   = data[ i ],
-      exists = Rep.findOne( { id: item.id } );
-
-      if ( !exists ) {
-      
-        insertRep(item);
-        insertMasterRep(item);
       } else {
         console.warn( 'Rejected. This item already exists in MascoFour.' );  
       }
