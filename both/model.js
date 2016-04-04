@@ -2,7 +2,6 @@ Rpt = new Mongo.Collection('Rpt');
 Rep = new Mongo.Collection('Rep');
 MascoFive = new Mongo.Collection('MascoFive');
 MascoFour = new Mongo.Collection('MascoFour');
-MascoThree = new Mongo.Collection('MascoThree');
 MascoKey = new Mongo.Collection('MascoKey');
 
 

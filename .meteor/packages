@@ -15,14 +15,14 @@ less
 # insecure
 
 iron:router
-reywood:publish-composite
+# reywood:publish-composite
 aldeed:simple-schema
 aldeed:collection2
 aldeed:autoform
 aldeed:template-extension
-dburles:collection-helpers
-matb33:collection-hooks
-anti:fake
+# dburles:collection-helpers
+# matb33:collection-hooks
+# anti:fake
 d3js:d3
 percolatestudio:synced-cron@1.1.0
 
@@ -48,4 +48,4 @@ harrison:papa-parse
 fortawesome:fontawesome
 nefiltari:yaki
 
-blast-text
+# blast-text
