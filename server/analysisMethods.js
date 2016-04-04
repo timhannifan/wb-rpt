@@ -1,4 +1,4 @@
-
+/// title == title
 var runTitleEqTitle = function () {
   var data = MascoKey.find({}).fetch();
   updateRptMatches = function(array, mascoCode) {
@@ -40,6 +40,7 @@ var runTitleEqTitle = function () {
       
   }
 };
+/// title $in keywords
 var runTitleInKeywords = function () {
   var data = MascoKey.find({}).fetch();
   updateRptMatches = function(array, mascoCode) {
@@ -80,6 +81,7 @@ var runTitleInKeywords = function () {
       
   }
 };
+/// title % intersection
 var runTitleIntersection = function () {
   var mascoData = MascoKey.find({}).fetch();
   var rptData = Rpt.find({}).fetch();
@@ -159,6 +161,7 @@ var runTitleIntersection = function () {
     
   }
 };
+/// description % intersection
 var runDescIntersection = function () {
   var mascoData = MascoKey.findOne({});//.fetch();
   var rptData = Rpt.find({}).fetch();
@@ -238,84 +241,235 @@ var runDescIntersection = function () {
     
   }
 };
-function resetRptTitleEqTitle (col) {
-  var data = Rpt.find();
-  var removeData = function(_id) {
-    Rpt.update(
-      {_id: _id}, 
-      { 
-        $unset: { 
-          titleEqTitle: ""
-        }
-      }, function(err,res) {
-          if( err) {
-            console.log(err);
+/// mascoTitleTagFourWeak
+var mascoTitleTagFourWeak = function () {
+  var mascoFetch = MascoFour.find({}).fetch();
+
+  function updateMatches(array, mascoCode) {
+    var data = array;
+
+    for (var i = data.length - 1; i >= 0; i--) {
+      console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + 'for mascoTitleTagFourWeak');
+      
+      Rpt.update({_id: data[i]._id }, 
+        {
+          $push: { 
+            mascoTitleTagFourWeak: mascoCode 
           }
-      }
-    );  
+        }
+      );
+    }
   }
 
-  data.forEach(function (el) {
-    var id = el._id;
+  function findMatches(tagArray) {
+    return Rpt.find({ cleanTagsOnly: { $in: tagArray } }).fetch();
+  }
+  
+  for (var i = mascoFetch.length - 1; i >= 0; i--) {
+    
+    var self = mascoFetch[i],
+    tags = mascoFetch[i].tagsOnly,
+    _id = mascoFetch[i]._id,
+    id = mascoFetch[i].id;
 
-    if ( id ) {
-      removeData(id);
-    }
-  });
+    var found = findMatches(tags);
+    updateMatches(found, id);
+
+  }
 };
-function resetRptTitleInKeywords (col) {
-  var data = Rpt.find();
-  var removeData = function(_id) {
-    Rpt.update(
-      {_id: _id}, 
-      { 
-        $unset: { 
-          titleInKeywords: ""
-        }
-      }, function(err,res) {
-          if( err) {
-            console.log(err);
-          } else {
-            console.log('successfully completed resetting titleInKeywords. ' + res + 'items removed');
+/// mascoTitleTagFourStrong
+var mascoTitleTagFourStrong = function () {
+  var mascoFetch = MascoFour.find({}).fetch();
+
+  function updateMatches(array, mascoCode) {
+    var data = array;
+    
+    for (var i = data.length - 1; i >= 0; i--) {
+      console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + ' for mascoTitleTagFourStrong');
+      
+      Rpt.update({_id: data[i]._id }, 
+        {
+          $push: { 
+            mascoTitleTagFourStrong: mascoCode 
           }
-      }
-    );  
+        }
+      );
+    }
   }
 
-  data.forEach(function (el) {
-    var id = el._id;
+  // using mongo $eq to select for strong equality on array match
+  function findMatches(tagArray) {
+    return Rpt.find({ cleanTagsOnly: {  $all: tagArray } }).fetch();
+  }
+  
+  for (var i = mascoFetch.length - 1; i >= 0; i--) {
+    
+    var self = mascoFetch[i],
+    tags = mascoFetch[i].tagsOnly,
+    _id = mascoFetch[i]._id,
+    id = mascoFetch[i].id;
 
-    if ( id ) {
-      removeData(id);
-    }
-  });
+    var found = findMatches(tags);
+    updateMatches(found, id);
+
+  }
 };
-function resetRptTitleIntersection (col) {
-  var data = Rpt.find();
-  var removeData = function(_id) {
-    Rpt.update(
-      {_id: _id}, 
-      { 
-        $unset: { 
-          percentMatchTitleDenomMasco: ""
-        }
-      }, function(err,res) {
-          if( err) {
-            console.log(err);
-          } else {
-            console.log('successfully completed resetting percentMatchTitleDenomMasco. ' + res + 'items removed');
+/// mascoTitleTagFiveWeak
+var mascoTitleTagFiveWeak = function () {
+  var mascoFetch = MascoFive.find({}).fetch();
+
+  function updateMatches(array, mascoCode) {
+    var data = array;
+
+    for (var i = data.length - 1; i >= 0; i--) {
+      console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + 'for mascoTitleTagFiveWeak');
+      
+      Rpt.update({_id: data[i]._id }, 
+        {
+          $push: { 
+            mascoTitleTagFiveWeak: mascoCode 
           }
-      }
-    );  
+        }
+      );
+    }
   }
 
-  data.forEach(function (el) {
-    var id = el._id;
+  function findMatches(tagArray) {
+    return Rpt.find({ cleanTagsOnly: { $in: tagArray } }).fetch();
+  }
+  
+  for (var i = mascoFetch.length - 1; i >= 0; i--) {
+    
+    var self = mascoFetch[i],
+    tags = mascoFetch[i].tagsOnly,
+    _id = mascoFetch[i]._id,
+    id = mascoFetch[i].mapToFour;
 
-    if ( id ) {
-      removeData(id);
+    var found = findMatches(tags);
+    updateMatches(found, id);
+
+  }
+};
+/// mascoTitleTagFiveStrong
+var mascoTitleTagFiveStrong = function () {
+  console.log('inside fivestrong');
+  var mascoFetch = MascoFive.find({}).fetch();
+
+  function updateMatches(array, mascoCode) {
+    var data = array;
+
+    for (var i = data.length - 1; i >= 0; i--) {
+      console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + ' for mascoTitleTagFiveStrong');
+      
+      Rpt.update({_id: data[i]._id }, 
+        {
+          $push: { 
+            mascoTitleTagFiveStrong: mascoCode 
+          }
+        }
+      );
     }
-  });
+  }
+
+  // using mongo $eq to select for strong equality on array match
+  function findMatches(tagArray) {
+    return Rpt.find({ cleanTagsOnly: {  $all: tagArray } }).fetch();
+  }
+  
+
+  for (var i = mascoFetch.length - 1; i >= 0; i--) {
+    
+    var self = mascoFetch[i],
+    tags = mascoFetch[i].tagsOnly,
+    _id = mascoFetch[i]._id,
+    id = mascoFetch[i].mapToFour;
+
+    var found = findMatches(tags);
+    updateMatches(found, id);
+
+  }
+};
+/// repTitleTagMatchWeak
+var repTitleTagMatchWeak = function () {
+  var keyFetch = Rep.find({}).fetch(),
+  updateMatches = function(array, mascoCode) {
+    var data = array,
+    code = mascoCode;
+
+    if(data && code) {
+      for (var i = data.length - 1; i >= 0; i--) {
+        console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + 'for repTitleTagMatchStrong');
+        
+        Rpt.update({_id: data[i]._id }, 
+          {
+            $push: { 
+              repTitleTagMatchStrong: code 
+            }
+          }
+        );
+      }
+    }
+  },
+  findMatches = function(tagArray) {
+    return Rpt.find({ cleanTagsOnly: {  $all: tagArray } }).fetch();
+  };
+  
+  for (var i = keyFetch.length - 1; i >= 0; i--) {
+    
+    var self = keyFetch[i],
+    tags = keyFetch[i].tagsOnly,
+    _id = keyFetch[i]._id,
+    id = keyFetch[i].mapToFour;
+
+    if (tags && id && _id){
+      var found = findMatches(tags);
+      if(found) {
+        updateMatches(found, id); 
+      }
+    }
+  }
+  console.log('repTitleTagMatchWeak complete');
+};
+/// repTitleTagMatchStrong 
+var repTitleTagMatchStrong = function () {
+  var keyFetch = Rep.find({}).fetch(),
+  updateMatches = function(array, mascoCode) {
+    var data = array,
+    code = mascoCode;
+
+    if(data && code) {
+      for (var i = data.length - 1; i >= 0; i--) {
+        console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + 'for repTitleTagMatchStrong');
+        
+        Rpt.update({_id: data[i]._id }, 
+          {
+            $push: { 
+              repTitleTagMatchStrong: code 
+            }
+          }
+        );
+      }
+    }
+  },
+  findMatches = function(tagArray) {
+    return Rpt.find({ cleanTagsOnly: {  $in: tagArray } }).fetch();
+  };
+  
+  for (var i = keyFetch.length - 1; i >= 0; i--) {
+    
+    var self = keyFetch[i],
+    tags = keyFetch[i].tagsOnly,
+    _id = keyFetch[i]._id,
+    id = keyFetch[i].mapToFour;
+
+    if (tags && id && _id){
+      var found = findMatches(tags);
+      if(found) {
+        updateMatches(found, id); 
+      }
+    }
+  }
+  console.log('repTitleTagMatchStrong complete');
 };
 
 Meteor.methods({
@@ -331,28 +485,26 @@ Meteor.methods({
   runDescIntersection: function() {
     runDescIntersection();
   },
-  resetRptTitleEqTitle: function () {
-    resetRptTitleEqTitle();
+  // strong matches using $all
+  mascoTitleTagFiveStrong: function() {
+    mascoTitleTagFiveStrong();
   },
-  resetRptTitleInKeywords: function () {
-    resetRptTitleInKeywords();
+    // strong matches using $all
+  repTitleTagMatchStrong: function() {
+    repTitleTagMatchStrong();
   },
-  resetRptTitleIntersection: function () {
-    resetRptTitleIntersection();
+    // strong matches using $all
+  mascoTitleTagFourStrong: function() {
+    mascoTitleTagFourStrong();
   },
-  resetRpt: function () {
-    Rpt.remove({});
+  // weak matches using $in
+  mascoTitleTagFiveWeak: function() {
+    mascoTitleTagFiveWeak();
   },
-  resetRep: function () {
-    Rep.remove({});
+  mascoTitleTagFourWeak: function() {
+    mascoTitleTagFourWeak();
   },
-  resetMascoKey: function () {
-    MascoKey.remove({});
-  },
-  resetMascoFour: function () {
-    MascoFour.remove({});
-  },
-  resetMascoFive: function () {
-    MascoFive.remove({});
-  }
+  repTitleTagMatchWeak: function() {
+    repTitleTagMatchWeak();
+  }  
 });
