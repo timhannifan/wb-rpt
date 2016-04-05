@@ -24,7 +24,7 @@ Template.rpt.events({
             console.log( error.reason );
           } else {
             template.uploading.set( false );
-            Bert.alert( 'Upload complete!', 'success', 'growl-top-right' );
+            // Bert.alert( 'Upload complete!', 'success', 'growl-top-right' );
           }
         });
       }
