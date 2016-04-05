@@ -1,3 +1,20 @@
+// "id",
+// "cleanTitle",
+// "cleanDesc",
+// "cleanTagsOnly",
+// "cleanDescTags",
+// "repTitleTagMatchStrong",
+// "titleEqTitle",
+// "titleInKeywords",
+// "percentMatchTitleKeywords",
+// "percentMatchDescKeywords",
+// "mascoTitleTagFourStrong",
+// "mascoTitleTagFourWeak",
+// "mascoTitleTagFiveStrong",
+// "mascoTitleTagFiveWeak",
+// "repTitleTagMatchStrong",
+// "repTitleTagMatchWeak"	
+
 Meteor.methods({
 	exportAllRpt: function() {		
 		var fields = [
@@ -6,17 +23,9 @@ Meteor.methods({
 			"cleanDesc",
 			"cleanTagsOnly",
 			"cleanDescTags",
-			// "repTitleTagMatchStrong",
-			"titleEqTitle",
-			"titleInKeywords",
-			// "percentMatchTitleKeywords",
-			// "percentMatchDescKeywords",
-			// "mascoTitleTagFourStrong",
-			// "mascoTitleTagFourWeak",
-			// "mascoTitleTagFiveStrong",
-			// "mascoTitleTagFiveWeak",
-			// "repTitleTagMatchStrong",
-			// "repTitleTagMatchWeak"	
+			"sector"
+			// "titleEqTitle",
+			// "titleInKeywords",
 		];
  
 		var data = [];		
@@ -31,17 +40,9 @@ Meteor.methods({
 				obj.cleanDesc,
 				obj.cleanTagsOnly,
 				obj.cleanDescTags,
-				// obj.repTitleTagMatchStrong,
 				obj.titleEqTitle,
 				obj.titleInKeywords,
-				// obj.percentMatchTitleKeywords
-				// obj.percentMatchDescKeywords,
-				// obj.mascoTitleTagFourStrong,
-				// obj.mascoTitleTagFourWeak,
-				// obj.mascoTitleTagFiveStrong,
-				// obj.mascoTitleTagFiveWeak,
-				// obj.repTitleTagMatchStrong,
-				// obj.repTitleTagMatchWeak	
+				obj.sector,
 			]);
 		});
  
@@ -58,7 +59,7 @@ Meteor.methods({
 	
 		var data = [];		
 	
-		var rows = Rpt.find().fetch();
+		var rows = Rpt.find({$exists: {percentMatchTitleKeywords: true}}).fetch();
 		
 		_.each(rows, function(obj) {
 			// console.log(obj);
@@ -68,26 +69,29 @@ Meteor.methods({
 			]);
 			
 			var intersections = obj.percentMatchTitleKeywords;
+			console.log(intersections);
 
 
-			if (intersections){
 
-				_.each(intersections, function(el){
-					console.log(el);
-					var intArray = [];
-					intArray.push([
-						el.mascoCode,
-						el.rptArrayL,
-						el.intersection,
-						el.intersectionL,
-						el.mascoArrayL,
-						el.percentVsMascoRptSize,
-						el.percentVsRptSize
-					]);
 
-					data.push(intArray);
-				});
-			}	
+			// if (intersections){
+
+			// 	_.each(intersections, function(el){
+			// 		console.log(el);
+			// 		var intArray = [];
+			// 		intArray.push([
+			// 			el.mascoCode,
+			// 			el.rptArrayL,
+			// 			el.intersection,
+			// 			el.intersectionL,
+			// 			el.mascoArrayL,
+			// 			el.percentVsMascoRptSize,
+			// 			el.percentVsRptSize
+			// 		]);
+
+			// 		data.push(intArray);
+			// 	});
+			// }	
 
 		});
 	

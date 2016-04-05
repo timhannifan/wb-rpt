@@ -2,7 +2,8 @@ Template.export.events({
 	"click #export": function() {
 		MyAppExporter.exportAllRpt();
 	},
-	"click #exportPercent": function() {
+	"click #exportPercentTitle": function() {
+		console.log('clicked exportPercentTitle');
 		MyAppExporter.exportPercentTitle();
 	},
 });
