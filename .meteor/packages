@@ -11,7 +11,7 @@ http
 coffeescript
 less
 
-app-lib
+# app-lib
 
 iron:router
 # reywood:publish-composite
