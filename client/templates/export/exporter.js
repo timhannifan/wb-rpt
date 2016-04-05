@@ -12,6 +12,19 @@ MyAppExporter = {
 			self._downloadCSV(csv);
 		});
 	},
+	exportPercentTitle: function() {
+		var self = this;
+		Meteor.call("exportPercentTitle", function(error, data) {
+ 
+			if ( error ) {
+				alert(error); 
+				return false;
+			}
+			
+			var csv = Papa.unparse(data);
+			self._downloadCSV(csv);
+		});
+	},
  
 	_downloadCSV: function(csv) {
 		var blob = new Blob([csv]);

@@ -1,34 +1,13 @@
 <template name="export">
-<div id="content1">
-  <paper-card heading="Exports" class="card">
-    <div class="card-content">
-       <div class="flex">
-        	<div role="listbox">
-        	  <paper-icon-item>
-        	    <iron-icon icon="file-download" item-icon></iron-icon>
-        	    Masco Key
-        	  </paper-icon-item>
-        	  <paper-icon-item>
-        	    <iron-icon icon="file-download" item-icon></iron-icon>
-        	    Masco 4
-        	  </paper-icon-item>
-        	  <paper-icon-item>
-        	    <iron-icon icon="file-download" item-icon></iron-icon>
-        	    Masco 5
-        	  </paper-icon-item>
-        	  <paper-icon-item>
-        	    <iron-icon icon="file-download" item-icon></iron-icon>
-        	    REP
-        	  </paper-icon-item>
-        	  <paper-icon-item>
-        	    <iron-icon icon="file-download" item-icon id="export"></iron-icon>
-        	    RPT
-        	  </paper-icon-item>
-        	</div>
-        </div>
-		<!-- <button type="button" id="export">Download</button> -->
-    </div>
-  </paper-card>
-</div>
+    <div id="content1">
+      <paper-card heading="Exports" class="card">
+        <div class="card-content">
 
+        <paper-button raised id="export"><iron-icon icon="file-download"></iron-icon>RPT Descriptive Data</paper-button>
+
+        <paper-button raised id="exportPercentTitle"><iron-icon icon="file-download"></iron-icon>RPT Percent Match (Title)</paper-button>
+
+        </div>
+      </paper-card>
+    </div>
 </template>

@@ -12,9 +12,9 @@ TabularTables.MascoFive = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "id", title: "OfficialId", class: "flex-2"},
-    {data: "cleanTitle", title: "Position", class: "flex-4"},
-    {data: "titleTags", title: "Keywords", class: "flex-6"}
+    {data: "id", title: "OfficialId", class: "flex-4"},
+    {data: "cleanTitle", title: "Title", class: "flex-4"},
+    {data: "titleTags", title: "Keywords", class: "flex-4"}
   ]
 });
 
@@ -25,9 +25,9 @@ TabularTables.MascoFour = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "id", title: "OfficialId", class: "flex-2"},
-    {data: "cleanTitle", title: "Position", class: "flex-4"},
-    {data: "titleTags", title: "Keywords", class: "flex-6"}
+    {data: "id", title: "Masco4", class: "flex-4"},
+    {data: "cleanTitle", title: "Title", class: "flex-4"},
+    {data: "titleTags", title: "Keywords", class: "flex-4"}
   ]
 });
 
@@ -38,9 +38,9 @@ TabularTables.MascoKey = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "officialCode", title: "Official Code", class: "flex-2"},
-    {data: "officialTitle", title: "Position", class: "flex-4"},
-    {data: "keywords", title: "Keywords", class: "flex-6"}
+    {data: "officialCode", title: "Masco4", class: "flex-4"},
+    {data: "officialTitle", title: "Title", class: "flex-4"},
+    {data: "keywords", title: "Keywords", class: "flex-4"}
   ]
 });
 
@@ -51,8 +51,8 @@ TabularTables.Rep = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "mapToFour", title: "Masco4", class: "flex-1"},
-    {data: "cleanTitle", title: "Position", class: "flex-2"},
+    {data: "mapToFour", title: "Masco4", class: "flex-4"},
+    {data: "cleanTitle", title: "Title", class: "flex-4"},
     {data: "cleanTags", title: "Keywords", class: "flex-4"}
   ]
 });
@@ -64,8 +64,8 @@ TabularTables.Rpt = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "cleanTitle", title: "Postion", class: "flex-3"},
-    {data: "cleanTitleTags", title: "TitleTags", class: "flex-4"},
-    {data: "cleanDescTags", title: "DescriptionTags", class: "flex-4 overflow-x-scroll"}
+    {data: "id", title: "id", class: "flex-4"},
+    {data: "cleanTitle", title: "Title", class: "flex-4"},
+    {data: "cleanDesc", title: "Description", class: "flex-4"}
   ]
 });

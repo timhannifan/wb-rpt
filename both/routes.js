@@ -6,16 +6,13 @@ Meteor.startup(function () {
     layoutTemplate: 'applicationLayout',
     loadingTemplate: 'loading',
     not_foundTemplate: 'notFound',
-    // autoRender: true,
-    // autoStart: false,
-    waitOn: function() {
-      Meteor.subscribe('Rpt');
-      Meteor.subscribe('Rep');
-      Meteor.subscribe('MascoKey');
-      Meteor.subscribe('MascoFive');
-      Meteor.subscribe('MascoFour');
-      // this.next();
-    },
+    action: function () {
+      if (this.ready()) {
+        this.render();
+      } else {
+        this.render('loading');
+      }
+    }
   });
 
   Router.map(function(){
@@ -25,27 +22,38 @@ Meteor.startup(function () {
     });
     this.route('rpt', {
       path: '/rpt',
-      template:'rpt'
+      template:'rpt',
+      waitOn: function() {
+        return Meteor.subscribe('Rpt');
+      }    
     });
     this.route('rep', {
       path: '/rep',
-      template:'rep'
+      template:'rep',
+      waitOn: function() {
+        return Meteor.subscribe('Rep');
+      }
     });
     this.route('mascoFive', {
       path: 'masco-5',
-      template:'mascoFive'
+      template:'mascoFive',
+      waitOn: function() {
+        return Meteor.subscribe('MascoFive');
+      }
     });
     this.route('mascoFour', {
       path: '/masco-4',
-      template:'mascoFour'
-    });
-    this.route('mascoThree', {
-      path: '/masco-3',
-      template:'mascoThree'
+      template:'mascoFour',
+      waitOn: function() {
+        return Meteor.subscribe('MascoFour');
+      }
     });
     this.route('mascoKey', {
       path: '/masco-key',
-      template:'mascoKey'
+      template:'mascoKey',
+      waitOn: function() {
+        return Meteor.subscribe('MascoKey');
+      }
     });
     this.route('export', {
       path: '/export',
