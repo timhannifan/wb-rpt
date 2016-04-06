@@ -357,16 +357,18 @@ var mascoTitleTagFiveStrong = function () {
   console.log('inside fivestrong');
   var mascoFetch = MascoFive.find({}).fetch();
 
-  function updateMatches(array, mascoCode) {
+  function updateFiveMatches(array, masco4Code, masco5Code) {
     var data = array;
 
     for (var i = data.length - 1; i >= 0; i--) {
-      console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + ' for mascoTitleTagFiveStrong');
+      console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ masco4Code + ' for mascoTitleTagFiveStrong');
       
       Rpt.update({_id: data[i]._id }, 
         {
-          $push: { 
-            mascoTitleTagFiveStrong: mascoCode 
+          $set: { 
+            mascoTitleTagFiveStrong: masco4Code,
+            mascoFiveCompleteFlag: 1,
+            mascoFiveStrongMatch:  masco5Code
           }
         }
       );
@@ -381,13 +383,13 @@ var mascoTitleTagFiveStrong = function () {
 
   for (var i = mascoFetch.length - 1; i >= 0; i--) {
     
-    var self = mascoFetch[i],
-    tags = mascoFetch[i].tagsOnly,
-    _id = mascoFetch[i]._id,
-    id = mascoFetch[i].mapToFour;
+    // var self = mascoFetch[i],
+    // tags = mascoFetch[i].tagsOnly,
+    // _id = mascoFetch[i]._id,
+    // id = mascoFetch[i].mapToFour;
 
-    var found = findMatches(tags);
-    updateMatches(found, id);
+    console.log('searching for masco5Tags: ' + mascoFetch[i].tagsOnly);
+    updateFiveMatches(findMatches(mascoFetch[i].tagsOnly),  mascoFetch[i].mapToFour,  mascoFetch[i].id);
 
   }
 };
@@ -475,43 +477,37 @@ var repTitleTagMatchWeak = function () {
 };
 
 Meteor.methods({
-runTitleEqTitle: function() {
-  runTitleEqTitle();
-},
-
-runTitleInKeywords: function() {
-  runTitleInKeywords();
-},
-
-runTitleIntersection: function() {
-  runTitleIntersection();
-},
-
-runDescIntersection: function() {
-  runDescIntersection();
-},
-
-mascoTitleTagFiveStrong: function() {
-  mascoTitleTagFiveStrong();
-},
-
-mascoTitleTagFourStrong: function() {
-  mascoTitleTagFourStrong();
-},
-
-mascoTitleTagFiveWeak: function() {
-  mascoTitleTagFiveWeak();
-},
-
-mascoTitleTagFourWeak: function() {
-  mascoTitleTagFourWeak();
-},
-
-repTitleTagMatchWeak: function() {
-  repTitleTagMatchWeak();
-},
-
-repTitleTagMatchStrong: function() {
-  repTitleTagMatchStrong();
-}    
+  runTitleEqTitle: function() {
+    runTitleEqTitle();
+  },
+  runTitleInKeywords: function() {
+    runTitleInKeywords();
+  },
+  runTitleIntersection: function() {
+    runTitleIntersection();
+  },
+  runDescIntersection: function() {
+    runDescIntersection();
+  },
+  // strong matches using $all
+  mascoTitleTagFiveStrong: function() {
+    mascoTitleTagFiveStrong();
+  },
+    // strong matches using $all
+  mascoTitleTagFourStrong: function() {
+    mascoTitleTagFourStrong();
+  },
+  // weak matches using $in
+  mascoTitleTagFiveWeak: function() {
+    mascoTitleTagFiveWeak();
+  },
+  mascoTitleTagFourWeak: function() {
+    mascoTitleTagFourWeak();
+  },
+  repTitleTagMatchWeak: function() {
+    repTitleTagMatchWeak();
+  },
+  repTitleTagMatchStrong: function() {
+    repTitleTagMatchStrong();
+  }    
 });

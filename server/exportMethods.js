@@ -117,115 +117,33 @@ Meteor.methods({
 	exportFourTitleStrong: function() {
 		console.log('exportFourTitleStrong called');
 		var jsonData, csvData, fullData;
-		
 		fullData = Rpt.find({mascoTitleTagFourStrong: {$exists: true}}).fetch();
-
 		jsonData = [];
 
-		function callback(data, userId){
-			var pushThese = data;
-
-			for (var i = 0; i < pushThese.length; i++) {
-				pushThese[i].userId = userId;
-				// for (var attrname in pushThese[i]) { 
-				// 	// console.log(attrname);
-				// }
-				// console.dir(pushThese[i]);
-				jsonData.push(pushThese[i]);
-			}
-		}
-
-		function getSorted(unsortedArray){
-			function count(arr) { // count occurances
-			    var o = {}, i;
-			    for (i = 0; i < arr.length; ++i) {
-			        if (o[arr[i]]) ++o[arr[i]];
-			        else o[arr[i]] = 1;
-			    }
-			    return o;
-			}
-
-			function weight(arr_in) { // unique sorted by num occurances
-			    var o = count(arr_in),
-			        arr = [], i;
-			    for (i in o) arr.push({masco4: +i, frequency: o[i]}); // fast unique only
-			    arr.sort(function (a, b) {
-			        return a.frequency < b.frequency;
-			    });
-				// console.log(arr);
-			    return arr;
-			}
-
-			return weight(unsortedArray);	
-		}
-
 		for (var i = 0; i < fullData.length; i++) {
-			//array of objects
-			var unsortedArray = fullData[i].mascoTitleTagFourStrong,
-			userId = fullData[i].id;
-
-			if (unsortedArray && userId){
-				callback(getSorted(unsortedArray), userId);
-			}
+			jsonData.push({
+				mascoTitleTagFourStrong: fullData[i].mascoTitleTagFourStrong,
+				id: fullData[i].id
+			});
 		}
-		
-		return jsonData;		
+		//array of objects
+		return jsonData;	
 	},		
 	exportFiveTitleStrong: function() {
 		console.log('exportFiveTitleStrong called');
 		var jsonData, csvData, fullData;
-		
 		fullData = Rpt.find({mascoTitleTagFiveStrong: {$exists: true}}).fetch();
-
 		jsonData = [];
 
-		function callback(data, userId){
-			var pushThese = data;
-
-			for (var i = 0; i < pushThese.length; i++) {
-				pushThese[i].userId = userId;
-				// for (var attrname in pushThese[i]) { 
-				// 	// console.log(attrname);
-				// }
-				// console.dir(pushThese[i]);
-				jsonData.push(pushThese[i]);
-			}
-		}
-
-		function getSorted(unsortedArray){
-			function count(arr) { // count occurances
-			    var o = {}, i;
-			    for (i = 0; i < arr.length; ++i) {
-			        if (o[arr[i]]) ++o[arr[i]];
-			        else o[arr[i]] = 1;
-			    }
-			    return o;
-			}
-
-			function weight(arr_in) { // unique sorted by num occurances
-			    var o = count(arr_in),
-			        arr = [], i;
-			    for (i in o) arr.push({masco4: +i, frequency: o[i]}); // fast unique only
-			    arr.sort(function (a, b) {
-			        return a.frequency < b.frequency;
-			    });
-				// console.log(arr);
-			    return arr;
-			}
-
-			return weight(unsortedArray);	
-		}
-
 		for (var i = 0; i < fullData.length; i++) {
-			//array of objects
-			var unsortedArray = fullData[i].mascoTitleTagFiveStrong,
-			userId = fullData[i].id;
+			jsonData.push({
+				rptId: fullData[i].id,
+				mascoTitleTagFiveStrong: fullData[i].mascoTitleTagFiveStrong,
+				mascoFiveStrongMatch: fullData[i].mascoFiveStrongMatch 
 
-			if (unsortedArray && userId){
-				callback(getSorted(unsortedArray), userId);
-			}
+			});
 		}
-		
+		//array of objects
 		return jsonData;		
 	},		
 	exportRepTitleStrong: function() {

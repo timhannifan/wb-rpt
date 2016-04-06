@@ -175,7 +175,7 @@ resetmascoTitleTagFiveStrong: function () {
   var count = 0;
   data.forEach(function (el) {
     count += 1;
-    Rpt.update({_id: el._id}, {$set: { mascoTitleTagFiveStrong: []}}, 
+    Rpt.update({_id: el._id}, {$set: { mascoTitleTagFiveStrong: null}}, 
       function(err,res){
       if (err) {console.log(err)}
         else{
