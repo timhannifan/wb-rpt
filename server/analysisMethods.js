@@ -475,37 +475,43 @@ var repTitleTagMatchWeak = function () {
 };
 
 Meteor.methods({
-  runTitleEqTitle: function() {
-    runTitleEqTitle();
-  },
-  runTitleInKeywords: function() {
-    runTitleInKeywords();
-  },
-  runTitleIntersection: function() {
-    runTitleIntersection();
-  },
-  runDescIntersection: function() {
-    runDescIntersection();
-  },
-  // strong matches using $all
-  mascoTitleTagFiveStrong: function() {
-    mascoTitleTagFiveStrong();
-  },
-    // strong matches using $all
-  mascoTitleTagFourStrong: function() {
-    mascoTitleTagFourStrong();
-  },
-  // weak matches using $in
-  mascoTitleTagFiveWeak: function() {
-    mascoTitleTagFiveWeak();
-  },
-  mascoTitleTagFourWeak: function() {
-    mascoTitleTagFourWeak();
-  },
-  repTitleTagMatchWeak: function() {
-    repTitleTagMatchWeak();
-  },
-  repTitleTagMatchStrong: function() {
-    repTitleTagMatchStrong();
-  }    
+runTitleEqTitle: function() {
+  runTitleEqTitle();
+},
+
+runTitleInKeywords: function() {
+  runTitleInKeywords();
+},
+
+runTitleIntersection: function() {
+  runTitleIntersection();
+},
+
+runDescIntersection: function() {
+  runDescIntersection();
+},
+
+mascoTitleTagFiveStrong: function() {
+  mascoTitleTagFiveStrong();
+},
+
+mascoTitleTagFourStrong: function() {
+  mascoTitleTagFourStrong();
+},
+
+mascoTitleTagFiveWeak: function() {
+  mascoTitleTagFiveWeak();
+},
+
+mascoTitleTagFourWeak: function() {
+  mascoTitleTagFourWeak();
+},
+
+repTitleTagMatchWeak: function() {
+  repTitleTagMatchWeak();
+},
+
+repTitleTagMatchStrong: function() {
+  repTitleTagMatchStrong();
+}    
 });
