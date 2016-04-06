@@ -58,6 +58,9 @@ Meteor.startup(function () {
     this.route('export', {
       path: '/export',
       template:'export'
+      // waitOn: function() {
+        // return Meteor.subscribe('Rpt');
+      // }
     });
   });
 });
