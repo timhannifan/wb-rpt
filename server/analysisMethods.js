@@ -241,7 +241,6 @@ var runDescIntersection = function () {
     
   }
 };
-
 /// mascoTitleTagFourStrong
 var mascoTitleTagFourStrong = function () {
   var mascoFetch = MascoFour.find({}).fetch();
@@ -279,79 +278,6 @@ var mascoTitleTagFourStrong = function () {
 
   }
 };
-
-/// mascoTitleTagFourWeak
-var mascoTitleTagFourWeak = function () {
-  var mascoFetch = MascoFour.find({}).fetch();
-
-  function updateMatches(array, mascoCode) {
-    var data = array;
-
-    for (var i = data.length - 1; i >= 0; i--) {
-      console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + 'for mascoTitleTagFourWeak');
-      
-      Rpt.update({_id: data[i]._id }, 
-        {
-          $push: { 
-            mascoTitleTagFourWeak: mascoCode 
-          }
-        }
-      );
-    }
-  }
-
-  function findMatches(tagArray) {
-    return Rpt.find({ cleanTagsOnly: { $in: tagArray } }).fetch();
-  }
-  
-  for (var i = mascoFetch.length - 1; i >= 0; i--) {
-    
-    var self = mascoFetch[i],
-    tags = mascoFetch[i].tagsOnly,
-    _id = mascoFetch[i]._id,
-    id = mascoFetch[i].id;
-
-    var found = findMatches(tags);
-    updateMatches(found, id);
-
-  }
-};
-/// mascoTitleTagFiveWeak
-var mascoTitleTagFiveWeak = function () {
-  var mascoFetch = MascoFive.find({}).fetch();
-
-  function updateMatches(array, mascoCode) {
-    var data = array;
-
-    for (var i = data.length - 1; i >= 0; i--) {
-      console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + 'for mascoTitleTagFiveWeak');
-      
-      Rpt.update({_id: data[i]._id }, 
-        {
-          $push: { 
-            mascoTitleTagFiveWeak: mascoCode 
-          }
-        }
-      );
-    }
-  }
-
-  function findMatches(tagArray) {
-    return Rpt.find({ cleanTagsOnly: { $in: tagArray } }).fetch();
-  }
-  
-  for (var i = mascoFetch.length - 1; i >= 0; i--) {
-    
-    var self = mascoFetch[i],
-    tags = mascoFetch[i].tagsOnly,
-    _id = mascoFetch[i]._id,
-    id = mascoFetch[i].mapToFour;
-
-    var found = findMatches(tags);
-    updateMatches(found, id);
-
-  }
-};
 /// mascoTitleTagFiveStrong
 var mascoTitleTagFiveStrong = function () {
   console.log('inside fivestrong');
@@ -374,12 +300,10 @@ var mascoTitleTagFiveStrong = function () {
       );
     }
   }
-
   // using mongo $eq to select for strong equality on array match
   function findMatches(tagArray) {
     return Rpt.find({ cleanTagsOnly: {  $all: tagArray } }).fetch();
   }
-  
 
   for (var i = mascoFetch.length - 1; i >= 0; i--) {
     
@@ -395,86 +319,77 @@ var mascoTitleTagFiveStrong = function () {
 };
 /// repTitleTagMatchStrong 
 var repTitleTagMatchStrong = function () {
-  var keyFetch = Rep.find({}).fetch(),
-  updateMatches = function(array, mascoCode) {
-    var data = array,
-    code = mascoCode;
+  var keyFetch = Rep.find({}).fetch();
+   function updateRepMatches(array, mascoCode, repmatchid) {
+      var data = array;
 
-    if(data && code) {
       for (var i = data.length - 1; i >= 0; i--) {
-        console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + 'for repTitleTagMatchStrong');
+        console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + ' for repTitleTagMatchStrong');
         
-        Rpt.update({_id: data[i]._id }, 
-          {
+        Rpt.update({_id: data[i]._id }, {
             $push: { 
-              repTitleTagMatchStrong: code 
+              repTitleTagMatchStrong: {
+                mascoCode: mascoCode,
+                repTitleTagMatch: repmatchid
+              }
             }
-          }
-        );
+          });
       }
-    }
-  },
-  findMatches = function(tagArray) {
+  }
+
+  function findMatches(tagArray) {
     return Rpt.find({ cleanTagsOnly: {  $all: tagArray } }).fetch();
-  };
+  }
   
   for (var i = keyFetch.length - 1; i >= 0; i--) {
-    
-    var self = keyFetch[i],
-    tags = keyFetch[i].tagsOnly,
-    _id = keyFetch[i]._id,
-    id = keyFetch[i].mapToFour;
+    console.log('searching for REP tags: ' + keyFetch[i].cleanTagsOnly);
 
-    if (tags && id && _id){
-      var found = findMatches(tags);
-      if(found) {
-        updateMatches(found, id); 
-      }
-    }
+    updateRepMatches(_.uniq(findMatches(keyFetch[i].cleanTagsOnly)),  keyFetch[i].mapToFour,  keyFetch[i]._id);
+
   }
-  console.log('repTitleTagMatchStrong complete');
-};
-/// repTitleTagMatchWeak
-var repTitleTagMatchWeak = function () {
-  var keyFetch = Rep.find({}).fetch(),
-  updateMatches = function(array, mascoCode) {
-    var data = array,
-    code = mascoCode;
 
-    if(data && code) {
-      for (var i = data.length - 1; i >= 0; i--) {
-        console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + 'for repTitleTagMatchStrong');
+};
+// /// repTitleTagMatchWeak
+// var repTitleTagMatchWeak = function () {
+//   var keyFetch = Rep.find({}).fetch(),
+//   updateMatches = function(array, mascoCode) {
+//     var data = array,
+//     code = mascoCode;
+
+//     if(data && code) {
+//       for (var i = data.length - 1; i >= 0; i--) {
+//         console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + 'for repTitleTagMatchStrong');
         
-        Rpt.update({_id: data[i]._id }, 
-          {
-            $push: { 
-              repTitleTagMatchWeak: code 
-            }
-          }
-        );
-      }
-    }
-  },
-  findMatches = function(tagArray) {
-    return Rpt.find({ cleanTagsOnly: {  $in: tagArray } }).fetch();
-  };
+//         Rpt.update({_id: data[i]._id }, 
+//           {
+//             $push: { 
+//               repTitleTagMatchWeak: code 
+//             }
+//           }
+//         );
+//       }
+//     }
+//   },
+//   findMatches = function(tagArray) {
+//     return Rpt.find({ cleanTagsOnly: {  $in: tagArray } }).fetch();
+//   };
   
-  for (var i = keyFetch.length - 1; i >= 0; i--) {
+//   for (var i = keyFetch.length - 1; i >= 0; i--) {
     
-    var self = keyFetch[i],
-    tags = keyFetch[i].tagsOnly,
-    _id = keyFetch[i]._id,
-    id = keyFetch[i].mapToFour;
+//     var self = keyFetch[i],
+//     tags = keyFetch[i].tagsOnly,
+//     _id = keyFetch[i]._id,
+//     id = keyFetch[i].mapToFour;
 
-    if (tags && id && _id){
-      var found = findMatches(tags);
-      if(found) {
-        updateMatches(found, id); 
-      }
-    }
-  }
-  console.log('repTitleTagMatchWeak complete');
-};
+//     if (tags && id && _id){
+//       var found = findMatches(tags);
+//       if(found) {
+//         updateMatches(found, id); 
+//       }
+//     }
+//   }
+//   console.log('repTitleTagMatchWeak complete');
+// };
 
 Meteor.methods({
   runTitleEqTitle: function() {

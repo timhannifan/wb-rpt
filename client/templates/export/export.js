@@ -42,5 +42,14 @@ Template.export.events({
 		console.log('clicked methodExportRep');
 		MyAppExporter.methodExportRep();
 	},
+	"click #methodExportTitleInKeywords": function() {
+		console.log('clicked methodExportTitleInKeywords');
+		MyAppExporter.methodExportTitleInKeywords();
+	},
+
+	"click #methodExportTitleEqualsTitle": function() {
+		console.log('clicked methodExportTitleEqualsTitle');
+		MyAppExporter.methodExportTitleEqualsTitle();
+	},
 
 });

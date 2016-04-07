@@ -1,3 +1,4 @@
+
 function cleanUp(string) {
   return string.replace(/\0/g,' ')
                 .replace(/\W/g,' ')
@@ -16,6 +17,14 @@ function insertRptCallback (item) {
       console.log('successfully inserted new Rpt item');
     }
   });
+}
+function runRejectedTags(array) {
+  return _.reject(array, function(el){
+     return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
+    });
+}
+function findUniques(array){
+  return _.uniq(array);
 }
 function insertMascoFour(data) {
 
@@ -53,33 +62,33 @@ function insertMascoFive(data) {
   check( data, Object );
 
   var title = data.description_5_digit,
-  officialCode = data.id,
+  id = data.id,
   cleanTitle = cleanUp(data.description_5_digit),
-  mapToFour = officialCode.substr(0, 4),
+  mapToFour = data.id.substr(0, 4),
   tagsOnly = yakiSplitClean(cleanTitle),
   titleTags = yakiSplitClean(cleanTitle);
 
-  titleTags.push(cleanTitle);
 
-  var cleanTags = _.uniq(_.reject(titleTags, function(el){
+  titleTags.push(cleanTitle);
+  
+  var cleanTitleTags = _.uniq(_.reject(titleTags, function(el){
    return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
   }));
 
   var cleanTagsOnly = _.uniq(_.reject(tagsOnly, function(el){
    return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
   }));
-  
-  function insertMascoFive (id, mapToFour, title, tags, cleanTags) {
+
+  function insertNewFive (id, mapToFour, cleanTitle, cleanTitleTags, cleanTagsOnly) {
     MascoFive.insert({
       id: id,
       mapToFour: mapToFour,
-      cleanTitle: title,
-      titleTags: tags,
-      tagsOnly: cleanTags
+      cleanTitle: cleanTitle,
+      titleTags: cleanTitleTags,
+      tagsOnly: cleanTagsOnly
     });
   }
-
-  insertMascoFive( officialCode, mapToFour, cleanTitle, cleanTags, cleanTagsOnly);
+  insertNewFive(id, mapToFour, cleanTitle, cleanTitleTags, cleanTagsOnly);    
 
   console.log('completed mascoFive insert');
 }
@@ -317,7 +326,7 @@ Meteor.methods({
 
     for ( i = 0; i < data.length; i++ ) {
       item   = data[ i ],
-      exists = MascoFive.findOne( { description_5_digit: item.description_5_digit } );
+      exists = MascoFive.findOne( { id: item.id } );
 
       if ( !exists ) {
         insertMascoFive(item);
@@ -347,4 +356,12 @@ Meteor.methods({
   findUniqueMascoKeywords: function () {
     findUniqueMascoKeywords();
   },
+  findUniqueMascoFiveKeywords: function () {
+    findUniqueMascoKeywords();
+  },
 });
+
+
+// console.log(Yaki.Stopwords.en);
+// Yaki.Stopwords.pull('research');
+// console.log(Yaki.Stopwords.en);

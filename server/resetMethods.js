@@ -84,6 +84,23 @@ resetRptTitleEqTitle: function () {
 resetRptTitleInKeywords: function () {
   resetRptTitleInKeywords();
 },
+resetRptDescIntersection: function () {
+  var data = Rpt.find({});
+  var count = 0;
+  data.forEach(function (el) {
+    count += 1;
+    Rpt.update({_id: el._id}, {$set: { percentMatchDescKeywords: []}}, 
+      function(err,res){
+      if (err) {console.log(err)}
+        else{
+          console.log('percentMatchDescKeywords delete successful');
+        }
+    }
+    );
+  });
+
+  console.log('resetpercentMatchDescKeywords complete');
+},
 resetRptTitleIntersection: function () {
   resetRptTitleIntersection();
 },
@@ -101,57 +118,6 @@ resetMascoFour: function () {
 },
 resetMascoFive: function () {
   MascoFive.remove({});
-},
-resetrepTitleTagMatchStrong: function () {
-  var data = Rpt.find({});
-  var count = 0;
-  data.forEach(function (el) {
-    count += 1;
-    Rpt.update({_id: el._id}, {$set: { repTitleTagMatchStrong: []}}, 
-      function(err,res){
-      if (err) {console.log(err)}
-        else{
-          console.log('repTitleTagMatchStrong delete successful');
-        }
-    }
-    );
-  });
-
-  console.log('updated # of items ' + count );
-},
-resetrepTitleTagMatchWeak: function () {
-  var data = Rpt.find({});
-  var count = 0;
-  data.forEach(function (el) {
-    count += 1;
-    Rpt.update({_id: el._id}, {$set: { repTitleTagMatchWeak: []}}, 
-      function(err,res){
-      if (err) {console.log(err)}
-        else{
-          console.log('repTitleTagMatchWeak delete successful');
-        }
-    }
-    );
-  });
-
-  console.log('updated # of items ' + count );
-},
-resetmascoTitleTagFourWeak: function () {
-  var data = Rpt.find({});
-  var count = 0;
-  data.forEach(function (el) {
-    count += 1;
-    Rpt.update({_id: el._id}, {$set: { mascoTitleTagFourWeak: []}}, 
-      function(err,res){
-      if (err) {console.log(err)}
-        else{
-          console.log('mascoTitleTagFourWeak delete successful');
-        }
-    }
-    );
-  });
-
-  console.log('updated # of items ' + count );
 },
 resetmascoTitleTagFourStrong: function () {
   var data = Rpt.find({});
@@ -186,5 +152,27 @@ resetmascoTitleTagFiveStrong: function () {
   });
 
   console.log('resetmascoTitleTagFiveStrong complete');
-}
+},
+resetrepTitleTagMatchStrong: function () {
+  var data = Rpt.find({});
+  var count = 0;
+  data.forEach(function (el) {
+    count += 1;
+    Rpt.update({_id: el._id}, {
+        $set: {  
+          repTitleTagMatchStrong: [],
+          repTitleTagMatch: []
+        }
+      }, 
+      function(err,res){
+      if (err) {console.log(err)}
+        else{
+          console.log('repTitleTagMatchStrong delete successful');
+        }
+    }
+    );
+  });
+
+  console.log('updated # of items ' + count );
+},
 });
