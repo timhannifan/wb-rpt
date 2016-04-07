@@ -1,31 +1,51 @@
 <template name="export">
     <div id="content1">
-      <paper-card heading="Exports" class="card">
+      <paper-card heading="Summary Data" class="card">
         <div class="card-content">
         <paper-button raised id="methodExportMasco4"><iron-icon icon="file-download"></iron-icon>Masco4</paper-button>
-        
         <paper-button raised id="methodExportMasco5"><iron-icon icon="file-download"></iron-icon>Masco5</paper-button>                
         <paper-button raised id="methodExportMascoKey"><iron-icon icon="file-download"></iron-icon>Masco Key</paper-button>        
         <paper-button raised id="methodExportRep"><iron-icon icon="file-download"></iron-icon>REP</paper-button>
+        <paper-button raised id="export"><iron-icon icon="file-download"></iron-icon>RPT</paper-button>
+      </div>
+    </paper-card>
+    <paper-card heading="Strong Match: search for Rpt Title === MascoKey Title" class="card">
+      <div class="card-content">
+        <paper-button raised id="methodExportTitleEqualsTitle"><iron-icon icon="file-download"></iron-icon>Rpt.find({ cleanTitle: {  $eq: mascoKeyTitle } })</paper-button>
+      </div>
+
+    </paper-card>
+    <paper-card heading="Strong Match: search for Rpt containing all keywords of one Masco/Rep Row" class="card">
+      <div class="card-content">
+        <paper-button raised id="methodExportFourTitleStrong"><iron-icon icon="file-download"></iron-icon>Rpt.find({ titleTags: {  $all: Masco4keywords } })</paper-button>
+
+        <paper-button raised id="methodExportFiveTitleStrong"><iron-icon icon="file-download"></iron-icon>Rpt.find({ titleTags: {  $all: Masco5keywords } })</paper-button>
 
 
-        <paper-button raised id="export"><iron-icon icon="file-download"></iron-icon>RPT Descriptive Data</paper-button>
+        <paper-button raised id="methodExportRepTitleStrong"><iron-icon icon="file-download"></iron-icon>Rpt.find({ titleTags: {  $all: RepKeywords } })</paper-button>
 
-        <paper-button raised id="methodExportPercentTitle"><iron-icon icon="file-download"></iron-icon>RPT Percent (Title) </paper-button>
+      </div>
 
-        <paper-button raised id="methodExportPercentDescription"><iron-icon icon="file-download"></iron-icon>RPT Percent (Description) </paper-button>
+    </paper-card>
+    <paper-card heading="Intersection/Percentage Matches: search for intersection between MascoKey Keywords and Rpt" class="card">
+      <div class="card-content">
+        <paper-button raised id="methodExportPercentTitle"><iron-icon icon="file-download"></iron-icon>Rpt Title Keywords</paper-button>
 
-        <paper-button raised id="methodExportFourTitleStrong"><iron-icon icon="file-download"></iron-icon>Strong Title Match vs Masco4</paper-button>
+        <paper-button raised id="methodExportPercentDescription"><iron-icon icon="file-download"></iron-icon>Rpt Description Keywords</paper-button>
 
-        <paper-button raised id="methodExportFiveTitleStrong"><iron-icon icon="file-download"></iron-icon>Strong Title Match vs Masco5</paper-button>
-
-
-        <paper-button raised id="methodExportRepTitleStrong"><iron-icon icon="file-download"></iron-icon>Strong Title Match vs REP</paper-button>
+      </div>
+    </paper-card>
 
 
+    <paper-card heading="Weak Match: search for Rpt Title in MascoKey Keywords " class="card">
+      <div class="card-content">
+        <paper-button raised id="methodExportTitleInKeywords"><iron-icon icon="file-download"></iron-icon>Rpt.find({ cleanTitle: { $in: mascoKeywords } })</paper-button>
+
+      </div>
+      
+    </paper-card>    
 
 
-        </div>
-      </paper-card>
+
     </div>
 </template>

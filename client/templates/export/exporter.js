@@ -16,7 +16,7 @@ MyAppExporter = {
 	methodExportPercentTitle: function() {
 		var self = this;
 
-		Meteor.call("exportPercentTitle", function(error, data) {
+		Meteor.apply("exportPercentTitle",[],{wait: true}, function(error, data) {
 		
 			if ( error ) {
 				alert(error); 
@@ -31,7 +31,7 @@ MyAppExporter = {
 	methodExportPercentDescription: function() {
 		var self = this;
 
-		Meteor.call("exportPercentDescription", function(error, data) {
+		Meteor.call("exportPercentDescription",[],{wait: true}, function(error, data) {
 		
 			if ( error ) {
 				alert(error); 
@@ -85,6 +85,21 @@ MyAppExporter = {
 			
 			var csv = Papa.unparse(data);
 			var title = "rpt_rep_title_strong.csv";
+			self._downloadCSV(csv, title);
+		});
+	},		
+	methodExportTitleInKeywords: function() {
+		var self = this;
+
+		Meteor.call("exportTitleInKeywords", function(error, data) {
+		
+			if ( error ) {
+				alert(error); 
+				return false;
+			}
+			
+			var csv = Papa.unparse(data);
+			var title = "title_in_keywords.csv";
 			self._downloadCSV(csv, title);
 		});
 	},		 
@@ -145,6 +160,21 @@ MyAppExporter = {
 			
 			var csv = Papa.unparse(data);
 			var title = "Rep.csv";
+			self._downloadCSV(csv, title);
+		});
+	},
+	methodExportTitleEqualsTitle: function() {
+		var self = this;
+
+		Meteor.call("exportTitleEqualsTitle", function(error, data) {
+		
+			if ( error ) {
+				alert(error); 
+				return false;
+			}
+			
+			var csv = Papa.unparse(data);
+			var title = "title_equal_title.csv";
 			self._downloadCSV(csv, title);
 		});
 	},
