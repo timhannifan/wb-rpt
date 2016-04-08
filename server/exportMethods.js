@@ -115,12 +115,12 @@ Meteor.methods({
 			return jsonData;
 		}
 	},
-	exportPercentDescription: function() {
-		return [];
-	},
-	exportPercentTitle: function() {
-		return [];
-	},
+	// exportPercentDescription: function() {
+	// 	return [];
+	// },
+	// exportPercentTitle: function() {
+	// 	return [];
+	// },
 	exportFourTitleStrong: function() {
 		console.log('exportFourTitleStrong called');
 		var jsonData, csvData, fullData;

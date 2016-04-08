@@ -328,13 +328,13 @@ Meteor.methods({
       item   = data[ i ],
       exists = MascoFive.findOne( { id: item.id } );
 
-      if ( !exists ) {
+      // if ( !exists ) {
         insertMascoFive(item);
         insertMasterFive(item);
       
-      } else {
-        console.warn( 'Rejected. This item already exists in MascoFive.' );
-      }
+      // } else {
+      //   console.warn( 'Rejected. This item already exists in MascoFive.' );
+      // }
     }
   },
   parseUploadMascoFour: function( data) {
