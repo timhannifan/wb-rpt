@@ -58,40 +58,6 @@ function insertMascoFour(data) {
 
   console.log('completed mascoFour insert');
 }
-function insertMascoFive(data) {
-  check( data, Object );
-
-  var title = data.description_5_digit,
-  id = data.id,
-  cleanTitle = cleanUp(data.description_5_digit),
-  mapToFour = data.id.substr(0, 4),
-  tagsOnly = yakiSplitClean(cleanTitle),
-  titleTags = yakiSplitClean(cleanTitle);
-
-
-  titleTags.push(cleanTitle);
-  
-  var cleanTitleTags = _.uniq(_.reject(titleTags, function(el){
-   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
-  }));
-
-  var cleanTagsOnly = _.uniq(_.reject(tagsOnly, function(el){
-   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
-  }));
-
-  function insertNewFive (id, mapToFour, cleanTitle, cleanTitleTags, cleanTagsOnly) {
-    MascoFive.insert({
-      id: id,
-      mapToFour: mapToFour,
-      cleanTitle: cleanTitle,
-      titleTags: cleanTitleTags,
-      tagsOnly: cleanTagsOnly
-    });
-  }
-  insertNewFive(id, mapToFour, cleanTitle, cleanTitleTags, cleanTagsOnly);    
-
-  console.log('completed mascoFive insert');
-}
 function insertMasterFour(data) {
   // check( data, Object );
   console.log('called insertMasterFour');
@@ -195,37 +161,6 @@ function insertRpt(data) {
 
   insertRptCallback( item );
 }
-function insertMasterFive(data) {
-  check( data, Object );
-
-  var title = data.description_5_digit,
-  officialCode = data.id,
-  cleanTitle = cleanUp(data.description_5_digit),
-  mapToFour = officialCode.substr(0, 4),
-  titleTags = yakiSplitClean(item.cleanTitle);
-
-  titleTags.push(cleanTitle);
-
-  var cleanTags = _.uniq(_.reject(titleTags, function(el){
-   return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
-  }));
-
-  var lookupFourDigitKey = MascoKey.findOne({officialCode: mapToFour});
-
-  for (var i = cleanTags.length - 1; i >= 0; i--) {
-
-    console.log('mapToFour ' + mapToFour );
-    // console.log('lookupFourDigitKey ' + lookupFourDigitKey._id );
-
-    MascoKey.update({officialCode: mapToFour},
-      {
-        $push: {
-          keywords: cleanTags[i]
-        }
-      }
-    );
-  }
-}
 function insertMasterRep(data) {
   check( data, Object );
 
@@ -291,77 +226,53 @@ function findUniqueMascoKeywords(argument) {
   });
 }
 Meteor.methods({
-  parseUploadRep: function( data) {
-    check( data, Array );
+parseUploadRep: function( data) {
+  check( data, Array );
 
-    for ( i = 0; i < data.length; i++ ) {
-      item   = data[ i ],
-      exists = Rep.findOne( { id: item.id } );
+  for ( i = 0; i < data.length; i++ ) {
+    item   = data[ i ],
+    exists = Rep.findOne( { id: item.id } );
 
-      if ( !exists ) {
-      
-        insertRep(item);
-        insertMasterRep(item);
-      } else {
-        console.warn( 'Rejected. This item already exists in MascoFour.' );  
-      }
+    if ( !exists ) {
+    
+      insertRep(item);
+      insertMasterRep(item);
+    } else {
+      console.warn( 'Rejected. This item already exists in MascoFour.' );  
     }
-  },
-  parseUploadRpt: function( data) {
-    check( data, Array );
+  }
+},
+parseUploadRpt: function( data) {
+  check( data, Array );
 
-    for ( i = 0; i < data.length; i++ ) {
-      item   = data[ i ],
-      exists = Rpt.findOne( { id: item.id } );
+  for ( i = 0; i < data.length; i++ ) {
+    item   = data[ i ],
+    exists = Rpt.findOne( { id: item.id } );
 
-      if ( !exists ) {
-        insertRpt( item );
-      } else {
-        console.warn( 'Rejected. This item already exists in Rpt: ' + item.id );
-      }
+    if ( !exists ) {
+      insertRpt( item );
+    } else {
+      console.warn( 'Rejected. This item already exists in Rpt: ' + item.id );
     }
-  },
-  parseUploadMascoFive: function( data) {
-    check( data, Array );
+  }
+},
+parseUploadMascoFour: function( data) {
+  check( data, Array );
 
-    for ( i = 0; i < data.length; i++ ) {
-      item   = data[ i ],
-      exists = MascoFive.findOne( { id: item.id } );
+  for ( i = 0; i < data.length; i++ ) {
+    item   = data[ i ],
+    exists = MascoFour.findOne( { id: item.id } );
 
-      // if ( !exists ) {
-        insertMascoFive(item);
-        insertMasterFive(item);
-      
-      // } else {
-      //   console.warn( 'Rejected. This item already exists in MascoFive.' );
-      // }
+    if ( !exists ) {
+    
+      insertMascoFour(item);
+      insertMasterFour(item);
+    } else {
+      console.warn( 'Rejected. This item already exists in MascoFour.' );  
     }
-  },
-  parseUploadMascoFour: function( data) {
-    check( data, Array );
-
-    for ( i = 0; i < data.length; i++ ) {
-      item   = data[ i ],
-      exists = MascoFour.findOne( { id: item.id } );
-
-      if ( !exists ) {
-      
-        insertMascoFour(item);
-        insertMasterFour(item);
-      } else {
-        console.warn( 'Rejected. This item already exists in MascoFour.' );  
-      }
-    }
-  },
-  findUniqueMascoKeywords: function () {
-    findUniqueMascoKeywords();
-  },
-  findUniqueMascoFiveKeywords: function () {
-    findUniqueMascoKeywords();
-  },
+  }
+},
+findUniqueMascoKeywords: function () {
+  findUniqueMascoKeywords();
+}
 });
-
-
-// console.log(Yaki.Stopwords.en);
-// Yaki.Stopwords.pull('research');
-// console.log(Yaki.Stopwords.en);

@@ -50,59 +50,13 @@ function resetRptTitleInKeywords (col) {
     }
   });
 };
-function resetRptTitleIntersection (col) {
-  var data = Rpt.find();
-  var removeData = function(_id) {
-    Rpt.update(
-      {_id: _id}, 
-      { 
-        $unset: { 
-          percentMatchTitleDenomMasco: ""
-        }
-      }, function(err,res) {
-          if( err) {
-            console.log(err);
-          } else {
-            console.log('successfully completed resetting percentMatchTitleDenomMasco. ' + res + 'items removed');
-          }
-      }
-    );  
-  }
 
-  data.forEach(function (el) {
-    var id = el._id;
-
-    if ( id ) {
-      removeData(id);
-    }
-  });
-};
 Meteor.methods({
 resetRptTitleEqTitle: function () {
   resetRptTitleEqTitle();
 },
 resetRptTitleInKeywords: function () {
   resetRptTitleInKeywords();
-},
-resetRptDescIntersection: function () {
-  var data = Rpt.find({});
-  var count = 0;
-  data.forEach(function (el) {
-    count += 1;
-    Rpt.update({_id: el._id}, {$set: { percentMatchDescKeywords: []}}, 
-      function(err,res){
-      if (err) {console.log(err)}
-        else{
-          console.log('percentMatchDescKeywords delete successful');
-        }
-    }
-    );
-  });
-
-  console.log('resetpercentMatchDescKeywords complete');
-},
-resetRptTitleIntersection: function () {
-  resetRptTitleIntersection();
 },
 resetRpt: function () {
   Rpt.remove({});

@@ -81,166 +81,6 @@ var runTitleInKeywords = function () {
       
   }
 };
-/// title % intersection
-var runTitleIntersection = function () {
-  var mascoData = MascoKey.find({}).fetch();
-  var rptData = Rpt.find({}).fetch();
-
-  var findMatches = function (array) {
-    return Rpt.find({ cleanTitleTags: { $in: array } }).fetch();
-  };
-  // accepts an array of keywords from each rpt item
-  // return an array of MK items with keywords matching anything in the passed in array
-  var findKeywordOverlap = function (keywordArray) {
-    return MascoKey.find({ keywords: { $in: keywordArray } }).fetch();
-  };
-  // 
-  var findIntersections = function (similarMascItems, rptKeywordArray, rptId) {
-    check(similarMascItems, Array);
-    check(rptKeywordArray, Array);
-
-    var data = similarMascItems;
-
-    for (var i = data.length - 1; i >= 0; i--) {
-      var mascoItem =  MascoKey.findOne({ _id: data[i]._id });
-      var mascoItemId = mascoItem._id;
-      var mascoKeys = mascoItem.keywords;
-      var mascoCode = mascoItem.officialCode;
-
-      if (rptKeywordArray && mascoKeys && mascoCode && mascoItemId) {
-        var intersect = function(arg1,arg2) {
-          return _.intersection(arg1,arg2);
-        },
-        insertData = function(info, mascoCode, rptId, rptArrayL, mascoArrayL, intersectionL){
-          Rpt.update({_id: rptId},
-          {
-            $push: { 
-              percentMatchTitleKeywords: {
-                mascoCode: mascoCode,
-                rptArrayL: rptArrayL,
-                intersection: info,
-                intersectionL: intersectionL,
-                mascoArrayL: mascoArrayL,
-                percentVsMascoRptSize: intersectionL/mascoArrayL,
-                percentVsRptSize: intersectionL/rptArrayL
-              }
-             }
-           },
-            function(err, res) {
-              if( err) {
-                console.log(err);
-              } else {
-                console.log('title intersection complete on rpt _id ' + rptId + ' vs mascoKey' + mascoCode);
-              }
-
-            }
-          );
-        },
-        info = intersect(rptKeywordArray,mascoKeys),
-        interesectL = info.length,
-        rptArrayL = rptKeywordArray.length,
-        intersectionL = info.length,
-        mascoArrayL = mascoKeys.length;
-
-        insertData(info, mascoCode, rptId, rptArrayL, mascoArrayL, intersectionL);
-      }
-    }
-  }; 
-
-  for (var i = rptData.length - 1; i >= 0; i--) {
-    var self = rptData[i],
-        tags = self.cleanTitleTags,
-        _id = self._id;
-
-    if( tags) {
-
-      var similarMascoItems = findKeywordOverlap(tags);
-
-      findIntersections(similarMascoItems, tags, _id);
-    }
-    
-  }
-};
-/// description % intersection
-var runDescIntersection = function () {
-  var mascoData = MascoKey.findOne({});//.fetch();
-  var rptData = Rpt.find({}).fetch();
-
-  var findMatches = function (array) {
-    return Rpt.find({ cleanDescTags: { $in: array } }).fetch();
-  };
-  // accepts an array of keywords from each rpt item
-  // return an array of MK items with keywords matching anything in the passed in array
-  var findKeywordOverlap = function (keywordArray) {
-    return MascoKey.find({ keywords: { $in: keywordArray } }).fetch();
-  };
-  // 
-  var findIntersections = function (similarMascItems, rptKeywordArray, rptId) {
-    check(similarMascItems, Array);
-    check(rptKeywordArray, Array);
-
-    var data = similarMascItems;
-
-    for (var i = data.length - 1; i >= 0; i--) {
-      var mascoItem =  MascoKey.findOne({ _id: data[i]._id });
-      var mascoItemId = mascoItem._id;
-      var mascoKeys = mascoItem.keywords;
-      var mascoCode = mascoItem.officialCode;
-
-      if (rptKeywordArray && mascoKeys && mascoCode && mascoItemId) {
-        var intersect = function(arg1,arg2) {
-          return _.intersection(arg1,arg2);
-        },
-        insertData = function(info, mascoCode, rptId, rptArrayL, mascoArrayL, intersectionL){
-          Rpt.update({_id: rptId},
-          {
-            $push: { 
-              percentMatchDescKeywords: {
-                mascoCode: mascoCode,
-                rptArrayL: rptArrayL,
-                intersection: info,
-                intersectionL: intersectionL,
-                mascoArrayL: mascoArrayL,
-                percentVsMascoRptSize: intersectionL/mascoArrayL,
-                percentVsRptSize: intersectionL/rptArrayL
-              }
-             }
-           },
-            function(err, res) {
-              if( err) {
-                console.log(err);
-              } else {
-                console.log('description intersection complete on rpt _id ' + rptId + ' vs mascoKey' + mascoCode);
-              }
-
-            }
-          );
-        },
-        info = intersect(rptKeywordArray,mascoKeys),
-        interesectL = info.length,
-        rptArrayL = rptKeywordArray.length,
-        intersectionL = info.length,
-        mascoArrayL = mascoKeys.length;
-
-        insertData(info, mascoCode, rptId, rptArrayL, mascoArrayL, intersectionL);
-      }
-    }
-  }; 
-
-  for (var i = rptData.length - 1; i >= 0; i--) {
-    var self = rptData[i],
-        tags = self.cleanDescTags,
-        _id = self._id;
-
-    if( tags) {
-
-      var similarMascoItems = findKeywordOverlap(tags);
-
-      findIntersections(similarMascoItems, tags, _id);
-    }
-    
-  }
-};
 /// mascoTitleTagFourStrong
 var mascoTitleTagFourStrong = function () {
   var mascoFetch = MascoFour.find({}).fetch();
@@ -347,82 +187,40 @@ var repTitleTagMatchStrong = function () {
     updateRepMatches(_.uniq(findMatches(keyFetch[i].cleanTagsOnly)),  keyFetch[i].mapToFour,  keyFetch[i]._id);
 
   }
-
 };
-// /// repTitleTagMatchWeak
-// var repTitleTagMatchWeak = function () {
-//   var keyFetch = Rep.find({}).fetch(),
-//   updateMatches = function(array, mascoCode) {
-//     var data = array,
-//     code = mascoCode;
-
-//     if(data && code) {
-//       for (var i = data.length - 1; i >= 0; i--) {
-//         console.log('updating Rpt _id ' +data[i]._id+ ' with masco code: '+ mascoCode + 'for repTitleTagMatchStrong');
-        
-//         Rpt.update({_id: data[i]._id }, 
-//           {
-//             $push: { 
-//               repTitleTagMatchWeak: code 
-//             }
-//           }
-//         );
-//       }
-//     }
-//   },
-//   findMatches = function(tagArray) {
-//     return Rpt.find({ cleanTagsOnly: {  $in: tagArray } }).fetch();
-//   };
-  
-//   for (var i = keyFetch.length - 1; i >= 0; i--) {
-    
-//     var self = keyFetch[i],
-//     tags = keyFetch[i].tagsOnly,
-//     _id = keyFetch[i]._id,
-//     id = keyFetch[i].mapToFour;
-
-//     if (tags && id && _id){
-//       var found = findMatches(tags);
-//       if(found) {
-//         updateMatches(found, id); 
-//       }
-//     }
-//   }
-//   console.log('repTitleTagMatchWeak complete');
-// };
 
 Meteor.methods({
-  runTitleEqTitle: function() {
-    runTitleEqTitle();
-  },
-  runTitleInKeywords: function() {
-    runTitleInKeywords();
-  },
-  runTitleIntersection: function() {
-    runTitleIntersection();
-  },
-  runDescIntersection: function() {
-    runDescIntersection();
-  },
-  // strong matches using $all
-  mascoTitleTagFiveStrong: function() {
-    mascoTitleTagFiveStrong();
-  },
-    // strong matches using $all
-  mascoTitleTagFourStrong: function() {
-    mascoTitleTagFourStrong();
-  },
-  // weak matches using $in
-  mascoTitleTagFiveWeak: function() {
-    mascoTitleTagFiveWeak();
-  },
-  mascoTitleTagFourWeak: function() {
-    mascoTitleTagFourWeak();
-  },
-  repTitleTagMatchWeak: function() {
-    repTitleTagMatchWeak();
-  },
-  repTitleTagMatchStrong: function() {
-    repTitleTagMatchStrong();
-  }    
+
+runTitleEqTitle: function() {
+  runTitleEqTitle();
+},
+
+runTitleInKeywords: function() {
+  runTitleInKeywords();
+},
+
+mascoTitleTagFiveStrong: function() {
+  mascoTitleTagFiveStrong();
+},
+
+mascoTitleTagFourStrong: function() {
+  mascoTitleTagFourStrong();
+},
+
+mascoTitleTagFiveWeak: function() {
+  mascoTitleTagFiveWeak();
+},
+
+mascoTitleTagFourWeak: function() {
+  mascoTitleTagFourWeak();
+},
+
+repTitleTagMatchWeak: function() {
+  repTitleTagMatchWeak();
+},
+
+repTitleTagMatchStrong: function() {
+  repTitleTagMatchStrong();
+}    
+
 });
