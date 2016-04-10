@@ -18,12 +18,11 @@ Template.rep.events({
     Papa.parse( event.target.files[0], {
       header: true,
       complete: function( results, file ) {
-        Meteor.call( 'parseUploadRep', results.data, function( error, response ) {
+        Meteor.call( 'insertRep', results.data, function( error, response ) {
           if ( error ) {
             console.log( error.reason );
           } else {
             template.uploading.set( false );
-            // Bert.alert( 'Upload complete!', 'success', 'growl-top-right' );
           }
         });
       }
