@@ -190,37 +190,26 @@ var repTitleTagMatchStrong = function () {
 };
 
 Meteor.methods({
-
+//// title === title
 runTitleEqTitle: function() {
   runTitleEqTitle();
 },
-
+//// title in keywords
 runTitleInKeywords: function() {
   runTitleInKeywords();
 },
-
+//// strong matches
 mascoTitleTagFiveStrong: function() {
   mascoTitleTagFiveStrong();
 },
-
 mascoTitleTagFourStrong: function() {
   mascoTitleTagFourStrong();
 },
-
-mascoTitleTagFiveWeak: function() {
-  mascoTitleTagFiveWeak();
+repTitleTagMatchStrong: function() {
+  repTitleTagMatchStrong();
 },
-
-mascoTitleTagFourWeak: function() {
-  mascoTitleTagFourWeak();
-},
-
+//// weak matches
 repTitleTagMatchWeak: function() {
   repTitleTagMatchWeak();
 },
-
-repTitleTagMatchStrong: function() {
-  repTitleTagMatchStrong();
-}    
-
 });

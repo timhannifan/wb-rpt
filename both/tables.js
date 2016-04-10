@@ -53,7 +53,7 @@ TabularTables.Rep = new Tabular.Table({
   columns: [
     {data: "mapToFour", title: "Masco4", class: "flex-4"},
     {data: "cleanTitle", title: "Title", class: "flex-4"},
-    {data: "cleanTags", title: "Keywords", class: "flex-4"}
+    {data: "tagsOnly", title: "Keywords", class: "flex-4"}
   ]
 });
 
@@ -64,8 +64,8 @@ TabularTables.Rpt = new Tabular.Table({
   autoWidth: false,
   pageLength: 50,
   columns: [
-    {data: "id", title: "id", class: "flex-4"},
-    {data: "cleanTitle", title: "Title", class: "flex-4"},
-    {data: "cleanDesc", title: "Description", class: "flex-4"}
+    {data: "cleanTitle", title: "Title"},
+    {data: "tagsOnly", title: "TitleTags"},
+    {data: "descTags", title: "DescTags"},
   ]
 });

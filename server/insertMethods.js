@@ -81,42 +81,6 @@ function insertMasterFour(data) {
 
   console.log('inserted new mascoKey item');
 }
-function insertRep(data) {
-  check( data, Object );
-
-  var item= {};
-
-  item.title = data.job1_position;
-  item.employer = data.job1_employer;
-  item.acad1_name = data.acad1_name;
-  item.acad1_fos = data.acad1_fos;
-  item.acad1_qual = data.acad1_qual;
-  item.id = data.id;
-  item.mapToFour = data.masco_4;
-
-  if (item.title) {
-    item.cleanTitle = cleanUp(item.title);
-    item.titleTags = yakiSplitClean(item.cleanTitle);
-    item.tagsOnly = yakiSplitClean(item.cleanTitle);
-  }
-
-  if(item.titleTags && item.tagsOnly) {
-    item.titleTags.push(item.cleanTitle);
-    item.cleanTags = _.uniq(_.reject(item.titleTags, function(el){
-     return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
-    })); 
-    item.cleanTagsOnly = _.uniq(_.reject(item.tagsOnly, function(el){
-     return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
-    }));        
-  }
-
-  function insertCallback (item) {
-    console.log('inserting REP item: ' + item);
-    Rep.insert(item);
-  }
-
-  insertCallback( item );
-}
 function insertRpt(data) {
   check( data, Object );
 
@@ -161,40 +125,6 @@ function insertRpt(data) {
 
   insertRptCallback( item );
 }
-function insertMasterRep(data) {
-  check( data, Object );
-
-  var title = data.job1_position,
-  employer = data.job1_employer,
-  acad1_name = data.acad1_name,
-  acad1_fos = data.acad1_fos,
-  acad1_qual = data.acad1_qual,
-  id = data.id,
-  mapToFour = data.masco_4;
-
-  if (title && mapToFour){
-    var lookupFourDigitKey = MascoKey.findOne({officialCode: mapToFour});
-
-    cleanTitle = cleanUp(title);
-    titleTags = yakiSplitClean(cleanTitle);
-    titleTags.push(cleanTitle);
-
-    var cleanTags = _.uniq(_.reject(titleTags, function(el){
-      return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
-    }));
-
-    for (var i = cleanTags.length - 1; i >= 0; i--) {
-      console.log('mapToFour REP ' + mapToFour );
-      MascoKey.update({officialCode: mapToFour},
-        {
-          $push: {
-            keywords: cleanTags[i]
-          }
-        }
-      );
-    }
-  }
-}
 function findUniqueMascoKeywords(argument) {
   var data = MascoKey.find({});
 
@@ -226,22 +156,6 @@ function findUniqueMascoKeywords(argument) {
   });
 }
 Meteor.methods({
-parseUploadRep: function( data) {
-  check( data, Array );
-
-  for ( i = 0; i < data.length; i++ ) {
-    item   = data[ i ],
-    exists = Rep.findOne( { id: item.id } );
-
-    if ( !exists ) {
-    
-      insertRep(item);
-      insertMasterRep(item);
-    } else {
-      console.warn( 'Rejected. This item already exists in MascoFour.' );  
-    }
-  }
-},
 parseUploadRpt: function( data) {
   check( data, Array );
 
@@ -274,5 +188,8 @@ parseUploadMascoFour: function( data) {
 },
 findUniqueMascoKeywords: function () {
   findUniqueMascoKeywords();
-}
+},
+findUniqueMascoFiveKeywords: function () {
+  findUniqueMascoKeywords();
+},
 });
