@@ -81,50 +81,7 @@ function insertMasterFour(data) {
 
   console.log('inserted new mascoKey item');
 }
-function insertRpt(data) {
-  check( data, Object );
 
-  var item= {};
-  item.id = data.id;
-  item.occ_title = data.occ_title;
-  item.occ_desc = data.occ_desc;
-  item.firm_name = data.firm_name;
-  item.sector = data.sector;
-  // item.educ_fos = data.educ_fos;
-
-  if (item.occ_title) {
-    item.cleanTitle = cleanUp(item.occ_title);
-  }
-  if (item.cleanTitle) {
-    item.titleTags = yakiSplitClean(item.cleanTitle);
-    item.tagsOnly = yakiSplitClean(item.cleanTitle);
-  }
-  if (item.occ_desc) {
-    item.cleanDesc = cleanUp(item.occ_desc);
-  }  
-  if (item.cleanDesc) {
-    item.descTags = yakiSplitClean(item.cleanDesc);
-  }
-
-  if(item.titleTags && item.tagsOnly) {
-    item.titleTags.push(item.cleanTitle);
-    item.cleanTitleTags = _.uniq(_.reject(item.titleTags, function(el){
-     return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
-    }));
-    item.cleanTagsOnly = _.uniq(_.reject(item.tagsOnly, function(el){
-     return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
-    }));        
-  }
-
-  if(item.descTags) {
-    item.descTags.push(item.cleanDesc);
-    item.cleanDescTags = _.uniq(_.reject(item.descTags, function(el){
-     return (el == 'and' || el == 'or' || el == 'of'|| el == 'not'|| el == 'elsewhere'|| el == 'other'|| el == ''|| el == '1'|| el == '2'|| el == '3'|| el == '4'|| el == '5'|| el == '6'|| el == 'br');
-    }));    
-  }
-
-  insertRptCallback( item );
-}
 function findUniqueMascoKeywords(argument) {
   var data = MascoKey.find({});
 
@@ -156,20 +113,7 @@ function findUniqueMascoKeywords(argument) {
   });
 }
 Meteor.methods({
-parseUploadRpt: function( data) {
-  check( data, Array );
 
-  for ( i = 0; i < data.length; i++ ) {
-    item   = data[ i ],
-    exists = Rpt.findOne( { id: item.id } );
-
-    if ( !exists ) {
-      insertRpt( item );
-    } else {
-      console.warn( 'Rejected. This item already exists in Rpt: ' + item.id );
-    }
-  }
-},
 parseUploadMascoFour: function( data) {
   check( data, Array );
 

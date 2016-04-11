@@ -65,7 +65,7 @@ TabularTables.Rpt = new Tabular.Table({
   pageLength: 50,
   columns: [
     {data: "cleanTitle", title: "Title"},
-    {data: "tagsOnly", title: "TitleTags"},
+    {data: "tagsOnly", title: "Tags"},
     {data: "descTags", title: "DescTags"},
   ]
 });
