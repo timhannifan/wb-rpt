@@ -116,7 +116,7 @@ Rpt.after.update(function (userId, doc, fieldNames, modifier, options) {
 		});		
 	}
 
-	if(doc.parsingComplete && !doc.bulkIntersectionComplete) {
+	if(doc.parsingComplete && !doc.bulkIntersectionTitleComplete) {
 		var matches = MascoKey.find({keywords: {$in: doc.titleTags}}).fetch();
 		var matchIdSet = [];
 		for (var i = matches.length - 1; i >= 0; i--) {
@@ -134,14 +134,38 @@ Rpt.after.update(function (userId, doc, fieldNames, modifier, options) {
 				}
 			},
 			$set: {
-				bulkIntersectionComplete: 1
+				bulkIntersectionTitleComplete: 1
 			}
 		}, function (err,res) {
 			if (err) {console.log(err)} else {console.log('bulkTitle intersection done')}
 		});
 	}
+	if(doc.parsingComplete && !doc.bulkIntersectionDescComplete) {
+		var matches = MascoKey.find({keywords: {$in: doc.cleanDescTags}}).fetch();
+		var matchIdSet = [];
+		for (var i = matches.length - 1; i >= 0; i--) {
+			matchIdSet.push(matches[i]._id);
+		}
 
-	if(doc.parsingComplete && doc.bulkIntersectionComplete && !doc.intersectionDetailComplete) {
+		var uniques = _.uniq(matchIdSet);
+
+		console.log('uniques count' + uniques.length);
+
+		Rpt.update({_id: doc._id}, {
+			$push: {
+				descIntersections: {
+					$each: uniques
+				}
+			},
+			$set: {
+				bulkIntersectionDescComplete: 1
+			}
+		}, function (err,res) {
+			if (err) {console.log(err)} else {console.log('bulkIntersectionDescComplete')}
+		});
+	}
+
+	if(doc.parsingComplete && doc.bulkIntersectionTitleComplete && !doc.intersectionTitleDetailComplete) {
 
 		var matches = doc.titleIntersections;
 		var matchDetail = [];
@@ -165,11 +189,42 @@ Rpt.after.update(function (userId, doc, fieldNames, modifier, options) {
 
 		Rpt.update({_id: doc._id}, {
 			$set: {
-				intersectionDetailComplete: 1,
+				intersectionTitleDetailComplete: 1,
 				titleIntersectionDetail: matchDetail
 			}
 		}, function (err,res) {
-			if (err) {console.log(err)} else {console.log('intersectionDetailComplete')}
+			if (err) {console.log(err)} else {console.log('intersectionTitleDetailComplete')}
 		});
 	}
+	if(doc.parsingComplete && doc.bulkIntersectionDescComplete && !doc.intersectionDescDetailComplete) {
+
+		var matches = doc.descIntersections;
+		var matchDetail = [];
+
+		for (var i = matches.length - 1; i >= 0; i--) {
+			var matchDetailItem = {};
+			var matchingMasco = MascoKey.findOne({_id: matches[i]});
+
+			matchDetailItem.mascoCode = matchingMasco.officialCode;
+		  matchDetailItem.mascoKeywordLength = matchingMasco.keywords.length;
+		  matchDetailItem.rptArrayLength = doc.cleanDescTags.length;
+		  matchDetailItem.intersectionValue = findIntersection(matchingMasco.keywords,doc.cleanDescTags);
+		  matchDetailItem.percentVsMascoSize = matchDetailItem.intersectionValue.length/matchingMasco.keywords.length;
+		  matchDetailItem.percentVsRptSize = matchDetailItem.intersectionValue.length/doc.cleanDescTags.length;
+
+		  console.log('matchDetailItem '+ i, matchDetailItem);
+		  matchDetail.push(matchDetailItem);
+		}
+		
+		console.log(matchDetail.length + 'items in matchDetail array');
+
+		Rpt.update({_id: doc._id}, {
+			$set: {
+				intersectionDescDetailComplete: 1,
+				descIntersectionDetail: matchDetail
+			}
+		}, function (err,res) {
+			if (err) {console.log(err)} else {console.log('intersectionDescDetailComplete')}
+		});
+	}	
 }, {fetchPrevious: false});
