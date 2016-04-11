@@ -48,12 +48,13 @@ function findRptMatches(array, mascoCode) {
       $in: array 
     },
     titleIntersectionComplete : 0 
-  }, {
-    sort: {
-      id: 1
-    },
-    fields: rptFields
-  });
+    }, {
+      sort: {
+        id: 1
+      },
+      fields: rptFields
+    }
+  );
   var matchCount = 0;
 
   matches.forEach(function(rptDoc){

@@ -103,18 +103,12 @@ var mascoTitleTagFourStrong = function () {
 
   // using mongo $eq to select for strong equality on array match
   function findMatches(tagArray) {
-    return Rpt.find({ cleanTagsOnly: {  $all: tagArray } }).fetch();
+    return Rpt.find({ tagsOnly: {  $all: tagArray } }).fetch();
   }
   
   for (var i = mascoFetch.length - 1; i >= 0; i--) {
-    
-    var self = mascoFetch[i],
-    tags = mascoFetch[i].tagsOnly,
-    _id = mascoFetch[i]._id,
-    id = mascoFetch[i].id;
-
-    var found = findMatches(tags);
-    updateMatches(found, id);
+    console.log('searching for masco4Tags: ' + mascoFetch[i].tagsOnly);
+    updateMatches(findMatches( mascoFetch[i].tagsOnly), mascoFetch[i].id);
 
   }
 };
@@ -142,16 +136,10 @@ var mascoTitleTagFiveStrong = function () {
   }
   // using mongo $eq to select for strong equality on array match
   function findMatches(tagArray) {
-    return Rpt.find({ cleanTagsOnly: {  $all: tagArray } }).fetch();
+    return Rpt.find({ tagsOnly: {  $all: tagArray } }).fetch();
   }
 
   for (var i = mascoFetch.length - 1; i >= 0; i--) {
-    
-    // var self = mascoFetch[i],
-    // tags = mascoFetch[i].tagsOnly,
-    // _id = mascoFetch[i]._id,
-    // id = mascoFetch[i].mapToFour;
-
     console.log('searching for masco5Tags: ' + mascoFetch[i].tagsOnly);
     updateFiveMatches(findMatches(mascoFetch[i].tagsOnly),  mascoFetch[i].mapToFour,  mascoFetch[i].id);
 
@@ -160,7 +148,7 @@ var mascoTitleTagFiveStrong = function () {
 /// repTitleTagMatchStrong 
 var repTitleTagMatchStrong = function () {
   var keyFetch = Rep.find({}).fetch();
-   function updateRepMatches(array, mascoCode, repmatchid) {
+   function updateRptMatches(array, mascoCode, repmatchid) {
       var data = array;
 
       for (var i = data.length - 1; i >= 0; i--) {
@@ -178,13 +166,13 @@ var repTitleTagMatchStrong = function () {
   }
 
   function findMatches(tagArray) {
-    return Rpt.find({ cleanTagsOnly: {  $all: tagArray } }).fetch();
+    return Rpt.find({ tagsOnly: {  $all: tagArray } }).fetch();
   }
   
   for (var i = keyFetch.length - 1; i >= 0; i--) {
-    console.log('searching for REP tags: ' + keyFetch[i].cleanTagsOnly);
+    console.log('searching for REP tags: ' + keyFetch[i].tagsOnly);
 
-    updateRepMatches(_.uniq(findMatches(keyFetch[i].cleanTagsOnly)),  keyFetch[i].mapToFour,  keyFetch[i]._id);
+    updateRptMatches(_.uniq(findMatches(keyFetch[i].tagsOnly)),  keyFetch[i].mapToFour,  keyFetch[i]._id);
 
   }
 };
@@ -207,9 +195,5 @@ mascoTitleTagFourStrong: function() {
 },
 repTitleTagMatchStrong: function() {
   repTitleTagMatchStrong();
-},
-//// weak matches
-repTitleTagMatchWeak: function() {
-  repTitleTagMatchWeak();
-},
+}
 });

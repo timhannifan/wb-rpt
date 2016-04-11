@@ -21,8 +21,8 @@ Meteor.methods({
 			"id",
 			"cleanTitle",
 			"cleanDesc",
-			"cleanTagsOnly",
-			"cleanDescTags"	
+			"titleTagsWOTitle",
+			"descTags"	
 		];
  
 		var data = [];		
@@ -35,8 +35,8 @@ Meteor.methods({
 				obj.id,
 				obj.cleanTitle,
 				obj.cleanDesc,
-				obj.cleanTagsOnly,
-				obj.cleanDescTags,
+				obj.tagsOnly,
+				obj.descTags,
 			]);
 		});
  
@@ -112,15 +112,16 @@ Meteor.methods({
 	exportFourTitleStrong: function() {
 		console.log('exportFourTitleStrong called');
 		var jsonData, csvData, fullData;
-		fullData = Rpt.find({mascoTitleTagFourStrong: {$exists: true}}).fetch();
+		fullData = Rpt.find({mascoTitleTagFourStrong: {$ne: []}}).fetch();
 		jsonData = [];
 		if (fullData) {
 			for (var i = 0; i < fullData.length; i++) {
 				jsonData.push({
-					mascoTitleTagFourStrong: fullData[i].mascoTitleTagFourStrong,
-					id: fullData[i].id
+					rptId: fullData[i].id,
+					masco: fullData[i].mascoTitleTagFourStrong
 				});
 			}
+
 			return jsonData;
 		}	
 	},		
@@ -133,8 +134,8 @@ Meteor.methods({
 			for (var i = 0; i < fullData.length; i++) {
 				jsonData.push({
 					rptId: fullData[i].id,
-					mascoTitleTagFiveStrong: fullData[i].mascoTitleTagFiveStrong,
-					mascoFiveStrongMatch: fullData[i].mascoFiveStrongMatch 
+					masco: fullData[i].mascoTitleTagFiveStrong,
+					masco5: fullData[i].mascoFiveStrongMatch 
 
 				});
 			}
@@ -142,24 +143,7 @@ Meteor.methods({
 			return jsonData;
 		}			
 		
-	},			
-	// exportRepTitleStrong: function() {
-	// 	console.log('exportFiveTitleStrong called');
-	// 	var jsonData, csvData, fullData;
-	// 	fullData = Rpt.find({repTitleTagMatchStrong: {$exists: true}}).fetch();
-	// 	jsonData = [];
-
-	// 	for (var i = 0; i < fullData.length; i++) {
-	// 		jsonData.push({
-	// 			rptId: fullData[i].id,
-	// 			repTitleTagMatchStrong: fullData[i].repTitleTagMatchStrong,
-	// 			repTitleTagMatch: fullData[i].repTitleTagMatch,
-
-	// 		});
-	// 	}
-	// 	//array of objects
-	// 	return jsonData;					
-	// },			
+	},						
 	exportRepTitleStrong: function() {
 		console.log('exportRepTitleStrong called');
 		var jsonData, csvData, fullData;
@@ -168,29 +152,27 @@ Meteor.methods({
 
 		jsonData = [];
 
-		function pushData(data, userId){
+		function wrangleArray(data, rptId){
 			var pushThese = data;
 
 			for (var i = 0; i < pushThese.length; i++) {
-				pushThese[i].userId = userId;
-				// for (var attrname in pushThese[i]) { 
-				// 	// console.log(attrname);
-				// }
-				// console.dir(pushThese[i]);
-				jsonData.push(pushThese[i]);
+				var self = pushThese[i];
+
+				var itemDetail = {}
+				itemDetail.rptId = rptId;
+				itemDetail.rep_masco = self.mascoCode;
+				itemDetail.rep_id = self.repTitleTagMatch;
+				// console.log(self);
+				// console.log(itemDetail);
+				
+				jsonData.push(itemDetail);
 			}
 		}
-
 		if (fullData) {
 			for (var i = 0; i < fullData.length; i++) {
-				//array of objects
-				var arrayObjects = fullData[i].repTitleTagMatchStrong;
-				var userId = fullData[i].id;
-
-				if (arrayObjects && userId){
-					pushData(arrayObjects, userId);				
-				}
+				wrangleArray(fullData[i].repTitleTagMatchStrong, fullData[i].id);
 			}
+
 			return jsonData;
 		}
 	},		
@@ -201,17 +183,19 @@ Meteor.methods({
 		fullData = Rpt.find({titleInKeywords: {$exists: true}}).fetch();
 
 		jsonData = [];
-
-		function callback(data, userId){
+		function wrangleArray(data, rptId){
 			var pushThese = data;
 
 			for (var i = 0; i < pushThese.length; i++) {
-				pushThese[i].userId = userId;
-				// for (var attrname in pushThese[i]) { 
-				// 	// console.log(attrname);
-				// }
-				// console.dir(pushThese[i]);
-				jsonData.push(pushThese[i]);
+				var self = pushThese[i];
+
+				var itemDetail = {}
+				itemDetail.rptId = rptId;
+				itemDetail.masco_4 = self.id;
+				// console.log(self);
+				// console.log(itemDetail);
+				
+				jsonData.push(itemDetail);
 			}
 		}
 
@@ -228,7 +212,7 @@ Meteor.methods({
 			function weight(arr_in) { // unique sorted by num occurances
 			    var o = count(arr_in),
 			        arr = [], i;
-			    for (i in o) arr.push({masco4: +i, frequency: o[i]}); // fast unique only
+			    for (i in o) arr.push({id: +i, frequency: o[i]}); // fast unique only
 			    arr.sort(function (a, b) {
 			        return a.frequency < b.frequency;
 			    });
@@ -240,13 +224,7 @@ Meteor.methods({
 		}
 		if (fullData) {
 			for (var i = 0; i < fullData.length; i++) {
-				//array of objects
-				var unsortedArray = fullData[i].titleInKeywords,
-				userId = fullData[i].id;
-
-				if (unsortedArray && userId){
-					callback(getSorted(unsortedArray), userId);
-				}
+				wrangleArray(getSorted(fullData[i].titleInKeywords), fullData[i].id);
 			}
 			
 			return jsonData;
