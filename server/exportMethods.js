@@ -52,7 +52,7 @@ Meteor.methods({
 		console.log('exportPercentTitle called');
 		var jsonData, csvData, fullData;
 		
-		fullData = Rpt.find({percentMatchTitleKeywords: {$exists: true}}).fetch();
+		fullData = Rpt.find({titleIntersectionDetail: {$exists: true}}).fetch();
 
 		jsonData = [];
 
@@ -71,7 +71,7 @@ Meteor.methods({
 		if (fullData) {
 			for (var i = 0; i < fullData.length; i++) {
 				//array of objects
-				var percents = fullData[i].percentMatchTitleKeywords;
+				var percents = fullData[i].titleIntersectionDetail;
 				var userId = fullData[i].id;
 
 				if (percents && userId){
