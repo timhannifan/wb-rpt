@@ -22,10 +22,7 @@ Meteor.methods({
 			"cleanTitle",
 			"cleanDesc",
 			"cleanTagsOnly",
-			"cleanDescTags",
-			"sector"
-			// "titleEqTitle",
-			// "titleInKeywords",
+			"cleanDescTags"	
 		];
  
 		var data = [];		
@@ -40,9 +37,6 @@ Meteor.methods({
 				obj.cleanDesc,
 				obj.cleanTagsOnly,
 				obj.cleanDescTags,
-				obj.titleEqTitle,
-				obj.titleInKeywords,
-				obj.sector,
 			]);
 		});
  
@@ -85,7 +79,7 @@ Meteor.methods({
 		console.log('exportPercentDescription called');
 		var jsonData, csvData, fullData;
 		
-		fullData = Rpt.find({percentMatchDescKeywords: {$exists: true}}).fetch();
+		fullData = Rpt.find({descIntersectionDetail: {$exists: true}}).fetch();
 
 		jsonData = [];
 
@@ -105,7 +99,7 @@ Meteor.methods({
 		if (fullData) {
 			for (var i = 0; i < fullData.length; i++) {
 				//array of objects
-				var percents = fullData[i].percentMatchDescKeywords;
+				var percents = fullData[i].descIntersectionDetail;
 				var userId = fullData[i].id;
 
 				if (percents && userId){
@@ -115,12 +109,6 @@ Meteor.methods({
 			return jsonData;
 		}
 	},
-	// exportPercentDescription: function() {
-	// 	return [];
-	// },
-	// exportPercentTitle: function() {
-	// 	return [];
-	// },
 	exportFourTitleStrong: function() {
 		console.log('exportFourTitleStrong called');
 		var jsonData, csvData, fullData;
